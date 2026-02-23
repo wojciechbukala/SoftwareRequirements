@@ -1,0 +1,131 @@
+\documentclass[11pt, a4paper]{report}
+
+% --- Encoding and fonts ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+% --- Page layout ---
+\usepackage[a4paper, total={6in, 9.5in}]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+ 
+% --- Header & footer ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyfoot[C]{\thepage}
+
+% --- Graphics, tables and floats ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{tabularx} 
+\geometry{margin=2.5cm}
+
+% --- Math and code listings ---
+\usepackage{amsmath, amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+
+
+% --- alloy ----
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- Alloy colors (similar to Alloy Analyzer) ---
+\definecolor{alloyKeyword}{RGB}{0,0,180}      % blu keywords
+\definecolor{alloyComment}{RGB}{0,128,0}      % verde commenti
+\definecolor{alloyString}{RGB}{180,0,0}       % rosso stringhe
+\definecolor{alloyNumber}{RGB}{100,100,100}   % grigio numeri
+
+\lstdefinelanguage{alloy}{
+  morekeywords={
+    sig, abstract, extends, one, lone, some, set,
+    fun, pred, fact, assert, check, run,
+    enum, open, util, for, but, exactly,
+    all, disj, implies, and, or, no
+  },
+  sensitive=true,
+  morecomment=[l]{--},
+  morestring=[b]"
+}
+
+\lstset{
+  language=alloy,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{alloyKeyword},
+  commentstyle=\color{alloyComment}\itshape,
+  stringstyle=\color{alloyString},
+  backgroundcolor=\color{white},
+  frame=none,
+  showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2
+}
+
+
+  
+% --- References & hyperlinks ---
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage{biblatex}
+%\addbibresource{bibliography.bib}
+
+% --- Lists ---
+\usepackage{enumitem}
+
+\usepackage{parskip}
+
+\begin{document}
+
+\input{StudentsAndCompanies/titlepage_sac}
+\newpage
+\tableofcontents
+\newpage
+
+% --- I Form ---
+\chapter{Form I}
+\input{StudentsAndCompanies/form1/natural_language}
+\newpage
+
+% --- II Form ---
+\chapter{Form II}
+\input{StudentsAndCompanies/form2/1_Introduction}
+\newpage
+\input{StudentsAndCompanies/form2/2_References}
+\newpage
+\input{StudentsAndCompanies/form2/3_Requirements}
+\newpage
+\input{StudentsAndCompanies/form2/4_Verification}
+\newpage
+\input{StudentsAndCompanies/form2/5_Appendices}
+
+% --- III Form ---
+\chapter{Form III}
+\input{StudentsAndCompanies/form3/1_Introduction}
+\newpage
+\input{StudentsAndCompanies/form3/2_References}
+\newpage
+\input{StudentsAndCompanies/form3/3_Requirements}
+\newpage
+\input{StudentsAndCompanies/form3/4_Verification}
+\newpage
+\input{StudentsAndCompanies/form3/5_Appendices}
+
+% --- IV Form ---
+\chapter{Form IV}
+\input{StudentsAndCompanies/form4/alloy}
+\newpage
+
+
+\end{document}

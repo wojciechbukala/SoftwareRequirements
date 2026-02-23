@@ -1,0 +1,484 @@
+\section{Formal analysis using alloy}
+
+\begin{lstlisting}
+--------------------------------------------------------------
+-- IDs and enums
+--------------------------------------------------------------
+
+sig UID {}
+sig PathID {}
+sig TripID {}
+sig ObstacleID {}
+sig StatusID {}
+sig ReportID {}
+
+enum Visibility { Public, Private }
+enum ReviewState { Unconfirmed, Confirmed, Rejected }
+enum PublicationState { Unpublished, Published, Archived }
+
+enum ObstacleKind { Pothole, RoadWorks, FallenTree, Other }
+enum ObstacleDecision { Pending, ConfirmedObs, RejectedObs }
+
+enum PathCondition { Good, Caution, Bad }
+
+--------------------------------------------------------------
+-- Users
+--------------------------------------------------------------
+
+abstract sig User { uid: one UID }
+
+sig Guest extends User {}             -- unregistered user
+sig RegisteredUser extends User {}    -- registered user
+sig Admin extends RegisteredUser {}   -- BBP administrator
+
+fact UniqueUID {
+  all disj u1, u2: User | u1.uid != u2.uid
+}
+
+fact AtLeastOneAdmin { some Admin }
+
+--------------------------------------------------------------
+-- Trips and Paths
+--------------------------------------------------------------
+
+sig Trip {
+  tid: one TripID,
+  rider: one RegisteredUser,
+
+  pathRef: one Path
+}
+
+abstract sig Path {
+  pid: one PathID,
+  owner: one RegisteredUser,
+
+  review: one ReviewState,
+  visibility: one Visibility,
+  publication: one PublicationState
+}
+
+sig ManualPath extends Path {}
+sig AutoPath extends Path {
+  derivedFrom: one Trip
+}
+
+fact UniqueIDs {
+  all disj p1, p2: Path | p1.pid != p2.pid
+  all disj t1, t2: Trip | t1.tid != t2.tid
+}
+
+fact TripPathRefCoherence {
+  -- Trip references a path owned by the same registered user
+  all t: Trip | t.rider = t.pathRef.owner
+}
+
+fact AutoPathConsistency {
+  -- Automatic paths are derived from a trip of the same user
+  all p: AutoPath | p.owner = p.derivedFrom.rider
+}
+
+fact AutoPathTripLink {
+  -- every AutoPath is exactly the path referenced by its derived trip
+  all p: AutoPath | p.derivedFrom.pathRef = p
+
+  -- if a trip references an AutoPath, that AutoPath must be derived from the trip
+  all t: Trip | (t.pathRef in AutoPath) implies (t.pathRef.derivedFrom = t)
+}
+
+fun userTrips[u: RegisteredUser] : set Trip { { t: Trip | t.rider = u } }
+fun ownedPaths[u: RegisteredUser] : set Path { { p: Path | p.owner = u } }
+
+--------------------------------------------------------------
+-- Obstacles
+--------------------------------------------------------------
+
+sig Obstacle {
+  oid: one ObstacleID,
+  kind: one ObstacleKind,
+  onPath: one Path,
+
+  -- merged decision
+  decision: one ObstacleDecision,
+  decidedBy: lone RegisteredUser,
+
+  reports: set ObstacleReport
+}
+
+sig ObstacleReport {
+  rid: one ReportID,
+  reporter: one RegisteredUser,
+  obstacle: one Obstacle,
+  reportedKind: one ObstacleKind,
+  reportDecision: one ObstacleDecision
+}
+
+fact UniqueObstacleIDs {
+  all disj o1, o2: Obstacle | o1.oid != o2.oid
+}
+
+fact UniqueReportIDs {
+  all disj r1, r2: ObstacleReport | r1.rid != r2.rid
+}
+
+fact ObstacleReportsCoherence {
+  -- each report must point back to the obstacle, and obstacle.reports must match
+  all o: Obstacle | all r: o.reports | r.obstacle = o
+all r: ObstacleReport | r in r.obstacle.reports
+
+  -- kind consistent with reports
+  all r: ObstacleReport | r.reportedKind = r.obstacle.kind
+}
+
+fact ObstacleDecisionCorrectness {
+  -- Pending => no decidedBy ; otherwise => exactly one decidedBy
+  all o: Obstacle |
+    (o.decision = Pending implies no o.decidedBy) and
+    (o.decision != Pending implies one o.decidedBy)
+}
+
+fact ObstacleDecisionAuthority {
+  -- allow either Admin or the owner of the path to decide
+  all o: Obstacle |
+    (o.decision != Pending implies o.decidedBy in (Admin + o.onPath.owner))
+}
+
+-- Merge rule:
+-- if ANY report confirms -> ConfirmedObs
+-- else if ANY report rejects -> RejectedObs
+-- else -> Pending
+fun mergedDecision[o: Obstacle] : one ObstacleDecision {
+  { d: ObstacleDecision |
+      (d = ConfirmedObs and ConfirmedObs in o.reports.reportDecision)
+   or (d = RejectedObs  and ConfirmedObs not in o.reports.reportDecision
+                     and RejectedObs  in o.reports.reportDecision)
+   or (d = Pending      and ConfirmedObs not in o.reports.reportDecision
+                     and RejectedObs  not in o.reports.reportDecision)
+  }
+}
+
+fact ObstacleMergedDecisionMatches {
+  all o: Obstacle | o.decision = mergedDecision[o]
+}
+
+--------------------------------------------------------------
+-- PathStatus
+--------------------------------------------------------------
+
+sig PathStatus {
+  sid: one StatusID,
+  author: one RegisteredUser,
+  target: one Path,
+  condition: one PathCondition,
+  timestamp: one Int
+}
+
+fact UniqueStatusIDs {
+  all disj s1, s2: PathStatus | s1.sid != s2.sid
+}
+
+fact UniqueTimestampPerUserPerPath {
+  all u: RegisteredUser, p: Path |
+    all disj s1, s2: PathStatus |
+      (s1.author = u and s1.target = p and s2.author = u and s2.target = p) implies
+      s1.timestamp != s2.timestamp
+}
+
+fact StatusNonRejectedPaths {
+  -- Community status makes sense only on public & non-rejected paths
+  all ps: PathStatus |
+    ps.target.visibility = Public and ps.target.review != Rejected
+}
+
+fun statusesOf[p: Path] : set PathStatus { { ps: PathStatus | ps.target = p } }
+
+-- Latest status by a given user on a given path
+fun latestStatus[u: RegisteredUser, p: Path] : lone PathStatus {
+  { s: PathStatus |
+      s.author = u and s.target = p and
+      all s2: PathStatus |
+        (s2.author = u and s2.target = p) implies s2.timestamp <= s.timestamp
+  }
+}
+
+-- Use only "latest per user" for aggregation 
+fun latestConditions[p: Path] : set PathCondition {
+  { c: PathCondition |
+      some u: RegisteredUser |
+        (some s: latestStatus[u, p] | s.condition = c)
+  }
+}
+
+-- Unified status (dominance rule): Bad > Caution > Good > none
+fun unifiedCondition[p: Path] : lone PathCondition {
+  { c: PathCondition |
+      (c = Bad     and Bad in latestConditions[p])
+   or (c = Caution and Bad not in latestConditions[p]
+                   and Caution in latestConditions[p])
+   or (c = Good    and Bad not in latestConditions[p]
+                   and Caution not in latestConditions[p]
+                   and Good in latestConditions[p])
+  }
+}
+
+
+fact PublicationRules {
+  -- Published => Public and Confirmed
+  all p: Path | (p.publication = Published implies (p.visibility = Public and p.review = Confirmed))
+
+  -- Rejected => never Published (BUT can still be referenced by Trip)
+  all p: Path | (p.review = Rejected implies p.publication != Published)
+
+  -- Private => Unpublished
+  all p: Path | (p.visibility = Private implies p.publication = Unpublished)
+
+  -- Archived allowed only from Confirmed
+  all p: Path | (p.publication = Archived implies p.review = Confirmed)
+
+  -- If unconfirmed, it must be unpublished
+  all p: Path | (p.review = Unconfirmed implies p.publication = Unpublished)
+}
+
+fun aggregablePaths : set Path {
+  { p: Path | p.visibility = Public and p.review = Confirmed and p.publication = Published }
+}
+
+fun publicObstacles : set Obstacle {
+  { o: Obstacle | o.onPath.publication = Published and o.decision = ConfirmedObs }
+}
+
+
+--------------------------------------------------------------
+-- Search / Filters / Ranking (paths)
+--------------------------------------------------------------
+
+-- The user asks the system for candidate paths (route search request)
+sig RouteRequest {
+  requester: one User,
+  candidates: set Path,
+  filters: set Filter
+}
+
+-- Filter types
+enum FilterKind { OnlyPublicConfirmedPublished, AvoidBad, PreferGood }
+
+sig Filter { kind: one FilterKind }
+
+-- A path satisfies a given filter
+pred satisfies[p: Path, f: Filter] {
+  (f.kind = OnlyPublicConfirmedPublished) implies
+    (p.visibility = Public and p.review = Confirmed and p.publication = Published)
+
+  (f.kind = AvoidBad) implies
+    (unifiedCondition[p] != Bad)
+
+  (f.kind = PreferGood) implies
+    (unifiedCondition[p] = Good)
+}
+
+-- Valid candidates are those satisfying all filters
+fun validPaths[rq: RouteRequest] : set Path {
+  { p: Path |
+      p in rq.candidates and
+      all f: rq.filters | satisfies[p, f]
+  }
+}
+
+-- Ranking: a best path is a valid path such that no other valid path is "better"
+-- (Good > Caution > Bad > none)
+pred betterThan[p1, p2: Path] {
+  -- p1 is better than p2 if:
+  (unifiedCondition[p1] = Good and unifiedCondition[p2] != Good) or
+  (unifiedCondition[p1] = Caution and unifiedCondition[p2] = Bad) or
+  (some unifiedCondition[p1] and no unifiedCondition[p2])
+}
+
+fun bestPaths[rq: RouteRequest] : set Path {
+  { p: validPaths[rq] |
+      no q: validPaths[rq] | betterThan[q, p]
+  }
+}
+
+--------------------------------------------------------------
+-- Configurable merging policy
+--------------------------------------------------------------
+
+-- Policy with weights for each condition
+sig MergingPolicy {
+  wGood: one Int,
+  wCaution: one Int,
+  wBad: one Int
+}
+
+-- The single active policy in the system
+one sig ActivePolicy { pol: one MergingPolicy }
+
+-- Score of a condition according to the active policy
+fun score[c: PathCondition] : one Int {
+  { n: Int |
+      (c = Good implies n = ActivePolicy.pol.wGood) and
+      (c = Caution implies n = ActivePolicy.pol.wCaution) and
+      (c = Bad implies n = ActivePolicy.pol.wBad)
+  }
+}
+
+-- Choose the condition with maximum score among those present in latestConditions[p]
+fun unifiedConditionByPolicy[p: Path] : lone PathCondition {
+  { c: PathCondition |
+      c in latestConditions[p] and
+      all c2: latestConditions[p] | score[c2] <= score[c]
+  }
+}
+
+--------------------------------------------------------------
+-- Flags & Moderation (Admin)
+--------------------------------------------------------------
+
+enum FlagReason { Incorrect, Offensive, Spam }
+
+sig PathFlag {
+  fid: one Int,
+  by: one RegisteredUser,
+  target: one Path,
+  reason: one FlagReason,
+  ts: one Int
+}
+
+fact UniqueFlagIDs {
+  all disj f1, f2: PathFlag | f1.fid != f2.fid
+}
+
+-- A user cannot flag the same path twice at the same timestamp
+fact NoDuplicateFlagsSameMoment {
+  all u: RegisteredUser, p: Path |
+    all disj f1, f2: PathFlag |
+      (f1.by=u and f1.target=p and f2.by=u and f2.target=p) implies f1.ts != f2.ts
+}
+
+enum ModerationOutcome { Keep, Unpublish, Archive }
+
+sig ModerationAction {
+  mid: one Int,
+  admin: one Admin,
+  target: one Path,
+  outcome: one ModerationOutcome,
+  ts: one Int
+}
+
+fact UniqueModerationIDs {
+  all disj m1, m2: ModerationAction | m1.mid != m2.mid
+}
+
+-- If a path is moderated with Unpublish/Archive, then it cannot be Published
+fact ModerationEffectOnPublication {
+  all m: ModerationAction |
+    (m.outcome = Unpublish or m.outcome = Archive) implies m.target.publication != Published
+}
+
+assert PublicObstacleValidity {
+  all o: Obstacle |
+    (o in publicObstacles) implies
+      (o.decision = ConfirmedObs and
+       o.onPath.publication = Published and
+       o.onPath.review = Confirmed and
+       o.onPath.visibility = Public)
+}
+
+check PublicObstacleValidity for 10
+
+
+assert ModerationBlocksPublication {
+  all p: Path |
+    (some m: ModerationAction | m.target = p and (m.outcome = Unpublish or m.outcome = Archive))
+    implies
+    p.publication != Published
+}
+
+check ModerationBlocksPublication for 10
+
+
+assert BestPathsCorrect {
+  all rq: RouteRequest |
+    some rq implies
+      (all p: bestPaths[rq] | p in validPaths[rq]) and
+      (all p: bestPaths[rq] | no q: validPaths[rq] | betterThan[q, p])
+}
+
+check BestPathsCorrect for 6
+  but exactly 1 RouteRequest,
+      exactly 2 Path,
+      exactly 1 Filter,
+      exactly 2 RegisteredUser,
+      exactly 1 Admin,
+      exactly 1 PathStatus,
+      exactly 0 Trip,
+      exactly 0 Obstacle,
+      exactly 0 ObstacleReport
+
+
+pred baseWorld {
+  #Admin = 1
+  #RegisteredUser = 2
+  #Guest = 1
+
+  #Trip = 1
+  #Path = 1
+  some ManualPath
+  some p: Path | p.visibility = Public and p.review = Confirmed and p.publication = Published
+}
+
+run baseWorld for 5
+
+
+
+pred obstacleWorld {
+  #RegisteredUser = 2
+  #Admin = 1
+
+  some p: Path |
+    p.visibility = Public and
+    p.review = Confirmed and
+    p.publication = Published and
+    some o: Obstacle |
+      o.onPath = p and
+      o.decision = ConfirmedObs and
+      #o.reports >= 2
+}
+
+run obstacleWorld for 6
+  but exactly 0 Guest,
+      exactly 1 Path,
+      exactly 1 Obstacle,
+      exactly 2 ObstacleReport,
+      exactly 0 PathStatus,
+      exactly 0 RouteRequest,
+      exactly 1 Trip
+
+
+pred routingWorld {
+  some rq: RouteRequest |
+    #rq.candidates >= 2 and
+    some rq.filters and
+    some bestPaths[rq]
+
+  some p: Path |
+    some statusesOf[p] and
+    some unifiedCondition[p]
+}
+
+run routingWorld for 5
+but exactly 1 RouteRequest,
+      exactly 2 Path,
+      exactly 1 Filter,
+      exactly 2 RegisteredUser,
+      exactly 1 Admin,
+      exactly 0 Guest,
+      exactly 1 PathStatus,
+      exactly 0 Obstacle,
+      exactly 0 ObstacleReport,
+      exactly 0 PathFlag,
+      exactly 0 ModerationAction,
+      exactly 0 Trip
+
+\end{lstlisting}
+
+\newpage
