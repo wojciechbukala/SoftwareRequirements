@@ -1,0 +1,12 @@
+## Problem - Copilot
+Copilot is a driver-assistance system that helps car drivers with some autonomous operations: lane keeping, cruise control, and emergency braking. To achieve autonomous capabilities, the car is equipped with a combination of sensors and actuators interacting with the software pieces of Copilot to perceive the environment and make driving decisions. In particular, the vehicle has one or more camera sensors (for visual perception) and one or more Lidar sensors (to measure distances). All sensors collect data and periodically wake up Copilot, which can then retrieve the data from them. Copilot logs the data and calculates proper commands to be issued to (external) actuators uniquely identified through an alphanumeric ID. A command includes the ID of the target actuator, a set of numeric values (quantities to be actuated) and a timestamp. The car may be equipped with several actuators; for instance, the Braking System (BS) is expected to reduce the cruise speed up to a certain given value. Copilot requires the driver to always monitor the driving and be prepared to take control at a moment’s notice. The driver can engage (activate) or disengage (deactivate) the autonomous operations at will using hard buttons on the steering wheel. When the autonomous mode is disengaged, Copilot keeps logging data, but it does not issue any commands. When the autonomous mode is engaged, Copilot periodically prompts the driver to take control of the steering wheel by initiating small movements. If the driver responds with a slight movement, the autonomous mode remains engaged. If the driver applies too much force (exceeding a pre-defined threshold), Copilot disengages immediately the autonomous mode. If the driver does not take control of the steering wheel within a certain time frame, Copilot emits an alarm until the driver resumes full control of the car.
+
+
+## Input data
+- *sensor_log.csv* - columns: [timestamp, sensor_id, sensor_type, data_value, unit]
+- *driver_events.csv* - columns: [timestamp, event_type, value]
+
+## Output data
+- *state_log.csv* - [timestamp, previous_state, current_state, trigger_event]
+- *commands_log.csv* - [timestamp, actuator_id, values]
+- *feature_decision.csv* - [timestamp, feature, decision
