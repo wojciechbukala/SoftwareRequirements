@@ -3,8 +3,8 @@ Copilot is a driver-assistance system that helps car drivers with some autonomou
 
 
 ## Input data
-- *sensor_log.csv* - columns: [timestamp, sensor_id, sensor_type, data_value, unit]
-- *driver_events.csv* - columns: [timestamp, event_type, value]
+- *sensor_log.csv* - [timestamp, sensor_id, sensor_type, data_value, unit]
+- *driver_events.csv* - [timestamp, event_type, value]
 
 ## Output data
 - *state_log.csv* - [timestamp, previous_state, current_state, trigger_event]
