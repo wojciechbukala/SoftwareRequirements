@@ -10,4 +10,4 @@ A courier company operates a fleet of vehicles delivering packages to customers 
 ## Output data
 - *stops_order.csv* - [route_id, vehicle_id, stop_position_in_order, location_id, delivered_package_id, arrival_time, departure_time]
 - *undeliverable.csv* - [package_id, reason]
-- *summary.csv* - [vehicle_id, total_distance_km, total_time_min, packages_delivered, packages_undeliverable]
+- *summary.csv* - [vehicle_id, total_distance_km, total_time_min, packages_delivered]
