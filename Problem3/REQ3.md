@@ -34,7 +34,105 @@ Interactions controlled by the world:
 ### Product perspective
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the class for implementation.
 
+Domain class diagram transformed to Mermaid.js form:
+classDiagram
+    class Location {
+        +location_id
+        +name
+    }
+
+    class Distance {
+        +origin_id
+        +destination_id
+        +distance
+        +travel_time
+    }
+
+    class Vehicle {
+        +vehicle_id
+        +weight_capacity
+        +volume_capacity
+        +depot_location_id
+    }
+
+    class Package {
+        +package_id
+        +destination_id
+        +weight
+        +volume
+        +tw_open
+        +tw_close
+        +priority
+    }
+
+    class Stops {
+        +route_id
+        +vehicle_id
+        +location_id
+        +delivered_id
+        +position_in_order
+        +arrival_time
+        +departure_time
+    }
+
+    class RouteSummary {
+        +route_id
+        +total_distance
+        +total_time
+        +packages_delivered
+        +undeliverable
+    }
+
+    class Undeliverable {
+        +package_id
+        +reason
+    }
+
+    %% Relacje
+    Location "0..*" -- "1..*" Distance : origin of
+    Location "0..*" -- "1..*" Distance : destination of
+    Location "1" -- "1..*" Vehicle : has depot
+    Location "1" -- "0..*" Package : desired destination
+    Location "1" -- "0..*" Stops : takes place at
+    Vehicle "1" -- "0..*" Stops : delivered by
+    Package "1" -- "0..1" Stops : delivered package
+    Package "1" -- "0..1" Undeliverable : can be
+    RouteSummary "1" -- "0..*" Stops : is element of
+
 ### Product functions
+
+Package state machine:
+stateDiagram-v2
+    [*] --> Unassigned
+
+    Unassigned --> Assigned : Fits constraints
+    Unassigned --> Undeliverable : No vehicle fits
+
+    Assigned --> Delivered : Route executed
+    Delivered --> [*]
+
+    state Undeliverable {
+        direction TB
+        Reason --> CAPACITY_WEIGHT
+        CAPACITY_WEIGHT --> CAPACITY_VOLUME
+        CAPACITY_VOLUME --> TIME_WINDOW
+        TIME_WINDOW --> NO_VEHICLE
+        NO_VEHICLE --> MAX_DRIVER_TIME
+    }
+
+    Undeliverable --> [*]
+
+Route state diagram:
+stateDiagram-v2
+    [*] --> Empty
+    
+    Empty --> BuildingRoute : Add stop
+    
+    state "Building route" as BuildingRoute
+    BuildingRoute --> BuildingRoute : Add stop
+    BuildingRoute --> Validated : Validate constraints
+    
+    Validated --> [*]
 
 
 ### User characteristics
@@ -112,6 +210,9 @@ The system shall:
 | Exit condition | All three output files have been written sucessfully |
 | Exceptions | EX1. Input file missing - system terminates and reports which file is absent. |
 
+[SEQUENCE DIAGRAM]
+
+
 ## Performance requirements
 Program shall be able to run on the reference machine with at least specification of:
 - CPU: 4-core, 2 GHz base clock
@@ -121,20 +222,26 @@ Program shall be able to run on the reference machine with at least specificatio
 
 The system shall support input datsets containing up to 500 packages and 50 vehicles in a single planning run with maxiumum of 200 distinct locations and 40 000 entries in *distnaces.csv* (200x200).
 
-## Usability requirements
-Dodaj - napisz jedno zdanie o prostym interfejsie terminalowym zgodnym z POSIX
+## Usability requirements and Interface requirements
+FleetRouter shall be operated exclusively through a command-line interface. The system must accept all required parameters in a single invocation command, requiring no interactive input during execution. The command syntax shall follow the form: *fleetrouter --input <dir> --output <dir>*, where both arguments are mandatory.
 
-## Interface requirements
-składnię wywołania, flagi, format wejścia/wyjścia, kody wyjścia (exit codes)
+All progress and error messages written to standard output or standard error must be easy to read by humen user.
 
-## Logical database requirements
-Dodaj - jeśli potrzebne w tym problemie
+Upon completion, the system shall print a single summary line stating the number of packages processed, delivered, recorded as undeliverable.
 
 ## Design constraints
 3.4
 
 ## Software system attributes
-3.5
+
+### Security
+The system can hold data that are confidential from the buisiness perespective of courier company, therefore program should operate only offline with the usage of single machine to ensure no data leaks.
+
+### Maintainabiliy
+The system should be implemented in a way that is easy to scale, maintain, and test. The code must reamin readable, maintainable, and documented.
+
+### Portability
+The system should be assessible from most of the modern komputers, with at technical specification of at least one specified in Performance Requirements section.
 
 # Verification
 
