@@ -35,6 +35,7 @@ Interactions controlled by the world:
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the class for implementation.
 
 Domain class diagram transformed to Mermaid.js form:
+
 classDiagram
     class Location {
         +location_id
@@ -102,6 +103,7 @@ classDiagram
 ### Product functions
 
 Package state machine:
+
 stateDiagram-v2
     [*] --> Unassigned
 
@@ -123,6 +125,7 @@ stateDiagram-v2
     Undeliverable --> [*]
 
 Route state diagram:
+
 stateDiagram-v2
     [*] --> Empty
     
@@ -223,7 +226,7 @@ Program shall be able to run on the reference machine with at least specificatio
 The system shall support input datsets containing up to 500 packages and 50 vehicles in a single planning run with maxiumum of 200 distinct locations and 40 000 entries in *distnaces.csv* (200x200).
 
 ## Usability requirements and Interface requirements
-FleetRouter shall be operated exclusively through a command-line interface. The system must accept all required parameters in a single invocation command, requiring no interactive input during execution. The command syntax shall follow the form: *fleetrouter --input <dir> --output <dir>*, where both arguments are mandatory.
+FleetRouter shall be operated exclusively through a command-line interface. The system must accept all required parameters in a single invocation command, requiring no interactive input during execution. The command syntax shall follow the form: *fleetrouter --input <\dir> --output <\dir>*, where both arguments are mandatory.
 
 All progress and error messages written to standard output or standard error must be easy to read by humen user.
 
