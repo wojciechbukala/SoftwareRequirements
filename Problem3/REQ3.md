@@ -145,12 +145,12 @@ Constraints
 
 ## Definitions
 - Courier company - every company that can make profit out of the system, and needs daily routes scheduling with package assignments. Real-world examples: DHL, FedEx, UPS.
-- Route
-- Package
-- Undeliverable
-- Depot
-- Vehicle
-- Stop
+- Route - A sequence of stops that some vehice has to complete in order to deliver some packages.
+- Package - An item with a specified weight and ovulme that is supposed to be delivered to some location (stop)
+- Undeliverable - Package that cannot be delivered in a specific date without disrupting some constraints.
+- Depot - A logistic center of a courier company, the place of start and finish for vehicles.
+- Vehicle - A car operated by a company with a specified weight and volume load.
+- Stop - A place of delivery of some package.
 
 # Requirements
 
@@ -166,13 +166,13 @@ The system shall read input data including:
 - Distances data from *distances.csv*, including origin location ID, destination location ID, distance in km, and travel time in minutes. 
 The system shall treat all four inputs files as mandatory; if any file is missing or unreadable, the system shall terminate and report the missing file.
 
-### RF-02 Input data validation
+### FR-02 Input data validation
 THe system shall:
 - Verify every that every location ID referenced in *packages.csv* and *vehicles.csv* exists in *locations.csv*; any package or vehicle referencing an unknown location ID shall be reported and excluded from processing. 
 - Verify that each package's time window closing time is strictly greater than its opening time; any package violating this condition shall be recorded in *undeliverable.csv* with reason code TIME_WINDOW.
 - Verify that distance entry exists for every ordered pair of location IDs required to construct a route. If missing, the system should report gap and treat the connection as unreachable.
 
-### RF-03 Assigning packages to vehicles
+### FR-03 Assigning packages to vehicles
 Regarding proccess of assigning packages to vehicles, the system shall:
 - Attempt to assign every package to exactly one vehicle. Priority packages should be assigned before non-priority packages when vehicle capacity forces a choice. 
 - Not assign a package to a vehicle if cumulative weight or volume would exceed the limit for a given vehicle, such package shall be reporded in *undeliverable.csv* with reason code CAPACITY_WEIGHT or CAPACITY_VOLUME.
@@ -181,7 +181,7 @@ Regarding proccess of assigning packages to vehicles, the system shall:
 
 If package cannot be assigned to any avaiable vehicle after all other constraints have been evaluated, mark such package in *undeliverable.csv* with a code NO_VEHICLE.
 
-### RF-04 Routing
+### FR-04 Routing
 Considering routing, the system shall:
 - Construct daily route for every vehicle strating and ending in assigned depot location.
 - Assing a stop order to each stop in a route, starting at 1 for the first stop after the depot.
@@ -190,12 +190,12 @@ Considering routing, the system shall:
 - Compute the departure time at each stop as the arrival or window opening, plus the pacakge's service duration.
 - Ensure that each vehicle makes exactly one trip per day.
 
-### RF-05 Optimization
+### FR-05 Optimization
 In case of optimisation the system shall:
 - Minimise the total distance driven across all vehicle routes among all constraint-satisfying solutions.
 - Use total route duration as a secondary optimisation criterion.
 
-### RF-06 Output generation
+### FR-06 Output generation
 The system shall:
 - Write one row to *stops_order.csv* for each stop in each route. Columns should consists of (*names in file*): route ID (*route_id*), vehicle ID (*vehicle_id*), position of the stop in sequence for a given route (*stop_position_in_order*), ID of the location of the stop (*location_id*), ID of delivered package (*delivery_package_id*), arrival time  (*arrival_time*), departure time (*departure_time*). Group and sort stops for each vehicle
 - Write one row to *summary.csv* for each vehicle. Columns should consists of (*names in file*): vehicle ID (*vehicle_id*), total driven distance in kilometers (*total_distance_km*), total driven time in minutes (*total_time_min*), number of delivered packages (*packages_delivered*). Every vehicle defined in *vehicles.csv* should be included.
@@ -230,7 +230,7 @@ All progress and error messages written to standard output or standard error mus
 Upon completion, the system shall print a single summary line stating the number of packages processed, delivered, recorded as undeliverable.
 
 ## Design constraints
-3.4
+All input and output files shall use the CSV foramt with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. Time values in all input and output files must follow the format HH:MM, distance values in kilometers rounded to two decimal places, and duration values as integer minutes.
 
 ## Software system attributes
 
@@ -244,13 +244,22 @@ The system should be implemented in a way that is easy to scale, maintain, and t
 The system should be assessible from most of the modern komputers, with at technical specification of at least one specified in Performance Requirements section.
 
 # Verification
+FleetRouter shall be verified through a combination of test and inspections.
 
 # Appendices
 
 ## Assumptions and dependencies
 
-## Requirements Mapping
+### Domain assumptions
+- **DA-01** - All four input CSV files are provided by the operator before each planning run and reflect the actual state of the fleet and package list for that day.
+- **DA-02** - Distance and travel time values provided in input reflect real-world road conditions at the time of planning. Distance entries are not assumed to be symmetric.
+- **DA-03** - Package weights and volumes are non-negative.
 
 ## Acronyms and abbreviations
+- CSV - Comma-Separated Values
+- CLI - Command-Line Interface
+- RAM - Random Access Memory
+- FR - Functional Requirement
+- UC - Use case
+- DA - Domain Assumption
 
-## State diagrams
