@@ -76,17 +76,37 @@ Functional requirements for Copilot are listed below.
 The system shall provide a simple, text-based Command Line Interface. The CLI shall provide clear, real-time status updates to the standard output. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcode file paths.
 
 ## Design constraints
-3.4
+The system shall clearly separate the perception layer, the decision logic, and the actuator control layer. The source code must adhere to clean code principles.
 
 ## Software system attributes
-3.5
+
+### Security
+The system is designed to operate strictly offline on a single machine. No network-based data transmission is permitted. 
+
+### Maintainbility
+The system shall be designed to support automated unit testing. Moreover, the source code must include comperhensive inline documentation.
+
+### Portability
+The system must be capable of running on any POSIX-compliant operation system and Windows. The software shall not require any specialized hardware (e.g. GPU acceleration) or external database engines to function.
 
 # Verification
+The Copilot system shall be verified through a combination of automated testing, log inspection, and simulation walkthroughs to ensure all functional and non-functional requirements are met.
+
+A suite of autaomated test cases shall be developed to verify the core logic of the system, specifically the state machine transitions (Engaged/Disengaged) and the priority handling of Emergency Braking over other commands.
 
 # Appendices
 
 ## Assumptions and dependencies
 
-## Acronyms and abbreviations
+### Domain assumptions
+- **DA-01** - It is assumed that the input CSV files are well-formed and follow the predifined schema.
+- **DA-02** - The system assumes that at any given time, at least one Lidar sensor and one camera sensor provide valid readings to allow for safe autonomous operation logic.
+- **DA-03** - THe simulation assumes that the vehicle's physical actuators respond instantly and perfectly to the elecronic commands issued by the Copilot system.
 
-## State diagrams
+## Acronyms and abbreviations
+- CLI - Command Line Interface
+- FR - Functional Requirement
+- Lidar - Light Detection and Rangiing
+- N - Newton
+- POSIX - Portable Operating System Interface
+- UC - Use case
