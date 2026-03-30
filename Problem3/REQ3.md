@@ -4,30 +4,30 @@
 This file consists complete requirements specification for Fleet Route program. This means that for AI agent or developer working on a code this is the priority document and rules defined here should be considered always before other sources.
 
 FleetRouter is a program that helps with the management of courier company logistics. It support sdaily route planning. The main goals of the program are:
-- **G1** - FleetRouter shall assign every package to a vehicle, and produce order of the route for each vehicle in the way that every package is delivered.
-- **G2** - If package can't be delivered program should mark it as undeliverable with a specified reason.
-- **G3** - FleetRouter shall minimise total distance driven across the entire fleet (a sum of distances of vehicles); in case of a tie minimise total route duration.
+- **G-01** - FleetRouter shall assign every package to a vehicle, and produce order of the route for each vehicle in the way that every package is delivered.
+- **G-02** - If package can't be delivered program should mark it as undeliverable with a specified reason.
+- **G-03** - FleetRouter shall minimise total distance driven across the entire fleet (a sum of distances of vehicles); in case of a tie minimise total route duration.
 
 ## Scope
 The principal function of the FleetRouter program is to produce the best possible daily plan for courier company. Comanies in the spedtion industry can benefit from it to have more efficient routes in in consequences less costs, time-efficient delivery and emission reduction. Application is algorithmic focused, presentation and usability side is a lower priority for the stakeholders. The phenomenas in the ecosystem can be defined as:
 ### World Phenomenas
-- **WP1** - Packages with the specified weight, volume and desired delivery location.
-- **WP2** - Vehicles with specified volume capacity and origin depot.
-- **WP3** - Drivers - employees with limited working time
-- **WP4** - Locations connected by distances and trip times
-- **WP5** - Time windows for package deliveries
-- **WP6** - Package priorities set by the comapny
+- **WP-01** - Packages with the specified weight, volume and desired delivery location.
+- **WP-02** - Vehicles with specified volume capacity and origin depot.
+- **WP-03** - Drivers - employees with limited working time
+- **WP-04** - Locations connected by distances and trip times
+- **WP-05** - Time windows for package deliveries
+- **WP-06** - Package priorities set by the comapny
 
 ### Shared phenomenas:
 Interactions controlled by the world:
-- **SP1** - Data about packages
-- **SP2** - Data about vehicles
-- **SP3** - Data about locations
-- **SP4** - Data about distances and travel times
+- **SP-01** - Data about packages
+- **SP-02** - Data about vehicles
+- **SP-03** - Data about locations
+- **SP-04** - Data about distances and travel times
 , and interactions controlled by the machine:
-- **SP5** - Produced routes
-- **SP6** - Undeliverable packages with reason
-- **SP7** - Routes stats
+- **SP-05** - Produced routes
+- **SP-06** - Undeliverable packages with reason
+- **SP-07** - Routes stats
 
 ## Product overview
 
