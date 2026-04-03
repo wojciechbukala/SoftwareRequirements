@@ -34,11 +34,76 @@ Interactions controlled by the world:
 ### Product perspective
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the Copilot. The diagram does not determine the class for implementation.
 
-[CLASS DIAGRAM]
+`classDiagram
+    class SensorEvent {
+        +timestamp
+        +sensor_id
+        +sensor_type
+        +data_value
+        +unit
+    }
+    class DriverEvent {
+        +timestamp
+        +event_type
+        +value
+    }
+    class CopilotSystem {
+        +mode
+        +last_prompt_time
+        +awaiting_response
+    }
+    class StateTransition {
+        +timestamp
+        +previous_state
+        +current_state
+        +trigger_event
+    }
+    class ActuatorCommand {
+        +timestamp
+        +actuator_id
+        +values
+    }
+    class FeatureDecision {
+        +timestamp
+        +feature
+        +decision
+    }
+    class AttentivenessCheck {
+        +prompt_time
+        +deadline
+        +status
+    }
+
+    SensorEvent "1..*" --> "1" CopilotSystem : triggers processing cycle
+    DriverEvent "0..*" --> "1" CopilotSystem : triggers event
+    CopilotSystem "1" --> "0..*" StateTransition : records
+    CopilotSystem "1" --> "0..*" ActuatorCommand : issues
+    CopilotSystem "1" --> "0..*" FeatureDecision : produces
+    CopilotSystem "1" --> "0..1" AttentivenessCheck : manages`
 
 ### Product functions
 
-[STATE MACHINES]
+`stateDiagram-v2
+    [*] --> Disengaged
+
+    Disengaged --> Engaged : driver engaged
+
+    Engaged --> Disengaged : driver disengaged
+    Engaged --> Disengaged : steering force > 10 N
+    Engaged --> AwaitingResponse : attentiveness prompt issued
+
+    AwaitingResponse --> Engaged : steering force <= 3 N [within 5s]
+    AwaitingResponse --> AwaitingResponse : 3 N < steering force < 10 N [ignored]
+    AwaitingResponse --> Disengaged : steering force > 10 N
+    AwaitingResponse --> Alarming : no valid response for 5s
+
+    Alarming --> Engaged : steering force <= 3 N
+    Alarming --> Disengaged : steering force > 10 N
+
+    Engaged --> [*] : car turned off
+    AwaitingResponse --> [*] : car turned off
+    Alarming --> [*] : car turned off
+    Disengaged --> [*] : car turned off`
 
 ### User characteristics
 The users of the Copilot simulation software are primarly Automotive Software Engineers - Qualified technical staff who use the simulation to verify the correctness of autonoumous algorithms. 
@@ -60,12 +125,28 @@ The users of the Copilot simulation software are primarly Automotive Software En
 Functional requirements for Copilot are listed below. 
 
 ### FR-01 - System State and Mode Transitions
+Copilot shall maintain one of the following staes at all times: Disengaged, Engaged, AwaitingResponse, and Alarming. Starting state is Disengaged.
 
 ### FR-02 - Autonomous Driving Logic and Priority
+When in Engaged mode, the system shall process every sensor event and produce a feature decision for each applicable autonomous feature: lane keeping, cruise control, and emergency braking. Emergency braking should be evaluated first, before any other feature.
+
+Always, a Lidar sensor reading with a distance value strictly less than 5 meters must trigger an emergency braking decison. When emergency braking is triggered, the Copilot shall usse a braking command to the Braking System actuator and should abandon processing lane keeping or cruise control for that cycle.
+
+For camera sensor readings, a lane keeping correction value and cruise control adjustment shall be computed, and provided to the actuator.
+
+The system shall record every feature decision to *feature_decision.csv* and every actuator command issued to *commands_log.csv*.
+
+When in Disengaged mode, data shall be logged but without further actions on actuator commands or feature decisions.
 
 ### FR-03 - Attentiveness Monitoring and Alarm
+When in Engaged mode, the system shall issue an attentiveness prompt every 120 seconds by issuing a small steering wheel movement command to the steering wheel actuator and transitioning to AwaitingResponse state.
+
+In Awaitingresponse state, system must wait up to 5 seconds for a valid driver response. A valid response is assumed to be wheel force of 3N or less within the 5-second window. When valid response registered system shall transition back to engaged state and reset the 120-second prompt timer. A steering wheel force event with a value strictly freater than 3N and strictly less than 10N shall be ignored, and the system shall continue waiting for a valid response. If no valid response is received within 5 seconds, the system shall transition to Alarming state and emit a continous alarm command to th alarm actuator. System escapes the Alarming state na transists to Engaged state if steering wheel force event with value of 3N of less is received.
+
+Every state transition produced by the attentiveness monitoring mechanism shall be recorded to *state_log.csv*.
 
 ### FR-04 - Driver Override
+A steering wheel force event with a value strictly greater than 10N shall cause immediate transition to Disengaged mode regardless of the current system state.
 
 ### FR-05 - Data Ingestion and Command Output
 

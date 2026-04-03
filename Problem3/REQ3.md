@@ -36,7 +36,7 @@ Product overview can be described using a domain class diagram as a conceptual m
 
 Domain class diagram transformed to Mermaid.js form:
 
-classDiagram
+`classDiagram
     class Location {
         +location_id
         +name
@@ -98,13 +98,13 @@ classDiagram
     Vehicle "1" -- "0..*" Stops : delivered by
     Package "1" -- "0..1" Stops : delivered package
     Package "1" -- "0..1" Undeliverable : can be
-    RouteSummary "1" -- "0..*" Stops : is element of
+    RouteSummary "1" -- "0..*" Stops : is element of`
 
 ### Product functions
 
 Package state machine:
 
-stateDiagram-v2
+`stateDiagram-v2
     [*] --> Unassigned
 
     Unassigned --> Assigned : Fits constraints
@@ -122,11 +122,11 @@ stateDiagram-v2
         NO_VEHICLE --> MAX_DRIVER_TIME
     }
 
-    Undeliverable --> [*]
+    Undeliverable --> [*]`
 
 Route state diagram:
 
-stateDiagram-v2
+`stateDiagram-v2
     [*] --> Empty
     
     Empty --> BuildingRoute : Add stop
@@ -135,7 +135,7 @@ stateDiagram-v2
     BuildingRoute --> BuildingRoute : Add stop
     BuildingRoute --> Validated : Validate constraints
     
-    Validated --> [*]
+    Validated --> [*]`
 
 
 ### User characteristics

@@ -77,10 +77,15 @@ The system shall automatically calculate the final ticket price at the moment of
 The SeatsReservation program must allow users to cancel confiramed reservations up until 2 hours before the event start and provide comprehensive status reports for both roles, such as real-time occupancy and revenue summaries for administrators and personal booking histories for users.
 
 ## Performance requirements
-
+- Program shall process reservation requests in under 200ms.
+- It must maintain strict data integrity and prevent race conditions for at least 50 concurrent user per event.
+- The system shall support the management of 100 active events with seating grids up to 250,00 units (500x500).
+- The automated 15-minute expiration logic for Pending reservations must operate with a maximum drift of 5 seconds.
 
 ## Usability requirements
-Dodaj - napisz jedno zdanie o prostym interfejsie terminalowym zgodnym z POSIX
+- The system shall provide a clear, graphical representaion of the seating grid. Avaiable, and reserved seats must be distinguishable through color-coding.
+- During the reservation process, the system shall display a real-time countdown timer for the 15-minute interval.
+- The breakdown of the final reservation price should be shown before the user proceeds to the payment stage.
 
 ## Interface requirements
 
@@ -97,25 +102,40 @@ A customer desktop module as a dedicated interface for seat booking should inclu
 Both customer's and administrator's panel should be accesible trough the same logging panel, where user can switch between user or administaror role and provide cradentials.
 
 ## Logical database requirements
-The system shall maintain a persistent data model to ensure consistency across appliaction restarts.
+The system shall maintain a persistent data model to ensure consistency across appliaction restarts. The logical schema is presented below thourgh entity relationship diagram:
+
+ERD
 
 ## Design constraints
 
 ### Security
+Administrative functions must be proteced from unauthorized access by standard authentication mechanisms.
 
 ### Maintainability
+The system should be implemented in a way that is easy to scale, maintain, and test. The code must remain readable, maintainable, and documented.
 
 ### Portability
+The web application shall be compatible with moder web browsers (e.g. Google Chrome, Mozilla Firefox, Microsoft Edge, Safari).
 
 ## Software system attributes
 3.5
 
 # Verification
+SeatsReseration shall be verified through a combination of tests and inspections.
 
 # Appendices
 
 ## Assumptions and dependencies
 
-## Acronyms and abbreviations
+### Domain assumptions
+- **DA-01** - The system clock on the host machine is considered the source of thruth for all time-based calculations.
+- **DA-02** - A month for the discounts is defined as eactly 30 calendar days.
+- **DA-03** - Payment confirmation is provided by an external signal or simulated user action.
 
-## State diagrams
+## Acronyms and abbreviations
+- VIP - Very Important Person (highest seat category)
+- G - Goal
+- SP - Shared Phenomena
+- WP - World Phenomena
+- FR - Functional Requirements
+- DA - Domain Assumtion
