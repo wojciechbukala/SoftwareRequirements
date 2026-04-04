@@ -125,12 +125,12 @@ The users of the Copilot simulation software are primarly Automotive Software En
 Functional requirements for Copilot are listed below. 
 
 ### FR-01 - System State and Mode Transitions
-Copilot shall maintain one of the following staes at all times: Disengaged, Engaged, AwaitingResponse, and Alarming. Starting state is Disengaged.
+Copilot shall maintain one of the following states at all times: Disengaged, Engaged, AwaitingResponse, and Alarming. The starting state is Disengaged.
 
 ### FR-02 - Autonomous Driving Logic and Priority
 When in Engaged mode, the system shall process every sensor event and produce a feature decision for each applicable autonomous feature: lane keeping, cruise control, and emergency braking. Emergency braking should be evaluated first, before any other feature.
 
-Always, a Lidar sensor reading with a distance value strictly less than 5 meters must trigger an emergency braking decison. When emergency braking is triggered, the Copilot shall usse a braking command to the Braking System actuator and should abandon processing lane keeping or cruise control for that cycle.
+Always, a Lidar sensor reading with a distance value strictly less than 5 meters must trigger an emergency braking decision. When emergency braking is triggered, the Copilot shall send a braking command to the Braking System actuator and should abandon processing lane keeping or cruise control for that cycle.
 
 For camera sensor readings, a lane keeping correction value and cruise control adjustment shall be computed, and provided to the actuator.
 
@@ -141,7 +141,7 @@ When in Disengaged mode, data shall be logged but without further actions on act
 ### FR-03 - Attentiveness Monitoring and Alarm
 When in Engaged mode, the system shall issue an attentiveness prompt every 120 seconds by issuing a small steering wheel movement command to the steering wheel actuator and transitioning to AwaitingResponse state.
 
-In Awaitingresponse state, system must wait up to 5 seconds for a valid driver response. A valid response is assumed to be wheel force of 3N or less within the 5-second window. When valid response registered system shall transition back to engaged state and reset the 120-second prompt timer. A steering wheel force event with a value strictly freater than 3N and strictly less than 10N shall be ignored, and the system shall continue waiting for a valid response. If no valid response is received within 5 seconds, the system shall transition to Alarming state and emit a continous alarm command to th alarm actuator. System escapes the Alarming state na transists to Engaged state if steering wheel force event with value of 3N of less is received.
+In Awaitingresponse state, system must wait up to 5 seconds for a valid driver response. A valid response is assumed to be wheel force of 3N or less within the 5-second window. When valid response registered system shall transition back to engaged state and reset the 120-second prompt timer. A steering wheel force event with a value strictly greater than 3N and strictly less than 10N shall be ignored, and the system shall continue waiting for a valid response. If no valid response is received within 5 seconds, the system shall transition to the Alarming state and emit a continuous alarm command to the alarm actuator. The system escapes the Alarming state na transitions to Engaged state if a steering wheel force event with a value of 3N or less is received.
 
 Every state transition produced by the attentiveness monitoring mechanism shall be recorded to *state_log.csv*.
 
@@ -154,7 +154,7 @@ A steering wheel force event with a value strictly greater than 10N shall cause 
 - Latency: The system shall process each sensor reading and driver event within 50 milliseconds.
 
 ## Usability requirements and Interface requirements
-The system shall provide a simple, text-based Command Line Interface. The CLI shall provide clear, real-time status updates to the standard output. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcode file paths.
+The system shall provide a simple, text-based Command Line Interface. The CLI shall provide clear, real-time status updates to the standard output. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcodeed file paths.
 
 ## Design constraints
 The system shall clearly separate the perception layer, the decision logic, and the actuator control layer. The source code must adhere to clean code principles.
@@ -165,24 +165,24 @@ The system shall clearly separate the perception layer, the decision logic, and 
 The system is designed to operate strictly offline on a single machine. No network-based data transmission is permitted. 
 
 ### Maintainbility
-The system shall be designed to support automated unit testing. Moreover, the source code must include comperhensive inline documentation.
+The system shall be designed to support automated unit testing. Moreover, the source code must include comprehensive inline documentation.
 
 ### Portability
-The system must be capable of running on any POSIX-compliant operation system and Windows. The software shall not require any specialized hardware (e.g. GPU acceleration) or external database engines to function.
+The system must be capable of running on any POSIX-compliant operating system and Windows. The software shall not require any specialized hardware (e.g., GPU acceleration) or external database engines to function.
 
 # Verification
 The Copilot system shall be verified through a combination of automated testing, log inspection, and simulation walkthroughs to ensure all functional and non-functional requirements are met.
 
-A suite of autaomated test cases shall be developed to verify the core logic of the system, specifically the state machine transitions (Engaged/Disengaged) and the priority handling of Emergency Braking over other commands.
+A suite of automated test cases shall be developed to verify the core logic of the system, specifically the state machine transitions (Engaged/Disengaged) and the priority handling of Emergency Braking over other commands.
 
 # Appendices
 
 ## Assumptions and dependencies
 
 ### Domain assumptions
-- **DA-01** - It is assumed that the input CSV files are well-formed and follow the predifined schema.
+- **DA-01** - It is assumed that the input CSV files are well-formed and follow the predefined schema.
 - **DA-02** - The system assumes that at any given time, at least one Lidar sensor and one camera sensor provide valid readings to allow for safe autonomous operation logic.
-- **DA-03** - THe simulation assumes that the vehicle's physical actuators respond instantly and perfectly to the elecronic commands issued by the Copilot system.
+- **DA-03** - The simulation assumes that the vehicle's physical actuators respond instantly and perfectly to the electronic commands issued by the Copilot system.
 
 ## Acronyms and abbreviations
 - CLI - Command Line Interface
