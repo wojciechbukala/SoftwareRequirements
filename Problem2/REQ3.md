@@ -34,74 +34,74 @@ The SeatsReservation program is focused on the logic of event management and res
 ### Product perspective
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the SeatsReservation. The diagram does not determine the class for implementation.
 
-`classDiagram
-    class AnyUser {
-        +user_id
-    }
-    class User {
-    }
-    class Administrator {
-    }
-    class Reservation {
-        +reservation_id
-        +user_id
-        +event_id
-        +status
-        +create_time
-        +expire_time
-    }
-    class ReservationSeat {
-        +reservation_id
-        +seat_id
-    }
-    class Event {
-        +event_id
-        +event_date
-        +rows
-        +columns
-        +has_numbered_seats
-    }
-    class Seat {
-        +seat_id
-        +event_id
-        +row_number
-        +column_number
-        +category
-    }
-    class EventPricing {
-        +event_id
-        +category
-        +base_price
-    }
-
-    AnyUser <|-- User
-    AnyUser <|-- Administrator
-
-    Administrator "1" -- "0..*" Event : creates
-    User "1" -- "0..*" Reservation : creates
+    classDiagram
+        class AnyUser {
+            +user_id
+        }
+        class User {
+        }
+        class Administrator {
+        }
+        class Reservation {
+            +reservation_id
+            +user_id
+            +event_id
+            +status
+            +create_time
+            +expire_time
+        }
+        class ReservationSeat {
+            +reservation_id
+            +seat_id
+        }
+        class Event {
+            +event_id
+            +event_date
+            +rows
+            +columns
+            +has_numbered_seats
+        }
+        class Seat {
+            +seat_id
+            +event_id
+            +row_number
+            +column_number
+            +category
+        }
+        class EventPricing {
+            +event_id
+            +category
+            +base_price
+        }
     
-    Reservation "0..*" -- "1" Event : for
-    Reservation "1" -- "1..*" ReservationSeat : includes
+        AnyUser <|-- User
+        AnyUser <|-- Administrator
     
-    ReservationSeat "0..*" -- "1" Seat : included in
-    
-    Event "1" -- "1..*" Seat : has
-    Event "1" -- "1..*" EventPricing : defines`
+        Administrator "1" -- "0..*" Event : creates
+        User "1" -- "0..*" Reservation : creates
+        
+        Reservation "0..*" -- "1" Event : for
+        Reservation "1" -- "1..*" ReservationSeat : includes
+        
+        ReservationSeat "0..*" -- "1" Seat : included in
+        
+        Event "1" -- "1..*" Seat : has
+        Event "1" -- "1..*" EventPricing : defines
 
 ### Product functions
 
-`stateDiagram-v2
-    [*] --> Pending : pending count < 2 and\nseats available
-    
-    Pending --> Released : timer expired
-    Pending --> Released : user abandons (dashed)
-    Pending --> Confirmed : payment confirmed
-    
-    Confirmed --> Cancelled : user cancels
-    Confirmed --> [*] : event occurs
-    
-    Released --> [*]
-    Cancelled --> [*]`
+    stateDiagram-v2
+        [*] --> Pending : pending count < 2 and\nseats available
+        
+        Pending --> Released : timer expired
+        Pending --> Released : user abandons (dashed)
+        Pending --> Confirmed : payment confirmed
+        
+        Confirmed --> Cancelled : user cancels
+        Confirmed --> [*] : event occurs
+        
+        Released --> [*]
+        Cancelled --> [*]
 
 ### User characteristics
 The system serves two distinct types of users:
