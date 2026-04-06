@@ -34,76 +34,76 @@ The Copilot program is a simulation of an onboard computer for advanced driver a
 ### Product perspective
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in Copilot. The diagram does not determine the class for implementation.
 
-`classDiagram
-    class SensorEvent {
-        +timestamp
-        +sensor_id
-        +sensor_type
-        +data_value
-        +unit
-    }
-    class DriverEvent {
-        +timestamp
-        +event_type
-        +value
-    }
-    class CopilotSystem {
-        +mode
-        +last_prompt_time
-        +awaiting_response
-    }
-    class StateTransition {
-        +timestamp
-        +previous_state
-        +current_state
-        +trigger_event
-    }
-    class ActuatorCommand {
-        +timestamp
-        +actuator_id
-        +values
-    }
-    class FeatureDecision {
-        +timestamp
-        +feature
-        +decision
-    }
-    class AttentivenessCheck {
-        +prompt_time
-        +deadline
-        +status
-    }
-
-    SensorEvent "1..*" --> "1" CopilotSystem : triggers processing cycle
-    DriverEvent "0..*" --> "1" CopilotSystem : triggers event
-    CopilotSystem "1" --> "0..*" StateTransition : records
-    CopilotSystem "1" --> "0..*" ActuatorCommand : issues
-    CopilotSystem "1" --> "0..*" FeatureDecision : produces
-    CopilotSystem "1" --> "0..1" AttentivenessCheck : manages`
+    classDiagram
+        class SensorEvent {
+            +timestamp
+            +sensor_id
+            +sensor_type
+            +data_value
+            +unit
+        }
+        class DriverEvent {
+            +timestamp
+            +event_type
+            +value
+        }
+        class CopilotSystem {
+            +mode
+            +last_prompt_time
+            +awaiting_response
+        }
+        class StateTransition {
+            +timestamp
+            +previous_state
+            +current_state
+            +trigger_event
+        }
+        class ActuatorCommand {
+            +timestamp
+            +actuator_id
+            +values
+        }
+        class FeatureDecision {
+            +timestamp
+            +feature
+            +decision
+        }
+        class AttentivenessCheck {
+            +prompt_time
+            +deadline
+            +status
+        }
+    
+        SensorEvent "1..*" --> "1" CopilotSystem : triggers processing cycle
+        DriverEvent "0..*" --> "1" CopilotSystem : triggers event
+        CopilotSystem "1" --> "0..*" StateTransition : records
+        CopilotSystem "1" --> "0..*" ActuatorCommand : issues
+        CopilotSystem "1" --> "0..*" FeatureDecision : produces
+        CopilotSystem "1" --> "0..1" AttentivenessCheck : manages
 
 ### Product functions
 
-`stateDiagram-v2
-    [*] --> Disengaged
-
-    Disengaged --> Engaged : driver engaged
-
-    Engaged --> Disengaged : driver disengaged
-    Engaged --> Disengaged : steering force > 10 N
-    Engaged --> AwaitingResponse : attentiveness prompt issued
-
-    AwaitingResponse --> Engaged : steering force <= 3 N [within 5s]
-    AwaitingResponse --> AwaitingResponse : 3 N < steering force < 10 N [ignored]
-    AwaitingResponse --> Disengaged : steering force > 10 N
-    AwaitingResponse --> Alarming : no valid response for 5s
-
-    Alarming --> Engaged : steering force <= 3 N
-    Alarming --> Disengaged : steering force > 10 N
-
-    Engaged --> [*] : car turned off
-    AwaitingResponse --> [*] : car turned off
-    Alarming --> [*] : car turned off
-    Disengaged --> [*] : car turned off`
+    stateDiagram-v2
+        [*] --> Disengaged
+    
+        Disengaged --> Engaged : driver engaged
+    
+        Engaged --> Disengaged : driver disengaged
+        Engaged --> Disengaged : steering force > 10 N
+        Engaged --> AwaitingResponse : attentiveness prompt issued
+    
+        AwaitingResponse --> Engaged : steering force <= 3 N [within 5s]
+        AwaitingResponse --> AwaitingResponse : 3 N < steering force < 10 N [ignored]
+        AwaitingResponse --> Disengaged : steering force > 10 N
+        AwaitingResponse --> Alarming : no valid response for 5s
+    
+        Alarming --> Engaged : steering force <= 3 N
+        Alarming --> Disengaged : steering force > 10 N
+    
+        Engaged --> [*] : car turned off
+        AwaitingResponse --> [*] : car turned off
+        Alarming --> [*] : car turned off
+        Disengaged --> [*] : car turned off
 
 ### User characteristics
 The users of the Copilot simulation software are primarly Automotive Software Engineers - Qualified technical staff who use the simulation to verify the correctness of autonomous algorithms. 
