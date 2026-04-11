@@ -1,22 +1,22 @@
-# Introduction
+# 1. Introduction
 
-## Purpose
+## 1.1. Purpose
 This file consists of the complete requirements specification for the Copilot driver-assistance system. The main goals of the system are:
 
 - **G1** - Copilot shall process periodic sensor data and driver events to determine the vehicle's autonomous state and maintain safe driving conditions.
 - **G2** - The system shall prioritize safety-critical decisions, specifically emergency braking based on real-time environmental perceptions (Lidar and camera data).
 - **G3** - Copilot shall monitor driver attentiveness through periodic checks and ensure immediate disengagement or alarm triggering if the driver's response is inadequate or manual override is detected.
 
-## Scope
+## 1.2. Scope
 The Copilot program is a simulation of an onboard computer for advanced driver assistance. It focuses on the logic of autonomous operations (lane keeping, cruise control, emergency braking) without direct hardware integration, operating as an offline tool.
 
-### World Phenomenas
+### 1.2.1. World Phenomenas
 - **WP1** - Obstacles and road conditions measured by Lidar and lane markings captured by camera.
 - **WP2** - Driver interactions such as the physical force applied on the steering wheel and manual operations of control buttons.
 - **WP3** - Vehicle dynamics as mechanical movement of the car, its speed, and its position within a lane.
 - **WP4** - Mechanical systems (Braking System, Steering Motor) that receive electronic signals to perform physical actions.
 
-### Shared phenomenas:
+### 1.2.2. Shared phenomenas:
 **Interactions controlled by the world**:
 
 - **SP1** - Sensor log, periodic digital readings from cameras and Lidar sensors provided in a CSV format.
@@ -29,10 +29,10 @@ The Copilot program is a simulation of an onboard computer for advanced driver a
 - **SP7** - Attentiveness prompts, small steering wheel movements initiated by the system to verify driver presence.
 - **SP8** - System alarms.
 
-## Product overview
+## 1.3. Product overview
 
-### Product perspective
-Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in Copilot. The diagram does not determine the class for implementation.
+### 1.3.1. Product perspective
+The domain of the Copilot program with neccessary dependencies and relations is presented below using dmain class diagram. It is a conceptual model of the syastem in a given environment and it does not determine the class for implementation.
 
     classDiagram
         class SensorEvent {
@@ -81,7 +81,7 @@ Product overview can be described using a domain class diagram as a conceptual m
         CopilotSystem "1" --> "0..*" FeatureDecision : produces
         CopilotSystem "1" --> "0..1" AttentivenessCheck : manages
 
-### Product functions
+### 1.3.2. Product functions
 
     stateDiagram-v2
         [*] --> Disengaged
@@ -105,23 +105,23 @@ Product overview can be described using a domain class diagram as a conceptual m
         Alarming --> [*] : car turned off
         Disengaged --> [*] : car turned off
 
-### User characteristics
-The users of the Copilot simulation software are primarly Automotive Software Engineers - Qualified technical staff who use the simulation to verify the correctness of autonomous algorithms. 
+### 1.3.3. User characteristics
+The users of the Copilot simulation software are primarly Automotive Software Engineers - Qualified technical staff who use the simulation to verify the correctness of autonomous algorithms.
 
-### Limitations
+### 1.3.4. Limitations
 - **L-01** - Offline Simulation - The system operates as a software simulation. It does not interface with real vehicle hardware.
 - **L-02** - Data Format - All communication between the environment and the system is strictly limited to the provided CSV file formats.
 - **L-03** - Single-Machine Execution - The system must run on a single workstation without the need for network connectivity.
 
-## Definitions
+## 1.3.5. Definitions
 - Lidar - A remote sensing method that uses light in the form of a pulsed laser to measure ranges to the objects.
 - Actuator - A component of a machine that is responsible for moving and controlling a mechanism or system.
 - Attentiveness Check - A safety procedure where the system prompts the driver to confirm thry are monitoring the road by applying a small force to the steering wheel.
 - Emergency Braking - A safety feature that automatically applies the brakes to prevent a collision when an obstacle is detected at a critical distance.
 
-# Requirements
+# 2. Requirements
 
-## Functions
+## 2.1. Functions - Functional Requirements
 Functional requirements for Copilot are listed below. 
 
 ### FR-01 - System State and Mode Transitions
@@ -151,17 +151,24 @@ A steering wheel force event with a value strictly greater than 10N shall cause 
 ### FR-05 - Data Ingestion and Command Output
 Copilot shall read sensor events from *sensor_log.csv* and driver events from *driver_events.csv* as the sole sources of input. All events from both files should be processed in ascending timestamp order.
 
-## Performance requirements
-- Latency: The system shall process each sensor reading and driver event within 50 milliseconds.
-- Resources: Copilot shall be executable on a reference machine meeting at least the following specification:
-1) CPU: 2-core, 1.5 GHz base clock
-2) RAM: 4 GB
-3) Storage: HDD
+## 2.2. Functions - Use Cases
 
-## Usability requirements and Interface requirements
-The system shall provide a simple, text-based Command Line Interface. The CLI shall provide clear, real-time status updates to the standard output. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcodeed file paths.
+## 2.3. Performance requirements
+The program shall be able to run on the reference machine with at least specification of:
+- CPU: 4-core, 2 GHz base clock
+- RAM: 8 GB
+- Storage: SSD
+- OS: Windows 10 64-bit or Linux 64-bit
 
-## Design constraints
+Considering latency, the system shall process each sensor reading and driver event wothin 50 milliseconds.
+
+[POPRAWIĆ NA PODSTAWIE FleetRuter]
+## 2.4. Usability requirements and Interface requirements
+Copilot operates exclusively through a command-line interface. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcodeed file paths. The command syntax shall follow the form: *copilot --input <\dir> --output <\dir>*, where both argument are mandatory. 
+
+The CLI shall provide clear, real-time status updates to the standard output. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcodeed file paths.
+
+## 2.5. Design constraints
 The system shall clearly separate the perception layer, the decision logic, and the actuator control layer. The source code must adhere to clean code principles.
 
 All input and output files shall use CSV format with a coma as the field separator and UTF-8 encoding. The first row of every file shall be a header row containing column names as specified below.
@@ -173,7 +180,7 @@ All input and output files shall use CSV format with a coma as the field separat
 - *comands_log.csv*: timestamp, actuator_id, values.
 - *feature_decision.csv*: timestamp, feature, decision.
 
-## Software system attributes
+## 2.6. Software system attributes
 
 ### Security
 The system is designed to operate strictly offline on a single machine. No network-based data transmission is permitted. 
@@ -184,24 +191,31 @@ The system shall be designed to support automated unit testing. Moreover, the so
 ### Portability
 The system must be capable of running on any POSIX-compliant operating system and Windows. The software shall not require any specialized hardware (e.g., GPU acceleration) or external database engines to function.
 
-# Verification
+# 3. Verification
 The Copilot system shall be verified through a combination of automated testing, log inspection, and simulation walkthroughs to ensure all functional and non-functional requirements are met.
 
 A suite of automated test cases shall be developed to verify the core logic of the system, specifically the state machine transitions (Engaged/Disengaged) and the priority handling of Emergency Braking over other commands.
 
-# Appendices
+# 4. Appendices
 
-## Assumptions and dependencies
+## 4.1. Assumptions and dependencies
 
 ### Domain assumptions
 - **DA-01** - It is assumed that the input CSV files are well-formed and follow the predefined schema.
 - **DA-02** - The system assumes that at any given time, at least one Lidar sensor and one camera sensor provide valid readings to allow for safe autonomous operation logic.
 - **DA-03** - The simulation assumes that the vehicle's physical actuators respond instantly and perfectly to the electronic commands issued by the Copilot system.
 
-## Acronyms and abbreviations
-- CLI - Command Line Interface
+## 4.2. Acronyms and abbreviations
+- G - Goal
+- WP - World Phenomena
+- SP - Shared phenomena
+- L - Limitations
 - FR - Functional Requirement
-- Lidar - Light Detection and Rangiing
+- UC - Use case
+- DA - Domain Assumption
+
+- CSV - Comma-Separated Values
+- CLI - Command Line Interface
+- RAM - Random Acess Memory
 - N - Newton
 - POSIX - Portable Operating System Interface
-- UC - Use case

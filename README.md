@@ -15,6 +15,9 @@ Repository consists of several directories. Each directory corresponds to one pr
 - REQ3_human_readable.md - third form of the requirements specification with UML attached in the graphical form instead of Mermaid.
 
 ## AI usage
+Following the princliple of full disclosure when working with GenAI, every usage of GenAI is listed below.
+- Text correction (Cluade, Gemini)
+- UML diagram correction (Claude)
 
 ## Author
 Wojciech Bukała

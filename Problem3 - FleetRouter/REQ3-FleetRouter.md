@@ -1,6 +1,6 @@
-# Introduction
+# 1. Introduction
 
-## Purpose
+## 1.1. Purpose
 This file consists of complete requirements specifications for the Fleet Route program. This means that for an AI agent or developer working on a code, this is the priority document, and rules defined here should always be considered before other sources.
 
 FleetRouter is a program that helps with the management of courier company logistics. It supports daily route planning. The main goals of the program are:
@@ -8,9 +8,9 @@ FleetRouter is a program that helps with the management of courier company logis
 - **G-02** - If a package can't be delivered program should mark it as undeliverable with a specified reason.
 - **G-03** - FleetRouter shall minimize total distance driven across the entire fleet (a sum of distances of vehicles); in case of a tie, minimize total route duration.
 
-## Scope
+## 1.2. Scope
 The principal function of the FleetRouter program is to produce the best possible daily plan for a courier company. Companies in the spedition industry can benefit from it to have more efficient routes, and in consequence, less costs, time-efficient delivery, and emission reduction. The application is algorithmically focused, presentation and usability side are lower priorities for the stakeholders. The phenomena in the ecosystem can be defined as:
-### World Phenomenas
+### 1.2.1. World Phenomenas
 - **WP-01** - Packages with the specified weight, volume, and desired delivery location.
 - **WP-02** - Vehicles with specified volume capacity and origin depot.
 - **WP-03** - Drivers - employees with limited working time
@@ -18,7 +18,7 @@ The principal function of the FleetRouter program is to produce the best possibl
 - **WP-05** - Time windows for package deliveries
 - **WP-06** - Package priorities set by the comapny
 
-### Shared phenomenas:
+### 1.2.2. Shared phenomenas
 **Interactions controlled by the world:**
 - **SP-01** - Data about packages
 - **SP-02** - Data about vehicles
@@ -30,10 +30,10 @@ The principal function of the FleetRouter program is to produce the best possibl
 - **SP-06** - Undeliverable packages with reason
 - **SP-07** - Routes stats
 
-## Product overview
+## 1.3. Product overview
 
-### Product perspective
-Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the class for implementation.
+### 1.3.1. Product perspective
+Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the classes for implementation.
 
 Domain class diagram transformed to Mermaid.js form:
 
@@ -101,7 +101,7 @@ Domain class diagram transformed to Mermaid.js form:
         Package "1" -- "0..1" Undeliverable : can be
         RouteSummary "1" -- "0..*" Stops : is element of
 
-### Product functions
+### 1.3.2. Product functions
 
 Package state machine:
 
@@ -139,15 +139,18 @@ Route state diagram:
         Validated --> [*]
 
 
-### User characteristics
-The only user of the program are employees of the courier company. They are qualified staff with an understanding of the process. We call them Fleet Operator (also the only actor for use cases).
-
-### Limitations
-Constraints
+### 1.3.3. User characteristics
+The only user of the program are employees of the courier company. They are qualified staff with an understanding of the process. We call them Fleet Operator, or simply a user.
 
 
+### 1.3.4. Limitations
+- **L-01** - Offline Simulation - The system operates as a software simulation. It does not interface with real vehicle hardware.
+- **L-02** - Data Format - All communication between the environment and the system is strictly limited to the provided CSV file formats.
+- **L-03** - Single-Machine Execution - The system must run on a single workstation without the need for network connectivity.
 
-## Definitions
+
+
+## 1.4. Definitions
 - Courier company - every company that can make a profit out of the system and needs daily route scheduling with package assignments. Real-world examples: DHL, FedEx, UPS.
 - Route - A sequence of stops that some vehicle has to complete in order to deliver some packages.
 - Package - An item with a specified weight and volume that is supposed to be delivered to some location (stop)
@@ -156,11 +159,9 @@ Constraints
 - Vehicle - A car operated by a company with a specified weight and volume load.
 - Stop - A place of delivery of some package.
 
-# Requirements
+# 2. Requirements
 
-## Function
-
-**Functional requirements for the FleetRouter problem are listed below.**
+## 2.1. Function - Functional Requirements
 
 ### FR-01 - Read input data
 The system shall read input data including:
@@ -205,7 +206,8 @@ The system shall:
 - Write one row to *summary.csv* for each vehicle. Columns should consist of (*names in file*): vehicle ID (*vehicle_id*), total driven distance in kilometers (*total_distance_km*), total driven time in minutes (*total_time_min*), number of delivered packages (*packages_delivered*). Every vehicle defined in *vehicles.csv* should be included.
 - Write one row to *undeliverable.csv* for each package that cannot be assigned to any route. Columns should consist of (*names in file*): package ID (*package_id*), code of the reason (*reason*). Available reason codes consists of: CAPACITY_WEIGHT, CAPACITY_VOLUME, TIME_WINDOW, MAX_DRIVER_TIME, NO_VEHICLE. Exactly one reason code for each undeliverable package.
 
-**Functional requirements can be completed by using the main use case of the program, when the operator wants to generate the routes**
+## 2.2. Function - Use Cases
+Functional requirements can be completed by ...
 
 ### UC-01 - Run daily route planning
 | Actor | Fleet Operator |
@@ -217,7 +219,8 @@ The system shall:
 [SEQUENCE DIAGRAM]
 
 
-## Performance requirements
+[DODAĆ CZAS WYKONANIA]
+## 2.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
 - CPU: 4-core, 2 GHz base clock
 - RAM: 8 GB
@@ -226,17 +229,30 @@ The program shall be able to run on the reference machine with at least specific
 
 The system shall support input datasets containing up to 500 packages and 50 vehicles in a single planning run with a maxiumum of 200 distinct locations and 40,000 entries in *distances.csv* (200x200).
 
-## Usability requirements and Interface requirements
-FleetRouter shall be operated exclusively through a command-line interface. The system must accept all required parameters in a single invocation command, requiring no interactive input during execution. The command syntax shall follow the form: *fleetrouter --input <\dir> --output <\dir>*, where both arguments are mandatory.
+## 2.4. Usability requirements and Interface requirements
+FleetRouter operates exclusively through a command-line interface. The system must accept all required parameters in a single invocation command, requiring no interactive input during execution. The command syntax shall follow the form: *fleetrouter --input <\dir> --output <\dir>*, where both arguments are mandatory.
 
 All progress and error messages written to standard output or standard error must be easy to read by humen user.
 
 Upon completion, the system shall print a single summary line stating the number of packages processed, delivered, recorded as undeliverable.
 
-## Design constraints
-All input and output files shall use the CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. Time values in all input and output files must follow the format HH:MM, distance values in kilometers rounded to two decimal places, and duration values as integer minutes.
+## 2.5. Design constraints
+All input and output files shall use the CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. 
+**inputs**
+- *packages.csv*: package_id, weight_kg, volume_m3, tw_open, tw_close, service_min, priorit
+- *vehicles.csv*: vehicle_id, max_weight_kg, max_volume_m3, depot_location_id
+- *locations.csv*: location_id, name
+- *distances.csv*: from_location_id, to_location_id, distance_km, travel_time_min
+**outputs**
+- *stops_order.csv* - route_id, vehicle_id, stop_position_in_order, location_id, delivered_package_id, arrival_time, departure_time
+- *undeliverable.csv* - package_id, reason
+- *summary.csv* - vehicle_id, total_distance_km, total_time_min, packages_delivered
 
-## Software system attributes
+Time values in all input and output files must follow the format HH:MM, distance values in kilometers rounded to two decimal places, and duration values as integer minutes.
+
+Additionally the source code must adhere to clean code principles.
+
+## 2.6. Software system attributes
 
 ### Security
 The system can hold data that are confidential from the business perespective of the courier company, therefore program should operate only offline with the usage of a single machine to ensure no data leaks.
@@ -247,23 +263,29 @@ The system should be implemented in a way that is easy to scale, maintain, and t
 ### Portability
 The system should be accessible from most of the modern computers, with at least one specified in the Performance Requirements section.
 
-# Verification
+# 3. Verification
 FleetRouter shall be verified through a combination of tests and inspections.
 
-# Appendices
+# 4. Appendices
 
-## Assumptions and dependencies
+## 4.1. Assumptions and dependencies
 
 ### Domain assumptions
 - **DA-01** - All four input CSV files are provided by the operator before each planning run and reflect the actual state of the fleet and package list for that day.
 - **DA-02** - Distance and travel time values provided in input reflect real-world road conditions at the time of planning. Distance entries are not assumed to be symmetric.
 - **DA-03** - Package weights and volumes are non-negative.
 
-## Acronyms and abbreviations
-- CSV - Comma-Separated Values
-- CLI - Command-Line Interface
-- RAM - Random Access Memory
+## 4.2. Acronyms and abbreviations
+- G - Goal
+- WP - World Phenomena
+- SP - Shared phenomena
+- L - Limitations
 - FR - Functional Requirement
 - UC - Use case
 - DA - Domain Assumption
+
+- CSV - Comma-Separated Values
+- CLI - Command-Line Interface
+- RAM - Random Access Memory
+
 
