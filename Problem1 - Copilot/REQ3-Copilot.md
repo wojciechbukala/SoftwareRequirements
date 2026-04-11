@@ -82,6 +82,7 @@ The domain of the Copilot program with neccessary dependencies and relations is 
         CopilotSystem "1" --> "0..1" AttentivenessCheck : manages
 
 ### 1.3.2. Product functions
+The core behaviour of the Copilot system is governed by a state machine with four states: Disengaged, Engaged, AwaitingResponse, and Alarming. The state machine is presented below. 
 
     stateDiagram-v2
         [*] --> Disengaged
@@ -151,18 +152,63 @@ A steering wheel force event with a value strictly greater than 10N shall cause 
 ### FR-05 - Data Ingestion and Command Output
 Copilot shall read sensor events from *sensor_log.csv* and driver events from *driver_events.csv* as the sole sources of input. All events from both files should be processed in ascending timestamp order.
 
-## 2.2. Functions - Use Cases
+## 2.2. Functions - Processing Flows
+
+### PF-01 - Sensor event
+The processing logic applied to each sensor event depends on the sensor type and the current system state. The diagram below specifies th evaluation order of autonomous features and the resulting writes to output files for a single sensor processing cycle.
+
+    flowchart TD
+    A([sensor event received]) --> B[log raw event]
+    B --> C{system state == Engaged?}
+    C -- No --> Z([end cycle])
+    C -- Yes --> D{sensor_type == Lidar?}
+
+    D -- Yes --> E{data_value < 5 m?}
+    E -- Yes --> F[decide: emergency_braking = BRAKE]
+    F --> G[issue command to BrakingSystem actuator]
+    G --> H[write to feature_decision.csv\nwrite to commands_log.csv]
+    H --> Z
+
+    E -- No --> I[decide: emergency_braking = NO_BRAKE]
+    I --> J[write to feature_decision.csv]
+    J --> Z
+
+    D -- No --> K{sensor_type == Camera?}
+    K -- Yes --> L[compute lane keeping correction]
+    L --> M[compute cruise control adjustment]
+    M --> N[issue commands to SteeringMotor\nand SpeedActuator]
+    N --> O[write to feature_decision.csv x2\nwrite to commands_log.csv x2]
+    O --> Z
+
+    K -- No --> Z
+
+### PF-02 - Loop execution flow
+Copilot reads events from two independent input files which are merged into a single chronological stream before processing begins. The diagram below shows the program execution flow startup to termination, including the merging of input surces and the sequential dispatching of events.
+
+    flowchart TD
+    A([program start]) --> B[read sensor_log.csv]
+    A --> C[read driver_events.csv]
+    B --> D[merge into single event stream\nsorted by timestamp ascending]
+    C --> D
+    D --> E{next event in stream?}
+    E -- No --> F[flush all output buffers]
+    F --> G([program end])
+    E -- Yes --> H{event type?}
+    H -- sensor event --> I[run sensor processing cycle]
+    H -- driver event --> J[run driver event processing]
+    I --> E
+    J --> E
+
 
 ## 2.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
-- CPU: 4-core, 2 GHz base clock
-- RAM: 8 GB
+- CPU: 4-core, 1.60 GHz base clock
+- RAM: 16 GB
 - Storage: SSD
-- OS: Windows 10 64-bit or Linux 64-bit
+- OS: Linux 64-bit
 
 Considering latency, the system shall process each sensor reading and driver event wothin 50 milliseconds.
 
-[POPRAWIĆ NA PODSTAWIE FleetRuter]
 ## 2.4. Usability requirements and Interface requirements
 Copilot operates exclusively through a command-line interface. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcodeed file paths. The command syntax shall follow the form: *copilot --input <\dir> --output <\dir>*, where both argument are mandatory. 
 
@@ -192,9 +238,9 @@ The system shall be designed to support automated unit testing. Moreover, the so
 The system must be capable of running on any POSIX-compliant operating system and Windows. The software shall not require any specialized hardware (e.g., GPU acceleration) or external database engines to function.
 
 # 3. Verification
-The Copilot system shall be verified through a combination of automated testing, log inspection, and simulation walkthroughs to ensure all functional and non-functional requirements are met.
+Verification of the Copilot system shall be performed by the evaluator through black_box assessment of program outputs against provided input files. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
 
-A suite of automated test cases shall be developed to verify the core logic of the system, specifically the state machine transitions (Engaged/Disengaged) and the priority handling of Emergency Braking over other commands.
+Each functional requirement shall be considered satisfied if the contents of the output files are consistent with the behaviour specified in Section 2.1. Verification of non-functional requirements shall be performed by manual measurement on the reference machine defined in Section 2.3.
 
 # 4. Appendices
 
@@ -211,7 +257,7 @@ A suite of automated test cases shall be developed to verify the core logic of t
 - SP - Shared phenomena
 - L - Limitations
 - FR - Functional Requirement
-- UC - Use case
+- PF - Processing Flow
 - DA - Domain Assumption
 
 - CSV - Comma-Separated Values

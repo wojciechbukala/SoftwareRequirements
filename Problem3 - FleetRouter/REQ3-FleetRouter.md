@@ -90,7 +90,6 @@ Domain class diagram transformed to Mermaid.js form:
             +reason
         }
     
-        %% Relacje
         Location "0..*" -- "1..*" Distance : origin of
         Location "0..*" -- "1..*" Distance : destination of
         Location "1" -- "1..*" Vehicle : has depot
@@ -102,6 +101,7 @@ Domain class diagram transformed to Mermaid.js form:
         RouteSummary "1" -- "0..*" Stops : is element of
 
 ### 1.3.2. Product functions
+The core processing logic of FleetRouter is captured by two state machines. The firs one models the lifecycle of a single package. The second one models the lifecycle of a route being constructed for a given vehicle.
 
 Package state machine:
 
@@ -207,19 +207,44 @@ The system shall:
 - Write one row to *undeliverable.csv* for each package that cannot be assigned to any route. Columns should consist of (*names in file*): package ID (*package_id*), code of the reason (*reason*). Available reason codes consists of: CAPACITY_WEIGHT, CAPACITY_VOLUME, TIME_WINDOW, MAX_DRIVER_TIME, NO_VEHICLE. Exactly one reason code for each undeliverable package.
 
 ## 2.2. Function - Use Cases
-Functional requirements can be completed by ...
 
 ### UC-01 - Run daily route planning
-| Actor | Fleet Operator |
-| Entry condition | All four input CSV files are provided |
-| Event flow | 1. The system reads and validates all input files. 2. The system assigns packages to vehicles, respecting all constraints. 3. The system builds and optimizes routes. 4. The system writes output files. 5.  The system reports completion with package counts. |
-| Exit condition | All three output files have been written sucessfully |
-| Exceptions | EX1. Input file missing - system terminates and reports which file is absent. |
+| | |
+|---|---|
+| **Actor** | Fleet Operator |
+| **Entry condition** | All four input CSV files are provided |
+| **Event flow** | 1. The system reads and validates all input files. 2. The system assigns packages to vehicles, respecting all constraints. 3. The system builds and optimizes routes. 4. The system writes output files. 5. The system reports completion with package counts. |
+| **Exit condition** | All three output files have been written successfully |
+| **Exceptions** | EX1. Input file missing — system terminates and reports which file is absent. |
+UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence diagram below illustrates the complete message flow between the operator, the system, and the file system.
 
-[SEQUENCE DIAGRAM]
+    sequenceDiagram
+    actor Operator as FleetOperator
+    participant FR as FleetRouter
+    participant FS as File System
 
+    Operator->+FR: fleetrouter --input <dir> --output <dir>
+    FR->+FS: read packages.csv, vehicles.csv, locations.csv, distances.csv
+    
+    alt any file missing or unreadable
+        FS-->>FR: file not found error
+        FR-->>Operator: terminate: report missing files
+    else all files good
+        FS-->>-FR: raw data
+        
+        FR->>FR: validate input data
+        
+        FR->>FR: assign packages to vehicles
+        
+        FR->>FR: build and optimize routes
+        
+        FR->FS: write stops_order.csv
+        FR->FS: write summary.csv
+        FR->FS: write undeliverable.csv
+        
+        FR-->>-Operator: print summary (processed / delivered / undeliverable)
+    end
 
-[DODAĆ CZAS WYKONANIA]
 ## 2.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
 - CPU: 4-core, 2 GHz base clock
@@ -264,7 +289,9 @@ The system should be implemented in a way that is easy to scale, maintain, and t
 The system should be accessible from most of the modern computers, with at least one specified in the Performance Requirements section.
 
 # 3. Verification
-FleetRouter shall be verified through a combination of tests and inspections.
+Verification of the FleetRouter system shall be performed by the evaluator through black_box assessment of program outputs against provided input files. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
+
+Each functional requirement shall be considered satisfied if the contents of the output files are consistent with the behaviour specified in Section 2.1. Verification of non-functional requirements shall be performed by manual measurement on the reference machine defined in Section 2.3.
 
 # 4. Appendices
 
