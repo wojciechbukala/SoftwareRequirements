@@ -82,7 +82,6 @@ Domain class diagram transformed to Mermaid.js form:
             +total_distance
             +total_time
             +packages_delivered
-            +undeliverable
         }
     
         class Undeliverable {
@@ -115,12 +114,20 @@ Package state machine:
         Delivered --> [*]
     
         state Undeliverable {
-            direction TB
-            Reason --> CAPACITY_WEIGHT
-            CAPACITY_WEIGHT --> CAPACITY_VOLUME
-            CAPACITY_VOLUME --> TIME_WINDOW
-            TIME_WINDOW --> NO_VEHICLE
-            NO_VEHICLE --> MAX_DRIVER_TIME
+            direction LR
+            state pick <<choice>>
+            [*] --> pick
+            pick --> CAPACITY_WEIGHT   : weight limit exceeded
+            pick --> CAPACITY_VOLUME   : volume limit exceeded
+            pick --> TIME_WINDOW       : window infeasible / invalid
+            pick --> MAX_DRIVER_TIME   : 8h driver limit exceeded
+            pick --> NO_VEHICLE        : no vehicle fits after all checks
+            CAPACITY_WEIGHT --> [*]
+            CAPACITY_VOLUME --> [*]
+            TIME_WINDOW     --> [*]
+            MAX_DRIVER_TIME --> [*]
+            NO_VEHICLE      --> [*]
+            UNREACHABLE     --> [*]
         }
     
         Undeliverable --> [*]
@@ -157,6 +164,7 @@ The only user of the program are employees of the courier company. They are qual
 - Depot - A logistic center of a courier company, the place of start and finish for vehicles.
 - Vehicle - A car operated by a company with a specified weight and volume load.
 - Stop - A place of delivery of some package.
+- Waiting time - At a given stop on a route, the idle interval during which a vehicle has already arrived at the stop's location but cannot begin service because the destination package's time window has not yet opened.
 
 # 2. References
 The only reference is CONTEXT-FleetRouter.md file with the task description, in the form as received from stakeholders.
@@ -166,18 +174,13 @@ The only reference is CONTEXT-FleetRouter.md file with the task description, in 
 ## 3.1. Function - Functional Requirements
 
 ### FR-01 - Read input data
-The system shall read input data including:
-- Package data from *packages.csv*, including package ID, weight in kg, volume in m^3, opening of time window, closing of time window, time of service in minutes, and priority of package. 
-- Vehicle data from *vehicles.csv*, including vehicle ID, maximum weight capacity in kg, maximum volume capacity in m^3, and depot location ID.
-- Location data from *locations.csv*, including location ID and name.
-- Distances data from *distances.csv*, including origin location ID, destination location ID, distance in km, and travel time in minutes. 
-The system shall treat all four input files as mandatory; if any file is missing or unreadable, the system shall terminate and report the missing file.
+The system shall read the four mandatory CSV files (*packages.csv*, *vehicles.csv*, *locations.csv*, *distances.csv*) whose contents realize the domain model in Section 1.3.1. If any file is missing or unreadable, the system shall terminate and report the missing file.
 
 ### FR-02 Input data validation
 The system shall:
 - Verify that every location ID referenced in *packages.csv* and *vehicles.csv* exists in *locations.csv*; any package or vehicle referencing an unknown location ID shall be reported and excluded from processing. 
 - Verify that each package's time window closing time is strictly greater than its opening time; any package violating this condition shall be recorded in *undeliverable.csv* with reason code TIME_WINDOW.
-- Verify that a distance entry exists for every ordered pair of location IDs required to construct a route. If missing, the system should report a gap and treat the connection as unreachable.
+- Verify that a distance entry exists in *distances.csv* for every ordered pair of location IDs required to construct a route. If a required pair is missing, the system shall report the gap and treat that connection as unreachable. A package whose assignment would require traversing an unreachable connection — either to reach its destination from any feasible predecessor or to return to the depot — shall be recorded in undeliverable.csv with reason code UNREACHABLE.
 
 ### FR-03 Assigning packages to vehicles
 Regarding the proccess of assigning packages to vehicles, the system shall:
@@ -206,18 +209,11 @@ In case of optimisation, the system shall:
 The system shall:
 - Write one row to *stops_order.csv* for each stop in each route. Columns should consist of (*names in file*): route ID (*route_id*), vehicle ID (*vehicle_id*), position of the stop in sequence for a given route (*stop_position_in_order*), ID of the location of the stop (*location_id*), ID of delivered package (*delivery_package_id*), arrival time  (*arrival_time*), departure time (*departure_time*). Group and sort stops for each vehicle
 - Write one row to *summary.csv* for each vehicle. Columns should consist of (*names in file*): vehicle ID (*vehicle_id*), total driven distance in kilometers (*total_distance_km*), total driven time in minutes (*total_time_min*), number of delivered packages (*packages_delivered*). Every vehicle defined in *vehicles.csv* should be included.
-- Write one row to *undeliverable.csv* for each package that cannot be assigned to any route. Columns should consist of (*names in file*): package ID (*package_id*), code of the reason (*reason*). Available reason codes consists of: CAPACITY_WEIGHT, CAPACITY_VOLUME, TIME_WINDOW, MAX_DRIVER_TIME, NO_VEHICLE. Exactly one reason code for each undeliverable package.
+- Write one row to *undeliverable.csv* for each package that cannot be assigned to any route. Columns should consist of (*names in file*): package ID (*package_id*), code of the reason (*reason*). Available reason codes consists of: CAPACITY_WEIGHT, CAPACITY_VOLUME, TIME_WINDOW, MAX_DRIVER_TIME, NO_VEHICLE, UNREACHABLE. Exactly one reason code for each undeliverable package.
 
 ## 3.2. Function - Use Cases
 
 ### UC-01 - Run daily route planning
-| | |
-|---|---|
-| **Actor** | Fleet Operator |
-| **Entry condition** | All four input CSV files are provided |
-| **Event flow** | 1. The system reads and validates all input files. 2. The system assigns packages to vehicles, respecting all constraints. 3. The system builds and optimizes routes. 4. The system writes output files. 5. The system reports completion with package counts. |
-| **Exit condition** | All three output files have been written successfully |
-| **Exceptions** | EX1. Input file missing — system terminates and reports which file is absent. |
 UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence diagram below illustrates the complete message flow between the operator, the system, and the file system.
 
     sequenceDiagram
@@ -266,12 +262,14 @@ Upon completion, the system shall print a single summary line stating the number
 ## 3.5. Design constraints
 All input and output files shall use the CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. 
 **inputs**
-- *packages.csv*: package_id, weight_kg, volume_m3, tw_open, tw_close, service_min, priorit
+- *packages.csv*: package_id, destination_id, weight_kg, volume_m3, tw_open, tw_close, service_min, priority
+The priority column in packages.csv shall contain an integer value from the set {0, 1}, where 1 marks a priority package and 0 marks a non-priority package. No other values are permitted; any package with a value outside this set shall be reported and excluded from processing in the same way as other invalid input rows (see FR-02).
+
 - *vehicles.csv*: vehicle_id, max_weight_kg, max_volume_m3, depot_location_id
 - *locations.csv*: location_id, name
 - *distances.csv*: from_location_id, to_location_id, distance_km, travel_time_min
 **outputs**
-- *stops_order.csv* - route_id, vehicle_id, stop_position_in_order, location_id, delivered_package_id, arrival_time, departure_time
+- *stops_order.csv* - route_id, vehicle_id, stop_position_in_order, location_id, delivered_id, arrival_time, departure_time
 - *undeliverable.csv* - package_id, reason
 - *summary.csv* - vehicle_id, total_distance_km, total_time_min, packages_delivered
 
@@ -303,6 +301,7 @@ Each functional requirement shall be considered satisfied if the contents of the
 - **DA-01** - All four input CSV files are provided by the operator before each planning run and reflect the actual state of the fleet and package list for that day.
 - **DA-02** - Distance and travel time values provided in input reflect real-world road conditions at the time of planning. Distance entries are not assumed to be symmetric.
 - **DA-03** - Package weights and volumes are non-negative.
+- **DA-04** — Planning-day start time. All vehicles are assumed to depart from their assigned depot at 08:00 on the planning day. This value is a fixed constant of the planning run and is not provided through input files. All time-window, travel-time, and driver-time computations in FR-03 and FR-04 are anchored to this departure time. 
 
 ## 5.2. Acronyms and abbreviations
 - G - Goal

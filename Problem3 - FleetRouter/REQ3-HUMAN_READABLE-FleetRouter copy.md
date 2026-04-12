@@ -36,14 +36,19 @@ The principal function of the FleetRouter program is to produce the best possibl
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the classes for implementation.
 
 Domain class diagram transformed to Mermaid.js form:
-[UML]
+
+![Domain Class Diagram](/Problem3%20-%20FleetRouter/Diagrams/P3_DCD.drawio.png)
 
 ### 1.3.2. Product functions
 The core processing logic of FleetRouter is captured by two state machines. The firs one models the lifecycle of a single package. The second one models the lifecycle of a route being constructed for a given vehicle.
-[UML]
+
+Package state machine:
+
+![Package state machine](/Problem3%20-%20FleetRouter/Diagrams/P3_SM1.drawio.png)
 
 Route state diagram:
-[UML]
+
+![Route state machine](/Problem3%20-%20FleetRouter/Diagrams/P3_SM2.drawio.png)
 
 
 ### 1.3.3. User characteristics
@@ -74,12 +79,7 @@ The only reference is CONTEXT-FleetRouter.md file with the task description, in 
 ## 3.1. Function - Functional Requirements
 
 ### FR-01 - Read input data
-The system shall read input data including:
-- Package data from *packages.csv*, including package ID, weight in kg, volume in m^3, opening of time window, closing of time window, time of service in minutes, and priority of package. 
-- Vehicle data from *vehicles.csv*, including vehicle ID, maximum weight capacity in kg, maximum volume capacity in m^3, and depot location ID.
-- Location data from *locations.csv*, including location ID and name.
-- Distances data from *distances.csv*, including origin location ID, destination location ID, distance in km, and travel time in minutes. 
-The system shall treat all four input files as mandatory; if any file is missing or unreadable, the system shall terminate and report the missing file.
+The system shall read the four mandatory CSV files (*packages.csv*, *vehicles.csv*, *locations.csv*, *distances.csv*) whose contents realize the domain model in Section 1.3.1. If any file is missing or unreadable, the system shall terminate and report the missing file.
 
 ### FR-02 Input data validation
 The system shall:
@@ -121,13 +121,7 @@ The system shall:
 ### UC-01 - Run daily route planning
 UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence diagram below illustrates the complete message flow between the operator, the system, and the file system.
 
-| | |
-|---|---|
-| **Actor** | Fleet Operator |
-| **Entry condition** | All four input CSV files are provided |
-| **Event flow** | 1. The system reads and validates all input files. 2. The system assigns packages to vehicles, respecting all constraints. 3. The system builds and optimizes routes. 4. The system writes output files. 5. The system reports completion with package counts. |
-| **Exit condition** | All three output files have been written successfully |
-| **Exceptions** | EX1. Input file missing — system terminates and reports which file is absent. |
+![Seqence Diagram](/Problem3%20-%20FleetRouter/Diagrams/P3_SD1.drawio.png)
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
@@ -201,3 +195,5 @@ Each functional requirement shall be considered satisfied if the contents of the
 - CSV - Comma-Separated Values
 - CLI - Command-Line Interface
 - RAM - Random Access Memory
+
+

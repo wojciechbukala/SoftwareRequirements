@@ -86,6 +86,14 @@ Product overview can be described using a domain class diagram as a conceptual m
         Reservation "0..1" -- "1..*" Seat : includes
 
 ### 1.3.2. Product functions
+at a high level, the Seats Reseravtion system provides the following groups of functions:
+- **Event management** - creataion and configuration of events, performed by the Administrators.
+- **Reservation handling** - seat selection, atomic locking, and autoamtic release of expired locks.
+- **Dynamic pricing** - calculation of the final ticket price at reservation time based on seat category and booking moment.
+- **Reporting and monitoring** - summaries for the Administroator, and personal booking history for the User.
+- **Access control** - authentication and role-based routing to either the user or the administrator interface through a single login panel.
+
+A detiled view of these functions is provided by the use case diagram and sequence diagrams in Section 3.1, and by the functional requirements FR-01 to FR-04.
 
 ### 1.3.3. User characteristics
 The system serves two distinct types of users:
@@ -96,7 +104,6 @@ The system serves two distinct types of users:
 ### 1.3.4. Limitations
 - **L-01** - Web Application - The system operates exclusively as a web application. 
 - **L-02** - No Mixed Seat Configuration - Within a single event, all seats must be either numbered or non-numbered. Mixed configurations are not supported.
-- **L-03** - Two Interfaces - The system provides exactly two separate interfaces: one for administrators and one for users. No other access roles or interfaces are supported.
 
 
 ## 1.4. Definitions
@@ -115,13 +122,13 @@ The only reference is CONTEXT-SeatsReservation.md file with the task description
 Functional requirements for the SeatsReservation problem are listed below.
 
 ### FR-01 - Event Lifecycle and Configuration
-The system shall enable the Administrator to fully define an event's environment, including its name, date and time, and a fixed-size rectangular seating grid. During setup, the system must enforce a uniform event type: strictly numbered or non-numbered, and ensure that seats have a category assigned (VIP, Premium, or Economy) and a corresponding base price.
+The system shall enable the Administrator to create and configure events, covering event metadata, a fixed-size rectangular seating grid with a uniform numbering type (strictly numbered or non-numbered), seat category assignment(VIP, Premium, or Economy), and base price definition per category. The detailed interaction flow is specified in use case UC-03.
 
 ### FR-02 - Reservation Logic
-The SeatsReservation system should manage the complete reservation lifecycle by processing booking requests as atomic transactions. It must strictly enforce seat adjacency for numbered events and limit each user to a maximum of two concurrent 15-minute pending locks. If payment is not confirmed within this window, the system must revert seats to the available pool.
+The SeatsReservation system should manage the complete reservation lifecycle by processing booking requests as atomic transactions. It must strictly enforce seat adjacency for numbered events and limit each user to a maximum of two concurrent pending locks, with fixed lock window (see UC-01 sequence). If payment is not confirmed within this window, the system must revert seats to the available pool.
 
 ### FR-03 - Pricing engine
-The system shall automatically calculate the final ticket price at the moment of reservation by applying time-based rules: an Early Bird discount of 20% for booking at least 30 days in advance, and a Last Minute surcharge of 30% for booking less than 48 hours before the event and at events with occupancy sold less than 80%. Throughout these calculations, the system must maintain a strict financial hierarchy, ensuring that the effective price of a VIP ticket is always greater then a Premimum ticket and the Premium ticket price is always greater then Ecomony.
+The system shall automatically calculate the final ticket price at the moment of reservation by applying time-based rules: an Early Bird discount of 20% for booking at least 30 days in advance, and a Last Minute surcharge of 30% for booking less than 48 hours before the event and at events with occupancy sold more than 80%. Throughout these calculations, the system must maintain a strict financial hierarchy, ensuring that the effective price of a VIP ticket is always greater then a Premimum ticket and the Premium ticket price is always greater then Ecomony.
 
 ### FR-04 - Administration
 The SeatsReservation program must allow users to cancel confirmed reservations up until 2 hours before the event start and provide comprehensive status reports for both roles, such as real-time occupancy and revenue summaries for administrators and personal booking histories for users.
@@ -355,17 +362,18 @@ THe key functionality of the administarot is the possibilibty to add an event, a
 
 ## 3.5. Interface requirements
 
-The Administrator desktop module should include a dedicated interface for event management. Key views must include:
-- Event creator - form for entering event metadata and grid dimensions.
-- Grid configuratior - interactive tool for category assignment and base price setting.
-- Dashboard - real-time summary of occupancy and financial performance per event.
+The SeatsReservation system is logically divided into three user interfaces, each accessible through the same single entry point:
 
-A customer desktop module as a dedicated interface for seat booking should include views such as:
-- Event browser - a list of upcoming events with search/filter capabilities
-- Booking view - an interactive grid for seat selection and adjacency validation.
-- Reservation manager - personal dashboard for tracking payment status and performing cancellations.
-
-Both the customer's and administrator's panels should be accessible through the same login panel, where the user can switch between user and administaror roles and provide cradentials.
+1. **Login / Register panel** - the single entry point for all users. It allows authentication and account creation, and after successful login routes the user to the appropriate interface based on their role.
+2. **User interface** - accessible after login as a Customer. It consists of the following views:
+   - *Events* - a list of upcoming events; selecting an event initiates the "Reserve seats" use case (UC-01).
+   - *Bookings* - a history of the user's reservations with their current status, used for tracking payments and performing cancellations.
+   - *Profile* - personal account details.
+   - *Settings* - application settings.
+3. **Administrator interface** - accessible after login as an Administrator. It consists of the following views:
+   - *Dashboard* - real-time summary of occupancy and revenue across managed events.
+   - *Events* - a table of all managed events with their configuration options.
+   - *Event Creator* - a form-based tool for event metadata entry, interactive grid or pool configuration, and base price setup; initiates the "Add event" use case (UC-03).
 
 ## 3.6. Logical database requirements
 The system shall maintain a persistent data model to ensure consistency across appliacation restarts. The logical schema is presented below thourgh entity relationship diagram:
@@ -422,11 +430,9 @@ The system shall maintain a persistent data model to ensure consistency across a
     }
 
 ## 3.7. Design constraints
-The key views of the system, including the login panel, the user interface, and the administrator panel, are presented in the form of mockups in UI_Mockups folder. All remaining views not depicted here shall follow the same graphical style — colour palette typography, proportions, component shapes, and interaction patterns — as established by the mockups. The web application is logically divided into three interfaces:
-
-1. **Login / register panel** - the single netry point for all users. The panel allows users to authenticate or create an account. After successful login the system routes the user to the user or administrator interafce, based on the role. See mockup *LoginRegister.png*.
-2. **User interface** - a panel accessible after login as a customer. Consists of the *Events* (a list of upcoming events) note that booking option for every event redirects to execution of 'make reservation' use case, *Bookings* (a history of user's bookings), *Profile* (profile details), *Settings* (application settings). See mockup *User.png*.
-3. **Administrator interface** - a panel accessible after login as an administrator. Consists of the *Dashboard* (real-time overview of occupancy and revenue), *Events* (table of all managed events with appropriate options), *Event Creator* (defining event meatadata and execution of 'add event' use case).
+- **Platform** - the system shall be delivered as a web application compatible with modern web browsers (see 3.8 Portability).
+- **Visual style** - the key views of the system (Login panel, User interface, and Administrator interface) are provided as mockups in the *UI_Mockups* folder (*LoginRegister.png*, *User.png*, *Admin.png*). All views not explicitly covered by the mockups shall follow the same graphical style — colour palette, typography, proportions, component shapes, and interaction patterns — as established by the mockups.
+- **Single entry point** - authentication for both roles is handled by the same Login / Register panel; no separate admin login URL or credential store is permitted.
 
 ## 3.8. Software system attributes
 
@@ -444,7 +450,7 @@ The web application shall be compatible with modern web browsers (e.g., Google C
 
 
 # 4. Verification
-SeatsReseration shall be verified through a combination of tests and inspections.
+Verification of the SeatsReservation system shall be performed by the evaluator through black_box assessment of program outputs and resonses to given actions. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
 
 # 5. Appendices
 

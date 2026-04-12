@@ -32,7 +32,8 @@ The SeatsReservation program is focused on the logic of event management and res
 
 ### 1.3.1. Product perspective
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the SeatsReservation. The diagram does not determine the class for implementation.
-[UML]
+
+![Domain Class Diagram](/Problem2%20-%20SeatsReservation/Diagrams/P2_DCD.drawio.png)
 
 ### 1.3.2. Product functions
 at a high level, the Seats Reseravtion system provides the following groups of functions:
@@ -65,17 +66,16 @@ The system serves two distinct types of users:
 # 2. References
 The only reference is CONTEXT-SeatsReservation.md file with the task description, in the form as received from stakeholders.
 
-
 # 3. Requirements
 
 ## 3.1. Functions - Functional Requirements
 Functional requirements for the SeatsReservation problem are listed below.
 
 ### FR-01 - Event Lifecycle and Configuration
-The system shall enable the Administrator to fully define an event's environment, including its name, date and time, and a fixed-size rectangular seating grid. During setup, the system must enforce a uniform event type: strictly numbered or non-numbered, and ensure that seats have a category assigned (VIP, Premium, or Economy) and a corresponding base price.
+The system shall enable the Administrator to create and configure events, covering event metadata, a fixed-size rectangular seating grid with a uniform numbering type (strictly numbered or non-numbered), seat category assignment(VIP, Premium, or Economy), and base price definition per category. The detailed interaction flow is specified in use case UC-03.
 
 ### FR-02 - Reservation Logic
-The SeatsReservation system should manage the complete reservation lifecycle by processing booking requests as atomic transactions. It must strictly enforce seat adjacency for numbered events and limit each user to a maximum of two concurrent 15-minute pending locks. If payment is not confirmed within this window, the system must revert seats to the available pool.
+The SeatsReservation system should manage the complete reservation lifecycle by processing booking requests as atomic transactions. It must strictly enforce seat adjacency for numbered events and limit each user to a maximum of two concurrent pending locks, with fixed lock window (see UC-01 sequence). If payment is not confirmed within this window, the system must revert seats to the available pool.
 
 ### FR-03 - Pricing engine
 The system shall automatically calculate the final ticket price at the moment of reservation by applying time-based rules: an Early Bird discount of 20% for booking at least 30 days in advance, and a Last Minute surcharge of 30% for booking less than 48 hours before the event and at events with occupancy sold more than 80%. Throughout these calculations, the system must maintain a strict financial hierarchy, ensuring that the effective price of a VIP ticket is always greater then a Premimum ticket and the Premium ticket price is always greater then Ecomony.
@@ -85,26 +85,27 @@ The SeatsReservation program must allow users to cancel confirmed reservations u
 
 ## 3.2. Functions - Use cases
 Actors and their use cases includend in the system evironment can be described by the use cases diagram as below: 
-[UML]
+![Use Case Diagram](/Problem2%20-%20SeatsReservation/Diagrams/P2_UCD.drawio.png)
 
 ## UC-01 - Make reservation
 The main functionality of the system is the possibility to reserve a seat by a user for a specified event. Process is presented with the usage of 3 sequence diagrams. The split was made to make a clear distingush between numbered and nonnumbered events.
 
 Seqence diagram - user selects event form the list displayed on the website:
-[UML]
+![Sequence Diagram - select event](/Problem2%20-%20SeatsReservation/Diagrams/P2_SD1_1.drawio.png)
 
 If event is numbered, the process of reservation and confirmation looks as provided below:
-[UML]
+![Sequence Diagram - numbered event](/Problem2%20-%20SeatsReservation/Diagrams/P2_SD1_2.drawio.png)
 
 Otherwise, if the event is nonnumbered, the seqence looks like that:
-[UML]
+![Sequence Diagram - nonnumbered event](/Problem2%20-%20SeatsReservation/Diagrams/P2_SD1_3.drawio.png)
+
 ## UC-02 - Cancel reservation
 Other key use case of the ystem is the possibility for a user to cancel reservation, presented at the sequence diagram below:
-[UML]
+![Sequence Diagram - cancel reservation](/Problem2%20-%20SeatsReservation/Diagrams/P2_SD_2.drawio.png)
 
 ## UC-03 - Add event
 THe key functionality of the administarot is the possibilibty to add an event, as presented below:
-[UML]
+![Sequence Diagram - add event](/Problem2%20-%20SeatsReservation/Diagrams/P2_SD3.drawio.png)
 
 ## 3.3. Performance requirements
 - The program shall process reservation requests in under 200ms.
@@ -134,11 +135,21 @@ The SeatsReservation system is logically divided into three user interfaces, eac
 
 ## 3.6. Logical database requirements
 The system shall maintain a persistent data model to ensure consistency across appliacation restarts. The logical schema is presented below thourgh entity relationship diagram:
-[UML]
+
+![Entity Relatioship Diagram](/Problem2%20-%20SeatsReservation/Diagrams/P2_ERD.drawio.png)
 
 ## 3.7. Design constraints
 - **Platform** - the system shall be delivered as a web application compatible with modern web browsers (see 3.8 Portability).
 - **Visual style** - the key views of the system (Login panel, User interface, and Administrator interface) are provided as mockups in the *UI_Mockups* folder (*LoginRegister.png*, *User.png*, *Admin.png*). All views not explicitly covered by the mockups shall follow the same graphical style — colour palette, typography, proportions, component shapes, and interaction patterns — as established by the mockups.
+
+![LoginRegister Mockup](/Problem2%20-%20SeatsReservation/UI_Mockups/LoginRegister.png
+)
+
+![User panel Mockup](/Problem2%20-%20SeatsReservation/UI_Mockups/User.png
+)
+
+![Admin panel Mockup](/Problem2%20-%20SeatsReservation/UI_Mockups/Admin.png)
+
 - **Single entry point** - authentication for both roles is handled by the same Login / Register panel; no separate admin login URL or credential store is permitted.
 
 ## 3.8. Software system attributes
