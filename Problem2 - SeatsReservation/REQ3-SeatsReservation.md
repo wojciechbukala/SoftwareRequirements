@@ -106,10 +106,12 @@ The system serves two distinct types of users:
 - Early Bird - a pricing period occurring more than 30 days before the event.
 - Last Minute - a pricing period occurring less than 48 hours before the event.
 
+# 2. References
+The only reference is CONTEXT-SeatsReservation.md file with the task description, in the form as received from stakeholders.
 
-# 2. Requirements
+# 3. Requirements
 
-## 2.1. Functions - Functional Requirements
+## 3.1. Functions - Functional Requirements
 Functional requirements for the SeatsReservation problem are listed below.
 
 ### FR-01 - Event Lifecycle and Configuration
@@ -124,7 +126,7 @@ The system shall automatically calculate the final ticket price at the moment of
 ### FR-04 - Administration
 The SeatsReservation program must allow users to cancel confirmed reservations up until 2 hours before the event start and provide comprehensive status reports for both roles, such as real-time occupancy and revenue summaries for administrators and personal booking histories for users.
 
-## 2.2. Functions - Use cases
+## 3.2. Functions - Use cases
 Actors and their use cases includend in the system evironment can be described by the use cases diagram as below: 
     graph LR
     User((User))
@@ -340,18 +342,18 @@ THe key functionality of the administarot is the possibilibty to add an event, a
         end
 
 
-## Performance requirements
+## 3.3. Performance requirements
 - The program shall process reservation requests in under 200ms.
 - It must maintain strict data integrity and prevent race conditions for at least 50 concurrent users per event.
 - The system shall support the management of 100 active events with seating grids up to 250,000 units (500x500).
 - The automated 15-minute expiration logic for Pending reservations must operate with a maximum drift of 5 seconds.
 
-## 2.3. Usability requirements
+## 3.4. Usability requirements
 - The system shall provide a clear, graphical representation of the seating grid. Available, and reserved seats must be distinguishable through color-coding.
 - During the reservation process, the system shall display a real-time countdown timer for the 15-minute interval.
 - The breakdown of the final reservation price should be shown before the user proceeds to the payment stage.
 
-## 2.4. Interface requirements
+## 3.5. Interface requirements
 
 The Administrator desktop module should include a dedicated interface for event management. Key views must include:
 - Event creator - form for entering event metadata and grid dimensions.
@@ -365,7 +367,7 @@ A customer desktop module as a dedicated interface for seat booking should inclu
 
 Both the customer's and administrator's panels should be accessible through the same login panel, where the user can switch between user and administaror roles and provide cradentials.
 
-## 2.5. Logical database requirements
+## 3.6. Logical database requirements
 The system shall maintain a persistent data model to ensure consistency across appliacation restarts. The logical schema is presented below thourgh entity relationship diagram:
 
     erDiagram
@@ -419,14 +421,14 @@ The system shall maintain a persistent data model to ensure consistency across a
         varchar category
     }
 
-## 2.6. Design constraints
+## 3.7. Design constraints
 The key views of the system, including the login panel, the user interface, and the administrator panel, are presented in the form of mockups in UI_Mockups folder. All remaining views not depicted here shall follow the same graphical style — colour palette typography, proportions, component shapes, and interaction patterns — as established by the mockups. The web application is logically divided into three interfaces:
 
 1. **Login / register panel** - the single netry point for all users. The panel allows users to authenticate or create an account. After successful login the system routes the user to the user or administrator interafce, based on the role. See mockup *LoginRegister.png*.
 2. **User interface** - a panel accessible after login as a customer. Consists of the *Events* (a list of upcoming events) note that booking option for every event redirects to execution of 'make reservation' use case, *Bookings* (a history of user's bookings), *Profile* (profile details), *Settings* (application settings). See mockup *User.png*.
 3. **Administrator interface** - a panel accessible after login as an administrator. Consists of the *Dashboard* (real-time overview of occupancy and revenue), *Events* (table of all managed events with appropriate options), *Event Creator* (defining event meatadata and execution of 'add event' use case).
 
-## 2.7. Software system attributes
+## 3.8. Software system attributes
 
 ### Reliability
 Seat state transitions must not result in data inconsistency even under concurrent access. No seat shall belong to more than one active reservation at any point in time.
@@ -441,19 +443,19 @@ The system should be implemented in a way that is easy to scale, maintain, and t
 The web application shall be compatible with modern web browsers (e.g., Google Chrome, Mozilla Firefox, Microsoft Edge, and Safari).
 
 
-# 3. Verification
+# 4. Verification
 SeatsReseration shall be verified through a combination of tests and inspections.
 
-# 4. Appendices
+# 5. Appendices
 
-## Assumptions and dependencies
+## 5.1. Assumptions and dependencies
 
 ### Domain assumptions
 - **DA-01** - The system clock on the host machine is considered the source of truth for all time-based calculations.
 - **DA-02** - A month for the discounts is defined as exactly 30 calendar days.
 - **DA-03** - Payment confirmation is provided by an external signal or simulated user action.
 
-## Acronyms and abbreviations
+## 5.2. Acronyms and abbreviations
 - VIP - Very Important Person (highest seat category)
 - G - Goal
 - SP - Shared Phenomena

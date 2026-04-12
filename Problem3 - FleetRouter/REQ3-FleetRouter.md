@@ -149,7 +149,6 @@ The only user of the program are employees of the courier company. They are qual
 - **L-03** - Single-Machine Execution - The system must run on a single workstation without the need for network connectivity.
 
 
-
 ## 1.4. Definitions
 - Courier company - every company that can make a profit out of the system and needs daily route scheduling with package assignments. Real-world examples: DHL, FedEx, UPS.
 - Route - A sequence of stops that some vehicle has to complete in order to deliver some packages.
@@ -159,9 +158,12 @@ The only user of the program are employees of the courier company. They are qual
 - Vehicle - A car operated by a company with a specified weight and volume load.
 - Stop - A place of delivery of some package.
 
-# 2. Requirements
+# 2. References
+The only reference is CONTEXT-FleetRouter.md file with the task description, in the form as received from stakeholders.
 
-## 2.1. Function - Functional Requirements
+# 3. Requirements
+
+## 3.1. Function - Functional Requirements
 
 ### FR-01 - Read input data
 The system shall read input data including:
@@ -206,7 +208,7 @@ The system shall:
 - Write one row to *summary.csv* for each vehicle. Columns should consist of (*names in file*): vehicle ID (*vehicle_id*), total driven distance in kilometers (*total_distance_km*), total driven time in minutes (*total_time_min*), number of delivered packages (*packages_delivered*). Every vehicle defined in *vehicles.csv* should be included.
 - Write one row to *undeliverable.csv* for each package that cannot be assigned to any route. Columns should consist of (*names in file*): package ID (*package_id*), code of the reason (*reason*). Available reason codes consists of: CAPACITY_WEIGHT, CAPACITY_VOLUME, TIME_WINDOW, MAX_DRIVER_TIME, NO_VEHICLE. Exactly one reason code for each undeliverable package.
 
-## 2.2. Function - Use Cases
+## 3.2. Function - Use Cases
 
 ### UC-01 - Run daily route planning
 | | |
@@ -245,7 +247,7 @@ UC-01 represents the sole interaction between the Fleet Operator and the system.
         FR-->>-Operator: print summary (processed / delivered / undeliverable)
     end
 
-## 2.3. Performance requirements
+## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
 - CPU: 4-core, 2 GHz base clock
 - RAM: 8 GB
@@ -254,14 +256,14 @@ The program shall be able to run on the reference machine with at least specific
 
 The system shall support input datasets containing up to 500 packages and 50 vehicles in a single planning run with a maxiumum of 200 distinct locations and 40,000 entries in *distances.csv* (200x200).
 
-## 2.4. Usability requirements and Interface requirements
+## 3.4. Usability requirements and Interface requirements
 FleetRouter operates exclusively through a command-line interface. The system must accept all required parameters in a single invocation command, requiring no interactive input during execution. The command syntax shall follow the form: *fleetrouter --input <\dir> --output <\dir>*, where both arguments are mandatory.
 
 All progress and error messages written to standard output or standard error must be easy to read by humen user.
 
 Upon completion, the system shall print a single summary line stating the number of packages processed, delivered, recorded as undeliverable.
 
-## 2.5. Design constraints
+## 3.5. Design constraints
 All input and output files shall use the CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. 
 **inputs**
 - *packages.csv*: package_id, weight_kg, volume_m3, tw_open, tw_close, service_min, priorit
@@ -277,7 +279,7 @@ Time values in all input and output files must follow the format HH:MM, distance
 
 Additionally the source code must adhere to clean code principles.
 
-## 2.6. Software system attributes
+## 3.6. Software system attributes
 
 ### Security
 The system can hold data that are confidential from the business perespective of the courier company, therefore program should operate only offline with the usage of a single machine to ensure no data leaks.
@@ -288,21 +290,21 @@ The system should be implemented in a way that is easy to scale, maintain, and t
 ### Portability
 The system should be accessible from most of the modern computers, with at least one specified in the Performance Requirements section.
 
-# 3. Verification
+# 4. Verification
 Verification of the FleetRouter system shall be performed by the evaluator through black_box assessment of program outputs against provided input files. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
 
 Each functional requirement shall be considered satisfied if the contents of the output files are consistent with the behaviour specified in Section 2.1. Verification of non-functional requirements shall be performed by manual measurement on the reference machine defined in Section 2.3.
 
-# 4. Appendices
+# 5. Appendices
 
-## 4.1. Assumptions and dependencies
+## 5.1. Assumptions and dependencies
 
 ### Domain assumptions
 - **DA-01** - All four input CSV files are provided by the operator before each planning run and reflect the actual state of the fleet and package list for that day.
 - **DA-02** - Distance and travel time values provided in input reflect real-world road conditions at the time of planning. Distance entries are not assumed to be symmetric.
 - **DA-03** - Package weights and volumes are non-negative.
 
-## 4.2. Acronyms and abbreviations
+## 5.2. Acronyms and abbreviations
 - G - Goal
 - WP - World Phenomena
 - SP - Shared phenomena
