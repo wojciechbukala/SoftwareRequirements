@@ -33,18 +33,21 @@ The principal function of the FleetRouter program is to produce the best possibl
 ## 1.3. Product overview
 
 ### 1.3.1. Product perspective
-Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the classes for implementation.
+FleetRouter is a program used internally by a courier company as a planning tool. It is invoked once per planning cycle - typically onese per day, and produces a plan that is then handed off to dispatchers and drivers.
 
-Domain class diagram transformed to Mermaid.js form:
-[UML]
+The program sits between two well-defined data boundaries. On the input side, FleetRouter relies entirely on a set of files prepared in advance that together describe the state of the world for the planning run: the list of packages to be delivered on a given day, the fleet of vehicles available for that day, the set of physical locations referenced by packages and depots, and a table of pairwise distances and travel times between those locations.
+
+On the output side, FleetRouter produces a set of files that together constitute the daily plan: an ordered list of stops for each vehicle, a per-vehicle summary, and a list of packages that could not be delivered along with the reason. These files are the sole means by which FleetRouter communicates its results.
+
+The program has no other external dependencies. It does not require network access, a database engine, specialized hardware, or any runtime service. A single invocation on a single workstation is a complete interaction with the program.
 
 ### 1.3.2. Product functions
-The core processing logic of FleetRouter is captured by two state machines. The firs one models the lifecycle of a single package. The second one models the lifecycle of a route being constructed for a given vehicle.
-[UML]
-
-Route state diagram:
-[UML]
-
+A single invocation of FleetRouter carries out the complete daily planning process in one uninterrupted pass. The program performs five main functions.
+- **Ingestion and validation of input data** - FleetRouter reads all four input files and checks their contents for internal consistency before any planning begins.
+- **Assignment of packages to vehicles** - Each package that has passed validation is considered for assignment to exactly one vehicle in the fleet. An assignment is accepted only if it respects the vehicle's weight and volume capacity, fits within the package's delivery time window, and does not cause the total working time of the vehicle's driver to exceed the allowed daily limit. Packages that cannot be assigned under any such constraint are classified as undeliverable, each with a specific reason. Packages marked as priority are considered ahead of non-priority packages whenever capacity forces a choice.
+- **Route construction** - For every vehicle to which at least one package has been assigned, FleetRouter builds a route that starts at the vehicle's depot, visits the delivery location of each assigned package in some order, and returns to the depot.
+- **Route optimization** - Among the routes that satisfy all of the above constraints, FleetRouter selects those that minimize the total distance driven across the entire fleet. When two candidate solutions are tied on total distance, the tie is broken in favor of the one with the shorter total route duration.
+- **Output generation** - Once the plan has been finalized, FleetRouter writes three files describing, respectively, the ordered stops of each route, a per-vehicle summary of distance, duration, and delivered package counts, and the list of undeliverable packages together with their reasons.
 
 ### 1.3.3. User characteristics
 The only user of the program are employees of the courier company. They are qualified staff with an understanding of the process. We call them Fleet Operator, or simply a user.
@@ -119,7 +122,7 @@ The system shall:
 ## 3.2. Function - Use Cases
 
 ### UC-01 - Run daily route planning
-UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence diagram below illustrates the complete message flow between the operator, the system, and the file system.
+UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process.
 
 | | |
 |---|---|

@@ -32,16 +32,20 @@ The Copilot program is a simulation of an onboard computer for advanced driver a
 ## 1.3. Product overview
 
 ### 1.3.1. Product perspective
-The domain of the Copilot program with necessary dependencies and relations is presented below using domain class diagram. It is a conceptual model of the system in a given environment and it does not determine the class for implementation.
+The Copilot program operates in an environment composed of sensors, a driver, and vehicle actuators, and its behavior is organized around a few conceptual entities.
 
-[UML]
+The program consumes two kinds of inputs from its environment. A sensor event is a single reading produced by one of the on-board sensors, and a driver event is a single interaction orginating from the driver.
+
+In response to these inputs, the program maintains its own runtime context with its currently operating mode, the time of the most recent attentiveness prompt, and whether a driver response is currently being awaited - and produces three kinds of outputs. A state transition record of changes of the operating mode. An actuator command is an instruction sent to one of the vehicle's actuators. Lastly, a feature decision is the outcome of evaluating one autonomous feature for a given input.
+
+The above is a conceptual description of the program's environment and internal data and is not intended to prescribe a class structure for implementation.
 
 ### 1.3.2. Product functions
-The core behaviour of the Copilot system is governed by a state machine with four states: Disengaged, Engaged, AwaitingResponse, and Alarming. The state machine is presented below. 
-
-[UML]
-
-Emergency braking (Lidar < 5 m → BRAKE command) is evaluated in every state, including Disengaged. See PF-01.
+At the highest level, Copilot provides five main functions.
+- **Autonomous mode management** - Copilot maintains an operating mode that determines how it reacts to incoming events. It can be either disengaged or engaged. The driver controls transitions between these two modes, and the program may additionally enter transient safety-oriented modes in reaction to conditions described below. 
+- **Emergency braking** - Copilot continuously monitors Lidar readings and, when an obstacle is detected at a crucial distance, issues a braking command to the vehicle's braking system. This safety function takes precedence over every other function and is active at all times.
+- **Driver attentiveness monitoring** - While in engaged mode, Copilot periodically verifies that the driver remains attentive by prompting them for a confirming steering wheel action. If the driver reacts appropriately within the allotted window, autonomous operation continues.
+- **Driver override** - at any moment, a sufficient force applied by the driver to the steering wheel is interpreted as an intent to take manual control.
 
 ### 1.3.3. User characteristics
 The users of the Copilot simulation software are primarliy Automotive Software Engineers - Qualified technical staff who use the simulation to verify the correctness of autonomous algorithms.
@@ -95,14 +99,14 @@ Copilot shall read sensor events from *sensor_log.csv* and driver events from *d
 ## 3.2. Functions - Processing Flows
 
 ### PF-01 - Sensor event
-The processing logic applied to each sensor event depends on the sensor type and the current system state. The diagram below specifies th evaluation order of autonomous features and the resulting writes to output files for a single sensor processing cycle.
+This processing flow specifies, for a single incoming sensor event, the order in which Copilot evaluates autonomous features, the conditions under which each feature produces a decision, and the resulting writes to output files.
 
-[UML]
+Every sensor event is first recorded by the program as received. If the event originates from a Lidar sensor, the program evaluates emergency braking before considering any other feature and does so regardless of the current operating mode. When the reported distance is strictly less than 5 meters, the program decides on emergency braking, writes a corresponding feature decision to *feature_decision.csv*, issues a braking command to the Braking System actuator, and records that command in *commands_log.csv*. Otherwise, when the reported distance is 5 meters or greater, the program records a non-braking decision.
+
+If the event originates from a sensor other than Lidar, the program only takes further action when it is currently in engaged mode. A camera sensor event causes the program to compute a lane keeping correction and a cruise control adjustment, to issue the resulting commands to the Steering Motor actuator and the speed actuator, to record both commands in commands_log.csv, and to record the two corresponding feature decisions in feature_decision.csv.
 
 ### PF-02 - Loop execution flow
-Copilot reads events from two independent input files which are merged into a single chronological stream before processing begins. The diagram below shows the program execution flow startup to termination, including the merging of input surces and the sequential dispatching of events.
-
-[UML]
+On program start, Copilot reads all events from sensor_log.csv and all events from driver_events.csv and merges them into a single event stream ordered by ascending timestamp. The program then iterates over this stream in order, dispatching each event to the appropriate handler: sensor events are handled according to PF-01, and driver events are handled according to the rules specified in FR-01, FR-03, and FR-04. When the stream is exhausted, the program flushes all output files and terminates.
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
