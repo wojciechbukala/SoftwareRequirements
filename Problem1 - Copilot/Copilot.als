@@ -1,11 +1,3 @@
-# 1. Purpose
-The Copilot program is a simulation of an onboard computer for advanced driver assistance. It focuses on the logic of autonomous operations (lane keeping, cruise control, emergency braking) without direct hardware integration, operating as an offline tool. The main goals of the system are:
-
-- **G1** - Copilot shall process periodic sensor data and driver events to determine the vehicle's autonomous state and maintain safe driving conditions.
-- **G2** - The system shall prioritize safety-critical decisions, specifically emergency braking based on real-time environmental perceptions (Lidar and camera data).
-- **G3** - Copilot shall monitor driver attentiveness through periodic checks and ensure immediate disengagement or alarm triggering if the driver's response is inadequate or manual override is detected.
-
-# 2. Alloy model
 // Copilot - Alloy6 model
 
 //---Enumerated domains---
@@ -609,43 +601,3 @@ pred ScenarioTimeoutToAlarming {
 run ScenarioTimeoutToAlarming for 4 but 8 Int, 15 steps,
 5 StateLogEntry, 6 Command, 2 FeatureDecision, 1 Event,
 1 DriverEvent, 0 SensorEvent
-
-# 3. Operational envelope
-
-# 3.1. I/O operations
-The system shall clearly separate the perception layer, the decision logic, and the actuator control layer. The source code must adhere to clean code principles.
-
-All input and output files shall use CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file shall be a header row containing column names as specified below.
-**inputs**
-- *sensor_log.csv*: timestamp, sensor_id, sensor_type, data_value, unit.
-- *driver_events.csv*: timestamp, event_type, value.
-Allowed values for *driver_events.csv*:
-1) ENGAGE
-2) DISENGAGE
-3) STEERING_FORCE
-
-**outputs**
-- *state_log.csv*: timestamp, previous_state, current_state, trigger_event.
-- *commands_log.csv*: timestamp, actuator_id, values.
-- *feature_decision.csv*: timestamp, feature, decision.
-
-# 3.2. Non-functional requirements
-The program shall be able to run on the reference machine with at least specification of:
-- CPU: 4-core, 1.60 GHz base clock
-- RAM: 16 GB
-- Storage: SSD
-- OS: Linux 64-bit
-
-Considering latency, the system shall process each sensor reading and driver event within 50 milliseconds.
-
-# 3.3. Verification approach
-Verification of the Copilot system shall be performed by the evaluator through black_box assessment of program outputs against provided input files. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
-
-Each functional requirement shall be considered satisfied if the contents of the output files are consistent with the behaviour specified in Section 2.1. Verification of non-functional requirements shall be performed by manual measurement on the reference machine defined in Section 2.3.
-
-# 4. Appendices
-
-## 4.1. Domain assumptions
-- **DA-01** - It is assumed that the input CSV files are well-formed and follow the predefined schema.
-- **DA-02** - The system assumes that at any given time, at least one Lidar sensor and one camera sensor provide valid readings to allow for safe autonomous operation logic.
-- **DA-03** - The simulation assumes that the vehicle's physical actuators respond instantly and perfectly to the electronic commands issued by the Copilot system.
