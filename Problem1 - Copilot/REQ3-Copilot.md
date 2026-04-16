@@ -34,77 +34,81 @@ The Copilot program is a simulation of an onboard computer for advanced driver a
 ### 1.3.1. Product perspective
 The domain of the Copilot program with necessary dependencies and relations is presented below using domain class diagram. It is a conceptual model of the system in a given environment and it does not determine the class for implementation.
 
-    classDiagram
-        class SensorEvent {
-            +timestamp
-            +sensor_id
-            +sensor_type
-            +data_value
-            +unit
-        }
-        class DriverEvent {
-            +timestamp
-            +event_type
-            +value
-        }
-        class CopilotSystem {
-            +mode
-            +last_prompt_time
-            +awaiting_response
-        }
-        class StateTransition {
-            +timestamp
-            +previous_state
-            +current_state
-            +trigger_event
-        }
-        class ActuatorCommand {
-            +timestamp
-            +actuator_id
-            +values
-        }
-        class FeatureDecision {
-            +timestamp
-            +feature
-            +decision
-        }
-        class AttentivenessCheck {
-            +prompt_time
-            +deadline
-            +status
-        }
-    
-        SensorEvent "1..*" --> "1" CopilotSystem : triggers processing cycle
-        DriverEvent "0..*" --> "1" CopilotSystem : triggers event
-        CopilotSystem "1" --> "0..*" StateTransition : records
-        CopilotSystem "1" --> "0..*" ActuatorCommand : issues
-        CopilotSystem "1" --> "0..*" FeatureDecision : produces
-        CopilotSystem "1" --> "0..1" AttentivenessCheck : manages
+```
+classDiagram
+    class SensorEvent {
+        +timestamp
+        +sensor_id
+        +sensor_type
+        +data_value
+        +unit
+    }
+    class DriverEvent {
+        +timestamp
+        +event_type
+        +value
+    }
+    class CopilotSystem {
+        +mode
+        +last_prompt_time
+        +awaiting_response
+    }
+    class StateTransition {
+        +timestamp
+        +previous_state
+        +current_state
+        +trigger_event
+    }
+    class ActuatorCommand {
+        +timestamp
+        +actuator_id
+        +values
+    }
+    class FeatureDecision {
+        +timestamp
+        +feature
+        +decision
+    }
+    class AttentivenessCheck {
+        +prompt_time
+        +deadline
+        +status
+    }
+
+    SensorEvent "1..*" --> "1" CopilotSystem : triggers processing cycle
+    DriverEvent "0..*" --> "1" CopilotSystem : triggers event
+    CopilotSystem "1" --> "0..*" StateTransition : records
+    CopilotSystem "1" --> "0..*" ActuatorCommand : issues
+    CopilotSystem "1" --> "0..*" FeatureDecision : produces
+    CopilotSystem "1" --> "0..1" AttentivenessCheck : manages
+```
 
 ### 1.3.2. Product functions
 The core behaviour of the Copilot system is governed by a state machine with four states: Disengaged, Engaged, AwaitingResponse, and Alarming. The state machine is presented below. 
 
-    stateDiagram-v2
-        [*] --> Disengaged
-    
-        Disengaged --> Engaged : driver engaged
-    
-        Engaged --> Disengaged : driver disengaged
-        Engaged --> Disengaged : steering force > 10 N
-        Engaged --> AwaitingResponse : attentiveness prompt issued
-    
-        AwaitingResponse --> Engaged : steering force <= 3 N [within 5s]
-        AwaitingResponse --> AwaitingResponse : 3 N < steering force < 10 N [ignored]
-        AwaitingResponse --> Disengaged : steering force > 10 N
-        AwaitingResponse --> Alarming : no valid response for 5s
-    
-        Alarming --> Engaged : steering force <= 3 N
-        Alarming --> Disengaged : steering force > 10 N
-    
-        Engaged --> [*] : car turned off
-        AwaitingResponse --> [*] : car turned off
-        Alarming --> [*] : car turned off
-        Disengaged --> [*] : car turned off
+```
+stateDiagram-v2
+    [*] --> Disengaged
+
+    Disengaged --> Engaged : driver engaged
+
+    Engaged --> Disengaged : driver disengaged
+    Engaged --> Disengaged : steering force > 10 N
+    Engaged --> AwaitingResponse : attentiveness prompt issued
+
+    AwaitingResponse --> Engaged : steering force <= 3 N [within 5s]
+    AwaitingResponse --> AwaitingResponse : 3 N < steering force < 10 N [ignored]
+    AwaitingResponse --> Disengaged : steering force > 10 N
+    AwaitingResponse --> Alarming : no valid response for 5s
+
+    Alarming --> Engaged : steering force <= 3 N
+    Alarming --> Disengaged : steering force > 10 N
+
+    Engaged --> [*] : car turned off
+    AwaitingResponse --> [*] : car turned off
+    Alarming --> [*] : car turned off
+    Disengaged --> [*] : car turned off
+```
 
 Emergency braking (Lidar < 5 m → BRAKE command) is evaluated in every state, including Disengaged. See PF-01.
 
@@ -172,47 +176,50 @@ Copilot shall read sensor events from *sensor_log.csv* and driver events from *d
 ### PF-01 - Sensor event
 The processing logic applied to each sensor event depends on the sensor type and the current system state. The diagram below specifies th evaluation order of autonomous features and the resulting writes to output files for a single sensor processing cycle.
 
-    flowchart TD
-        A([sensor event received]) --> B[log raw event]
-        B --> D{sensor_type == Lidar?}
+```
+flowchart TD
+    A([sensor event received]) --> B[log raw event]
+    B --> D{sensor_type == Lidar?}
 
-        D -- Yes --> E{data_value < 5 m?}
-        E -- Yes --> F[decide: emergency_braking = BRAKE]
-        F --> G[issue command to BrakingSystem actuator]
-        G --> H[write to feature_decision.csv\nwrite to commands_log.csv]
-        H --> Z([end cycle])
+    D -- Yes --> E{data_value < 5 m?}
+    E -- Yes --> F[decide: emergency_braking = BRAKE]
+    F --> G[issue command to BrakingSystem actuator]
+    G --> H[write to feature_decision.csv\nwrite to commands_log.csv]
+    H --> Z([end cycle])
 
-        E -- No --> I[decide: emergency_braking = NO_BRAKE]
-        I --> J[write to feature_decision.csv]
-        J --> Z
+    E -- No --> I[decide: emergency_braking = NO_BRAKE]
+    I --> J[write to feature_decision.csv]
+    J --> Z
 
-        D -- No --> C{system state == Engaged?}
-        C -- No --> Z
-        C -- Yes --> K{sensor_type == Camera?}
-        K -- Yes --> L[compute lane keeping correction]
-        L --> M[compute cruise control adjustment]
-        M --> N[issue commands to SteeringMotor\nand SpeedActuator]
-        N --> O[write to feature_decision.csv x2\nwrite to commands_log.csv x2]
-        O --> Z
-        K -- No --> Z
+    D -- No --> C{system state == Engaged?}
+    C -- No --> Z
+    C -- Yes --> K{sensor_type == Camera?}
+    K -- Yes --> L[compute lane keeping correction]
+    L --> M[compute cruise control adjustment]
+    M --> N[issue commands to SteeringMotor\nand SpeedActuator]
+    N --> O[write to feature_decision.csv x2\nwrite to commands_log.csv x2]
+    O --> Z
+    K -- No --> Z
+```
 
 ### PF-02 - Loop execution flow
 Copilot reads events from two independent input files which are merged into a single chronological stream before processing begins. The diagram below shows the program execution flow startup to termination, including the merging of input surces and the sequential dispatching of events.
 
-    flowchart TD
-    A([program start]) --> B[read sensor_log.csv]
-    A --> C[read driver_events.csv]
-    B --> D[merge into single event stream\nsorted by timestamp ascending]
-    C --> D
-    D --> E{next event in stream?}
-    E -- No --> F[flush all output buffers]
-    F --> G([program end])
-    E -- Yes --> H{event type?}
-    H -- sensor event --> I[run sensor processing cycle]
-    H -- driver event --> J[run driver event processing]
-    I --> E
-    J --> E
-
+```
+flowchart TD
+A([program start]) --> B[read sensor_log.csv]
+A --> C[read driver_events.csv]
+B --> D[merge into single event stream\nsorted by timestamp ascending]
+C --> D
+D --> E{next event in stream?}
+E -- No --> F[flush all output buffers]
+F --> G([program end])
+E -- Yes --> H{event type?}
+H -- sensor event --> I[run sensor processing cycle]
+H -- driver event --> J[run driver event processing]
+I --> E
+J --> E
+```
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:

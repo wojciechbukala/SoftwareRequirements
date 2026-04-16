@@ -37,113 +37,119 @@ Product overview can be described using a domain class diagram as a conceptual m
 
 Domain class diagram transformed to Mermaid.js form:
 
-    classDiagram
-        class Location {
-            +location_id
-            +name
-        }
-    
-        class Distance {
-            +origin_id
-            +destination_id
-            +distance
-            +travel_time
-        }
-    
-        class Vehicle {
-            +vehicle_id
-            +weight_capacity
-            +volume_capacity
-            +depot_location_id
-        }
-    
-        class Package {
-            +package_id
-            +destination_id
-            +weight
-            +volume
-            +tw_open
-            +tw_close
-            +priority
-        }
-    
-        class Stops {
-            +route_id
-            +vehicle_id
-            +location_id
-            +delivered_id
-            +position_in_order
-            +arrival_time
-            +departure_time
-        }
-    
-        class RouteSummary {
-            +route_id
-            +total_distance
-            +total_time
-            +packages_delivered
-        }
-    
-        class Undeliverable {
-            +package_id
-            +reason
-        }
-    
-        Location "0..*" -- "1..*" Distance : origin of
-        Location "0..*" -- "1..*" Distance : destination of
-        Location "1" -- "1..*" Vehicle : has depot
-        Location "1" -- "0..*" Package : desired destination
-        Location "1" -- "0..*" Stops : takes place at
-        Vehicle "1" -- "0..*" Stops : delivered by
-        Package "1" -- "0..1" Stops : delivered package
-        Package "1" -- "0..1" Undeliverable : can be
-        RouteSummary "1" -- "0..*" Stops : is element of
+```
+classDiagram
+    class Location {
+        +location_id
+        +name
+    }
+
+    class Distance {
+        +origin_id
+        +destination_id
+        +distance
+        +travel_time
+    }
+
+    class Vehicle {
+        +vehicle_id
+        +weight_capacity
+        +volume_capacity
+        +depot_location_id
+    }
+
+    class Package {
+        +package_id
+        +destination_id
+        +weight
+        +volume
+        +tw_open
+        +tw_close
+        +priority
+    }
+
+    class Stops {
+        +route_id
+        +vehicle_id
+        +location_id
+        +delivered_id
+        +position_in_order
+        +arrival_time
+        +departure_time
+    }
+
+    class RouteSummary {
+        +route_id
+        +total_distance
+        +total_time
+        +packages_delivered
+    }
+
+    class Undeliverable {
+        +package_id
+        +reason
+    }
+
+    Location "0..*" -- "1..*" Distance : origin of
+    Location "0..*" -- "1..*" Distance : destination of
+    Location "1" -- "1..*" Vehicle : has depot
+    Location "1" -- "0..*" Package : desired destination
+    Location "1" -- "0..*" Stops : takes place at
+    Vehicle "1" -- "0..*" Stops : delivered by
+    Package "1" -- "0..1" Stops : delivered package
+    Package "1" -- "0..1" Undeliverable : can be
+    RouteSummary "1" -- "0..*" Stops : is element of
+```
 
 ### 1.3.2. Product functions
 The core processing logic of FleetRouter is captured by two state machines. The firs one models the lifecycle of a single package. The second one models the lifecycle of a route being constructed for a given vehicle.
 
 Package state machine:
 
-    stateDiagram-v2
-        [*] --> Unassigned
-    
-        Unassigned --> Assigned : Fits constraints
-        Unassigned --> Undeliverable : No vehicle fits
-    
-        Assigned --> Delivered : Route executed
-        Delivered --> [*]
-    
-        state Undeliverable {
-            direction LR
-            state pick <<choice>>
-            [*] --> pick
-            pick --> CAPACITY_WEIGHT   : weight limit exceeded
-            pick --> CAPACITY_VOLUME   : volume limit exceeded
-            pick --> TIME_WINDOW       : window infeasible / invalid
-            pick --> MAX_DRIVER_TIME   : 8h driver limit exceeded
-            pick --> NO_VEHICLE        : no vehicle fits after all checks
-            CAPACITY_WEIGHT --> [*]
-            CAPACITY_VOLUME --> [*]
-            TIME_WINDOW     --> [*]
-            MAX_DRIVER_TIME --> [*]
-            NO_VEHICLE      --> [*]
-            UNREACHABLE     --> [*]
-        }
-    
-        Undeliverable --> [*]
+```
+stateDiagram-v2
+    [*] --> Unassigned
+
+    Unassigned --> Assigned : Fits constraints
+    Unassigned --> Undeliverable : No vehicle fits
+
+    Assigned --> Delivered : Route executed
+    Delivered --> [*]
+
+    state Undeliverable {
+        direction LR
+        state pick <<choice>>
+        [*] --> pick
+        pick --> CAPACITY_WEIGHT   : weight limit exceeded
+        pick --> CAPACITY_VOLUME   : volume limit exceeded
+        pick --> TIME_WINDOW       : window infeasible / invalid
+        pick --> MAX_DRIVER_TIME   : 8h driver limit exceeded
+        pick --> NO_VEHICLE        : no vehicle fits after all checks
+        CAPACITY_WEIGHT --> [*]
+        CAPACITY_VOLUME --> [*]
+        TIME_WINDOW     --> [*]
+        MAX_DRIVER_TIME --> [*]
+        NO_VEHICLE      --> [*]
+        UNREACHABLE     --> [*]
+    }
+
+    Undeliverable --> [*]
+```
 
 Route state diagram:
 
-    stateDiagram-v2
-        [*] --> Empty
-        
-        Empty --> BuildingRoute : Add stop
-        
-        state "Building route" as BuildingRoute
-        BuildingRoute --> BuildingRoute : Add stop
-        BuildingRoute --> Validated : Validate constraints
-        
-        Validated --> [*]
+```
+stateDiagram-v2
+    [*] --> Empty
+    
+    Empty --> BuildingRoute : Add stop
+    
+    state "Building route" as BuildingRoute
+    BuildingRoute --> BuildingRoute : Add stop
+    BuildingRoute --> Validated : Validate constraints
+    
+    Validated --> [*]
+```
 
 
 ### 1.3.3. User characteristics
@@ -216,32 +222,34 @@ The system shall:
 ### UC-01 - Run daily route planning
 UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence diagram below illustrates the complete message flow between the operator, the system, and the file system.
 
-    sequenceDiagram
-    actor Operator as FleetOperator
-    participant FR as FleetRouter
-    participant FS as File System
+```
+sequenceDiagram
+actor Operator as FleetOperator
+participant FR as FleetRouter
+participant FS as File System
 
-    Operator->+FR: fleetrouter --input <dir> --output <dir>
-    FR->+FS: read packages.csv, vehicles.csv, locations.csv, distances.csv
+Operator->+FR: fleetrouter --input <dir> --output <dir>
+FR->+FS: read packages.csv, vehicles.csv, locations.csv, distances.csv
+
+alt any file missing or unreadable
+    FS-->>FR: file not found error
+    FR-->>Operator: terminate: report missing files
+else all files good
+    FS-->>-FR: raw data
     
-    alt any file missing or unreadable
-        FS-->>FR: file not found error
-        FR-->>Operator: terminate: report missing files
-    else all files good
-        FS-->>-FR: raw data
-        
-        FR->>FR: validate input data
-        
-        FR->>FR: assign packages to vehicles
-        
-        FR->>FR: build and optimize routes
-        
-        FR->FS: write stops_order.csv
-        FR->FS: write summary.csv
-        FR->FS: write undeliverable.csv
-        
-        FR-->>-Operator: print summary (processed / delivered / undeliverable)
-    end
+    FR->>FR: validate input data
+    
+    FR->>FR: assign packages to vehicles
+    
+    FR->>FR: build and optimize routes
+    
+    FR->FS: write stops_order.csv
+    FR->FS: write summary.csv
+    FR->FS: write undeliverable.csv
+    
+    FR-->>-Operator: print summary (processed / delivered / undeliverable)
+end
+```
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:

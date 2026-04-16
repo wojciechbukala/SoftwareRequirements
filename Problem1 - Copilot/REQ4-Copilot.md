@@ -6,6 +6,7 @@ The Copilot program is a simulation of an onboard computer for advanced driver a
 - **G3** - Copilot shall monitor driver attentiveness through periodic checks and ensure immediate disengagement or alarm triggering if the driver's response is inadequate or manual override is detected.
 
 # 2. Alloy model
+```
 // Copilot - Alloy6 model
 
 //---Enumerated domains---
@@ -609,6 +610,7 @@ pred ScenarioTimeoutToAlarming {
 run ScenarioTimeoutToAlarming for 4 but 8 Int, 15 steps,
 5 StateLogEntry, 6 Command, 2 FeatureDecision, 1 Event,
 1 DriverEvent, 0 SensorEvent
+```
 
 # 3. Operational envelope
 
