@@ -595,6 +595,24 @@ run fullLifecycle
 # 3. Operational envelope
 
 # 3.1. I/O operations
+The SeatsReservation system is logically divided into three user interfaces, each accessible through the same single entry point:
+
+1. **Login / Register panel** - the single entry point for all users. It allows authentication and account creation, and after successful login routes the user to the appropriate interface based on their role.
+2. **User interface** - accessible after login as a Customer. It consists of the following views:
+   - *Events* - a list of upcoming events; selecting an event initiates the "Reserve seats" use case (UC-01).
+   - *Bookings* - a history of the user's reservations with their current status, used for tracking payments and performing cancellations.
+   - *Profile* - personal account details.
+   - *Settings* - application settings.
+3. **Administrator interface** - accessible after login as an Administrator. It consists of the following views:
+   - *Dashboard* - real-time summary of occupancy and revenue across managed events.
+   - *Events* - a table of all managed events with their configuration options.
+   - *Event Creator* - a form-based tool for event metadata entry, interactive grid or pool configuration, and base price setup; initiates the "Add event" use case (UC-03).
+
+
+- **Platform** - the system shall be delivered as a web application compatible with modern web browsers (see 3.8 Portability).
+- **Visual style** - the key views of the system (Login panel, User interface, and Administrator interface) are provided as mockups in the *UI_Mockups* folder (*LoginRegister.png*, *User.png*, *Admin.png*). All views not explicitly covered by the mockups shall follow the same graphical style — colour palette, typography, proportions, component shapes, and interaction patterns — as established by the mockups.
+- **Single entry point** - authentication for both roles is handled by the same Login / Register panel; no separate admin login URL or credential store is permitted.
+
 
 # 3.2. Non-functional requirements
 - The program shall process reservation requests in under 200ms.
