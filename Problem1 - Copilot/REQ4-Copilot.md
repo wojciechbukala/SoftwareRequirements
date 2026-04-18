@@ -614,7 +614,13 @@ run ScenarioTimeoutToAlarming for 4 but 8 Int, 15 steps,
 
 # 3. Operational envelope
 
-# 3.1. I/O operations
+## 3.1. Definitions
+- Lidar - A remote sensing method that uses light in the form of a pulsed laser to measure ranges to the objects.
+- Actuator - A component of a machine that is responsible for moving and controlling a mechanism or system.
+- Attentiveness Check - A safety procedure where the system prompts the driver to confirm they are monitoring the road by applying a small force to the steering wheel.
+- Emergency Braking - A safety feature that automatically applies the brakes to prevent a collision when an obstacle is detected at a critical distance.
+
+## 3.2. I/O operations
 The system shall clearly separate the perception layer, the decision logic, and the actuator control layer. The source code must adhere to clean code principles.
 
 All input and output files shall use CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file shall be a header row containing column names as specified below.
@@ -631,7 +637,22 @@ Allowed values for *driver_events.csv*:
 - *commands_log.csv*: timestamp, actuator_id, values.
 - *feature_decision.csv*: timestamp, feature, decision.
 
-# 3.2. Non-functional requirements
+## 3.3. CLI
+Copilot operates exclusively through a command-line interface. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcoded file paths. The command syntax shall follow the form: *copilot --input <\dir> --output <\dir>*, where both argument are mandatory. 
+
+The CLI shall provide clear, real-time status updates to the standard output. The paths to input and output files shall be configurable via command-line arguments, eliminating the need for hardcoded file paths.
+
+## 3.4. System attributes
+### Security
+The system is designed to operate strictly offline on a single machine. No network-based data transmission is permitted. 
+
+### Maintainbility
+The system shall be designed to support automated unit testing. Moreover, the source code must include comprehensive inline documentation.
+
+### Portability
+The system must be capable of running on any POSIX-compliant operating system and Windows. The software shall not require any specialized hardware (e.g., GPU acceleration) or external database engines to function.
+
+## 3.4. Non-functional requirements
 The program shall be able to run on the reference machine with at least specification of:
 - CPU: 4-core, 1.60 GHz base clock
 - RAM: 16 GB
@@ -640,7 +661,7 @@ The program shall be able to run on the reference machine with at least specific
 
 Considering latency, the system shall process each sensor reading and driver event within 50 milliseconds.
 
-# 3.3. Verification approach
+## 3.5. Verification approach
 Verification of the Copilot system shall be performed by the evaluator through black_box assessment of program outputs against provided input files. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
 
 Each functional requirement shall be considered satisfied if the contents of the output files are consistent with the behaviour specified in Section 2.1. Verification of non-functional requirements shall be performed by manual measurement on the reference machine defined in Section 2.3.
@@ -651,3 +672,4 @@ Each functional requirement shall be considered satisfied if the contents of the
 - **DA-01** - It is assumed that the input CSV files are well-formed and follow the predefined schema.
 - **DA-02** - The system assumes that at any given time, at least one Lidar sensor and one camera sensor provide valid readings to allow for safe autonomous operation logic.
 - **DA-03** - The simulation assumes that the vehicle's physical actuators respond instantly and perfectly to the electronic commands issued by the Copilot system.
+- **DA-04** - Each event in the input streams has a unique timestamp; ties are assumed not to occur.

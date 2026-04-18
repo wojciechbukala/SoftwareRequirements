@@ -33,57 +33,59 @@ The SeatsReservation program is focused on the logic of event management and res
 ### 1.3.1. Product perspective
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the SeatsReservation. The diagram does not determine the class for implementation.
 
-    classDiagram
-        class AnyUser {
-            +user_id
-        }
-        class User {
-        }
-        class Administrator {
-        }
+```
+classDiagram
+    class AnyUser {
+        +user_id
+    }
+    class User {
+    }
+    class Administrator {
+    }
 
-        AnyUser <|-- User
-        AnyUser <|-- Administrator
+    AnyUser <|-- User
+    AnyUser <|-- Administrator
 
-        class Event {
-            +event_id
-            +event_date
-            +name
-            +location
-            +rows
-            +columns
-            +has_numbered_seats
-        }
+    class Event {
+        +event_id
+        +event_date
+        +name
+        +location
+        +rows
+        +columns
+        +has_numbered_seats
+    }
 
-        class EventPricing {
-            +event_id
-            +category
-            +base_price
-        }
+    class EventPricing {
+        +event_id
+        +category
+        +base_price
+    }
 
-        class Reservation {
-            +reservation_id
-            +user_id
-            +event_id
-            +status
-            +create_time
-            +expire_time
-        }
+    class Reservation {
+        +reservation_id
+        +user_id
+        +event_id
+        +status
+        +create_time
+        +expire_time
+    }
 
-        class Seat {
-            +seat_id
-            +event_id
-            +row_number
-            +column_number
-            +category
-        }
+    class Seat {
+        +seat_id
+        +event_id
+        +row_number
+        +column_number
+        +category
+    }
 
-        Administrator "1" -- "0..*" Event : creates
-        User "1" -- "0..*" Reservation : creates
-        Event "1" -- "1..*" EventPricing : defines
-        Event "1" -- "0..*" Reservation : for
-        Event "1" -- "1..*" Seat : has
-        Reservation "0..1" -- "1..*" Seat : includes
+    Administrator "1" -- "0..*" Event : creates
+    User "1" -- "0..*" Reservation : creates
+    Event "1" -- "1..*" EventPricing : defines
+    Event "1" -- "0..*" Reservation : for
+    Event "1" -- "1..*" Seat : has
+    Reservation "0..1" -- "1..*" Seat : includes
+```
 
 ### 1.3.2. Product functions
 at a high level, the Seats Reseravtion system provides the following groups of functions:
@@ -125,7 +127,7 @@ Functional requirements for the SeatsReservation problem are listed below.
 The system shall enable the Administrator to create and configure events, covering event metadata, a fixed-size rectangular seating grid with a uniform numbering type (strictly numbered or non-numbered), seat category assignment(VIP, Premium, or Economy), and base price definition per category. The detailed interaction flow is specified in use case UC-03.
 
 ### FR-02 - Reservation Logic
-The SeatsReservation system should manage the complete reservation lifecycle by processing booking requests as atomic transactions. It must strictly enforce seat adjacency for numbered events and limit each user to a maximum of two concurrent pending locks, with fixed lock window (see UC-01 sequence). If payment is not confirmed within this window, the system must revert seats to the available pool.
+The SeatsReservation system should manage the complete reservation lifecycle by processing booking requests as atomic transactions. It must strictly enforce seat adjacency for numbered events and limit each user to a maximum of two concurrent pending locks, with fixed lock window (see UC-01 sequence). Adjacency is defined as a contiguous block of seats within a single row (horizontal adjacency only). If payment is not confirmed within this window, the system must revert seats to the available pool. Reservation status can be {Pending, Confirmed, Cancelled, Expired}, with Cancelled for user action on confirmed reservations and Expired for automatic timeout on pending locks.
 
 ### FR-03 - Pricing engine
 The system shall automatically calculate the final ticket price at the moment of reservation by applying time-based rules: an Early Bird discount of 20% for booking at least 30 days in advance, and a Last Minute surcharge of 30% for booking less than 48 hours before the event and at events with occupancy sold more than 80%. Throughout these calculations, the system must maintain a strict financial hierarchy, ensuring that the effective price of a VIP ticket is always greater then a Premimum ticket and the Premium ticket price is always greater then Ecomony.
@@ -135,218 +137,232 @@ The SeatsReservation program must allow users to cancel confirmed reservations u
 
 ## 3.2. Functions - Use cases
 Actors and their use cases includend in the system evironment can be described by the use cases diagram as below: 
-    graph LR
-    User((User))
-    Admin((Administrator))
-    PaymentService((External payment service))
+```
+graph LR
+User((User))
+Admin((Administrator))
+PaymentService((External payment service))
 
-    subgraph "SeatsReservation System"
-        UC1(User Registration)
-        UC2(User Login)
-        UC3(Reserve seats)
-        UC4(Confirm payment)
-        UC5(Cancel reservation)
-        UC6(Browse events)
-        UC7(View personal bookings)
+subgraph "SeatsReservation System"
+    UC1(User Registration)
+    UC2(User Login)
+    UC3(Reserve seats)
+    UC4(Confirm payment)
+    UC5(Cancel reservation)
+    UC6(Browse events)
+    UC7(View personal bookings)
 
-        UC8(Log in to Admin Interface)
-        UC9(Create event)
-        UC10(Configure seating grid)
-        UC11(Set base prices)
-        UC12(View reservation summary)
-    end
+    UC8(Log in to Admin Interface)
+    UC9(Create event)
+    UC10(Configure seating grid)
+    UC11(Set base prices)
+    UC12(View reservation summary)
+end
 
-    User -- "<<initiate>>" --> UC1
-    User -- "<<initiate>>" --> UC2
-    User -- "<<initiate>>" --> UC3
-    User -- "<<participate>>" --> UC4
-    User -- "<<initiate>>" --> UC5
-    User -- "<<initiate>>" --> UC6
-    User -- "<<initiate>>" --> UC7
+User -- "<<initiate>>" --> UC1
+User -- "<<initiate>>" --> UC2
+User -- "<<initiate>>" --> UC3
+User -- "<<participate>>" --> UC4
+User -- "<<initiate>>" --> UC5
+User -- "<<initiate>>" --> UC6
+User -- "<<initiate>>" --> UC7
 
-    Admin -- "<<initiate>>" --> UC8
-    Admin -- "<<initiate>>" --> UC9
-    Admin -- "<<initiate>>" --> UC10
-    Admin -- "<<initiate>>" --> UC11
-    Admin -- "<<initiate>>" --> UC12
+Admin -- "<<initiate>>" --> UC8
+Admin -- "<<initiate>>" --> UC9
+Admin -- "<<initiate>>" --> UC10
+Admin -- "<<initiate>>" --> UC11
+Admin -- "<<initiate>>" --> UC12
 
-    UC3 -- "<<participate>>" --- PaymentService
-    PaymentService -- "<<initiate>>" --> UC4
-    UC5 -- "<<participate>>" --- PaymentService
+UC3 -- "<<participate>>" --- PaymentService
+PaymentService -- "<<initiate>>" --> UC4
+UC5 -- "<<participate>>" --- PaymentService
+```
 
 ## UC-01 - Make reservation
 The main functionality of the system is the possibility to reserve a seat by a user for a specified event. Process is presented with the usage of 3 sequence diagrams. The split was made to make a clear distingush between numbered and nonnumbered events.
 
 Seqence diagram - user selects event form the list displayed on the website:
-    sequenceDiagram
-    actor User
-    participant RS as ReservationService
-    participant Repository as SeatsRepository
+```    
+sequenceDiagram
+actor User
+participant RS as ReservationService
+participant Repository as SeatsRepository
 
-    User->+RS: getEventInfo(eventId)
-    RS->+Repository: fetchEventInfo(eventId)
-    Repository-->>-RS: event(has_numbered_seats, date)
+User->+RS: getEventInfo(eventId)
+RS->+Repository: fetchEventInfo(eventId)
+Repository-->>-RS: event(has_numbered_seats, date)
 
-    alt has_numbered_seats = true
-        RS->+Repository: fetchSeatsGrid(eventId)
-        Repository-->>-RS: seats[] with status
-        RS-->>User: render_seat_grid()
-        Note over User, Repository: ref: Reserve seats - numbered
-    else has_numbered_seats = false
-        RS->+Repository: fetchPool(eventId)
-        Repository-->>-RS: category_and_available_quantity[]
-        RS-->>User: render_category_picker()
-        Note over User, Repository: ref: Reserve seats - unnumbered
-    end
+alt has_numbered_seats = true
+    RS->+Repository: fetchSeatsGrid(eventId)
+    Repository-->>-RS: seats[] with status
+    RS-->>User: render_seat_grid()
+    Note over User, Repository: ref: Reserve seats - numbered
+else has_numbered_seats = false
+    RS->+Repository: fetchPool(eventId)
+    Repository-->>-RS: category_and_available_quantity[]
+    RS-->>User: render_category_picker()
+    Note over User, Repository: ref: Reserve seats - unnumbered
+end
+```
 
 If event is numbered, the process of reservation and confirmation looks as provided below:
-    sequenceDiagram
-    actor User
-    participant RS as ReservationService
-    participant Repository as SeatsRepository
-    participant Timer
+```
+sequenceDiagram
+actor User
+participant RS as ReservationService
+participant Repository as SeatsRepository
+participant Timer
 
-    loop selection
-        User->+RS: click seat
-        alt seat unavailable or not adjacent
-            RS-->>User: ignore click
-        else else
-            RS-->>-User: update_selection_view()
-        end
-    end
-
-    User->+RS: confirm selection
-    alt pending count >= 2
-        RS-->>User: error: limit reached, abort
+loop selection
+    User->+RS: click seat
+    alt seat unavailable or not adjacent
+        RS-->>User: ignore click
     else else
-        RS->+Repository: lockSeats(userId, seatIds[])
-        Repository-->>-RS: seats_locked
-        RS->+Repository: getSeatsInfo(seatIds[])
-        Repository-->>-RS: seats_info
-        RS->RS: calculatePrice(seats_info)
-        RS->+Timer: startTimer()
-        RS-->>User: reservation_info(seats[], prices[], price, expires_at)
-        User->RS: proceed to payment
-        RS-->>-User: redirect to payment service
+        RS-->>-User: update_selection_view()
     end
+end
 
-    alt payment confirmed within 15 minutes
-        User->+RS: confirmPayment(reservationId)
-        RS->+Repository: updateStatus(seatIds[], CONFIRMED)
-        RS->+Timer: stopTimer()
-        RS-->>-User: reservation confirmed
-    else timer expired - no payment
-        Timer->>+RS: timerExpired()
-        RS->+Repository: updateStatus(seatIds[], AVAILABLE)
-        RS-->>-User: reservation canceled
-    end
-
-Otherwise, if the event is nonnumbered, the seqence looks like that:
-    sequenceDiagram
-    actor User
-    participant RS as ReservationService
-    participant Repository as SeatsRepository
-    participant Timer
-
-    User->+RS: select category + quantity
-    RS-->>-User: update picker
-    
-    User->+RS: confirm selection
-    RS->+Repository: lockSeats(eventId, category, quantity)
-    
-    opt quantity and category unavailable
-        Repository-->>RS: insufficient seats error
-        RS-->>User: lack of seats signal
-    end
-
+User->+RS: confirm selection
+alt pending count >= 2
+    RS-->>User: error: limit reached, abort
+else else
+    RS->+Repository: lockSeats(userId, seatIds[])
     Repository-->>-RS: seats_locked
-    
-    RS->RS: calculatePrice(quantity, category)
+    RS->+Repository: getSeatsInfo(seatIds[])
+    Repository-->>-RS: seats_info
+    RS->RS: calculatePrice(seats_info)
     RS->+Timer: startTimer()
-    RS-->>User: reservation_info(quantity, category, price, expires_at)
-    
+    RS-->>User: reservation_info(seats[], prices[], price, expires_at)
     User->RS: proceed to payment
     RS-->>-User: redirect to payment service
+end
 
-    alt payment confirmed within 15 minutes
-        User->+RS: confirmPayment(reservationId)
-        RS->+Repository: updateAvailability(quantity, category, UNAVAILABLE)
-        RS->+Timer: stopTimer()
-        RS-->>-User: reservation confirmed
-    else timer expired - no payment
-        Timer->>+RS: timerExpired()
-        RS->+Repository: updateAvailability(quantity, category, AVAILABLE)
-        RS-->>-User: reservation canceled
-    end
+alt payment confirmed within 15 minutes
+    User->+RS: confirmPayment(reservationId)
+    RS->+Repository: updateStatus(seatIds[], CONFIRMED)
+    RS->+Timer: stopTimer()
+    RS-->>-User: reservation confirmed
+else timer expired - no payment
+    Timer->>+RS: timerExpired()
+    RS->+Repository: updateStatus(seatIds[], AVAILABLE)
+    RS-->>-User: reservation canceled
+end
+```
+
+Otherwise, if the event is nonnumbered, the seqence looks like that:
+```
+sequenceDiagram
+actor User
+participant RS as ReservationService
+participant Repository as SeatsRepository
+participant Timer
+
+User->+RS: select category + quantity
+RS-->>-User: update picker
+
+User->+RS: confirm selection
+RS->+Repository: lockSeats(eventId, category, quantity)
+
+opt quantity and category unavailable
+    Repository-->>RS: insufficient seats error
+    RS-->>User: lack of seats signal
+end
+
+Repository-->>-RS: seats_locked
+
+RS->RS: calculatePrice(quantity, category)
+RS->+Timer: startTimer()
+RS-->>User: reservation_info(quantity, category, price, expires_at)
+
+User->RS: proceed to payment
+RS-->>-User: redirect to payment service
+
+alt payment confirmed within 15 minutes
+    User->+RS: confirmPayment(reservationId)
+    RS->+Repository: updateAvailability(quantity, category, UNAVAILABLE)
+    RS->+Timer: stopTimer()
+    RS-->>-User: reservation confirmed
+else timer expired - no payment
+    Timer->>+RS: timerExpired()
+    RS->+Repository: updateAvailability(quantity, category, AVAILABLE)
+    RS-->>-User: reservation canceled
+end
+```
 
 ## UC-02 - Cancel reservation
 Other key use case of the ystem is the possibility for a user to cancel reservation, presented at the sequence diagram below:
-    sequenceDiagram
-    actor User
-    participant RS as ReservationService
-    participant Repository as SeatsRepository
 
-    User->+RS: cancel_reservation(reservationId)
-    RS->+Repository: fetchReservation(reservationId)
-    Repository-->>-RS: reservation(status, event_date, userId)
+```
+sequenceDiagram
+actor User
+participant RS as ReservationService
+participant Repository as SeatsRepository
 
-    alt userId matches and status = Confirmed and now <= event_date -2h
-        RS->+Repository: releaseSeats(reservationId)
-        RS->+Repository: updateStatus(CANCELED)
-        Repository-->>-RS: done
-        RS-->>User: update view
-    else userId != reservation.userId
-        RS-->>Repository: error: unauthorized
-        RS-->>User: display error message
-    else status != Confirmed
-        RS-->>Repository: error: reservation not confirmed
-        RS-->>User: display error message
-    else now > event_date -2h
-        RS-->>Repository: error: cancellation window closed
-        RS-->>-User: display error message
-    end
+User->+RS: cancel_reservation(reservationId)
+RS->+Repository: fetchReservation(reservationId)
+Repository-->>-RS: reservation(status, event_date, userId)
+
+alt userId matches and status = Confirmed and now <= event_date -2h
+    RS->+Repository: releaseSeats(reservationId)
+    RS->+Repository: updateStatus(CANCELED)
+    Repository-->>-RS: done
+    RS-->>User: update view
+else userId != reservation.userId
+    RS-->>Repository: error: unauthorized
+    RS-->>User: display error message
+else status != Confirmed
+    RS-->>Repository: error: reservation not confirmed
+    RS-->>User: display error message
+else now > event_date -2h
+    RS-->>Repository: error: cancellation window closed
+    RS-->>-User: display error message
+end
+```
 
 ## UC-03 - Add event
 THe key functionality of the administarot is the possibilibty to add an event, as presented below:
-    sequenceDiagram
-        actor Admin as Administrator
-        participant RS as ReservationService
-        participant Repository as SeatsRepository
 
-        Admin->+RS: submitMetadata(name, date, type, rows, cols)
-        RS->+Repository: validateEvent(name, date, type)
-        
-        opt event already exist or has data error
-            Repository-->>RS: validation error
-            RS-->>Admin: validation error
-        end
+```
+sequenceDiagram
+    actor Admin as Administrator
+    participant RS as ReservationService
+    participant Repository as SeatsRepository
 
-        Repository-->>-RS: validation_ok
+    Admin->+RS: submitMetadata(name, date, type, rows, cols)
+    RS->+Repository: validateEvent(name, date, type)
+    
+    opt event already exist or has data error
+        Repository-->>RS: validation error
+        RS-->>Admin: validation error
+    end
 
-        alt numbered event
-            RS-->>Admin: render_grid_configurator
-            Admin->+RS: assign_category_per_seat(interactive_grid)
-            RS->RS: validation
-            RS-->>-Admin: validation_info
-        else nonnumbered event
-            RS-->>Admin: render_pool_configurator
-            Admin->+RS: assign_category_per_pool(qty_per_category)
-            RS->RS: validation
-            RS-->>-Admin: validation_info
-        end
+    Repository-->>-RS: validation_ok
 
-        Admin->+RS: submit_base_price(VIP, Premium, Economy)
+    alt numbered event
+        RS-->>Admin: render_grid_configurator
+        Admin->+RS: assign_category_per_seat(interactive_grid)
         RS->RS: validation
         RS-->>-Admin: validation_info
+    else nonnumbered event
+        RS-->>Admin: render_pool_configurator
+        Admin->+RS: assign_category_per_pool(qty_per_category)
+        RS->RS: validation
+        RS-->>-Admin: validation_info
+    end
 
-        alt all validations passed
-            Admin->+RS: confirm creation
-            RS->+Repository: createEvent(metadata, seats, prices)
-            Repository-->>-RS: eventId
-            RS-->>-Admin: redirect_to_event_dashboard
-        else else
-            RS-->>Admin: retry information
-        end
+    Admin->+RS: submit_base_price(VIP, Premium, Economy)
+    RS->RS: validation
+    RS-->>-Admin: validation_info
+
+    alt all validations passed
+        Admin->+RS: confirm creation
+        RS->+Repository: createEvent(metadata, seats, prices)
+        Repository-->>-RS: eventId
+        RS-->>-Admin: redirect_to_event_dashboard
+    else else
+        RS-->>Admin: retry information
+    end
+```
 
 
 ## 3.3. Performance requirements
@@ -378,56 +394,58 @@ The SeatsReservation system is logically divided into three user interfaces, eac
 ## 3.6. Logical database requirements
 The system shall maintain a persistent data model to ensure consistency across appliacation restarts. The logical schema is presented below thourgh entity relationship diagram:
 
-    erDiagram
-    User ||--o{ Event : "created_by"
-    User ||--o{ Reservation : "makes"
-    Event ||--|{ EventPricing : "defines"
-    Event ||--o{ Reservation : "has"
-    Event ||--o{ Seat : "has"
-    Reservation ||--o{ Seat : "includes"
+```
+erDiagram
+User ||--o{ Event : "created_by"
+User ||--o{ Reservation : "makes"
+Event ||--|{ EventPricing : "defines"
+Event ||--o{ Reservation : "has"
+Event ||--o{ Seat : "has"
+Reservation ||--o{ Seat : "includes"
 
-    User {
-        uuid user_id PK
-        varchar role
-        varchar password_hash
-    }
+User {
+    uuid user_id PK
+    varchar role
+    varchar password_hash
+}
 
-    Event {
-        uuid event_id PK
-        uuid created_by FK
-        varchar name
-        varchar location
-        varchar description
-        datetime date
-        int rows
-        int columns
-        boolean is_numbered
-    }
+Event {
+    uuid event_id PK
+    uuid created_by FK
+    varchar name
+    varchar location
+    varchar description
+    datetime date
+    int rows
+    int columns
+    boolean is_numbered
+}
 
-    EventPricing {
-        uuid eventpricing_id PK
-        uuid event_id FK
-        varchar category
-        decimal base_price
-    }
+EventPricing {
+    uuid eventpricing_id PK
+    uuid event_id FK
+    varchar category
+    decimal base_price
+}
 
-    Reservation {
-        uuid reservation_id PK
-        uuid user_id FK
-        uuid event_id FK
-        varchar status
-        datetime created_at
-        datetime expires_at
-    }
+Reservation {
+    uuid reservation_id PK
+    uuid user_id FK
+    uuid event_id FK
+    varchar status
+    datetime created_at
+    datetime expires_at
+}
 
-    Seat {
-        uuid seat_id PK
-        uuid event_id FK
-        uuid reservation_id FK
-        int row_number
-        int column_number
-        varchar category
-    }
+Seat {
+    uuid seat_id PK
+    uuid event_id FK
+    uuid reservation_id FK
+    int row_number
+    int column_number
+    varchar category
+}
+```
 
 ## 3.7. Design constraints
 - **Platform** - the system shall be delivered as a web application compatible with modern web browsers (see 3.8 Portability).

@@ -395,8 +395,8 @@ pred stepLockSeats [c : Customer, e : Event, chosen : set Seat] {
 	chosen in e.seats
 	no chosen & occupiedSeats
 	pendingCountOf[c] < MAX_PENDING_PER_USER
+	all disj s1, s2 : chosen | s1.category = s2.category
 	e in NumberedEvent implies isAdjacentChain[e, chosen]
-	e in NonNumberedEvent implies (all disj s1, s2 : chosen | s1.category = s2.category)
 	not (e in SystemState.earlyBirdEvents and e in SystemState.lastMinuteEvents)
 
 	tickClock
@@ -592,9 +592,25 @@ run fullLifecycle
 		3 ReservationLog, 3 Command, 1 Price, 8 Int, 8 stepssteps
 ```
 
+The time-dependent sets in SystemState (earlyBirdEvents, lastMinuteEvents, lockExpired, cancelAllowed, highOccupancy) are left unpopulated in the model because Alloy's bounded integers cannot express real-world time thresholds. The implementation shall derive them from the system clock as follows:
+- e: earlyBirdEvents iff now ≤ e.date − 30 days
+- e: lastMinuteEvents iff now ≥ e.date − 48 hours
+- r: lockExpired iff r ∈ pending and now ≥ r.createdAt + 15 minutes
+- r: cancelAllowed iff r ∈ confirmed and now ≤ r.event.date − 2 hours
+- e: highOccupancy iff the seats held by pending or confirmed reservations for e exceed 80% of e.seats
+
+
+The EffectivePriceCalculation fact expresses only the sign of the modifier (less / equal / greater than base) because bounded integer arithmetic does not support fractional multipliers. The implementation shall compute the effective price as follows:
+- modifier = EarlyBird: effective price = base price × 0.80 (20% discount)
+- modifier = Base: effective price = base price
+- modifier = LastMinute: effective price = base price × 1.30 (30% surcharge)
+
+All seats in a single reservation share one category (enforced by the guard in stepLockSeats — see §4), so the reservation price is the effective price for that category times the number of seats. Early Bird and Last Minute are mutually exclusive by their time thresholds; the guard in stepLockSeats is a redundant defensive invariant.
+Command and CommandKind represent externally visible effects that accompany reservation transitions. They are not an architectural prescription. 
+
 # 3. Operational envelope
 
-# 3.1. I/O operations
+## 3.1. I/O operations
 The SeatsReservation system is logically divided into three user interfaces, each accessible through the same single entry point:
 
 1. **Login / Register panel** - the single entry point for all users. It allows authentication and account creation, and after successful login routes the user to the appropriate interface based on their role.
@@ -608,19 +624,26 @@ The SeatsReservation system is logically divided into three user interfaces, eac
    - *Events* - a table of all managed events with their configuration options.
    - *Event Creator* - a form-based tool for event metadata entry, interactive grid or pool configuration, and base price setup; initiates the "Add event" use case (UC-03).
 
-
 - **Platform** - the system shall be delivered as a web application compatible with modern web browsers (see 3.8 Portability).
 - **Visual style** - the key views of the system (Login panel, User interface, and Administrator interface) are provided as mockups in the *UI_Mockups* folder (*LoginRegister.png*, *User.png*, *Admin.png*). All views not explicitly covered by the mockups shall follow the same graphical style — colour palette, typography, proportions, component shapes, and interaction patterns — as established by the mockups.
 - **Single entry point** - authentication for both roles is handled by the same Login / Register panel; no separate admin login URL or credential store is permitted.
 
+## 3.2. Data
+The system shall maintain a persistent data model to ensure consistency across appliacation restarts. Specifically, the system shall persist, for each event, its identifying metadata, its seating configuration, and its per-category base pricing. For every user of the system the program shall persist the information neccessary to authenticate the user and to determine whether they are acting as a customer or as an administrator. For every reservation the program shall persist its lifecycle status, the customer to whom it belongs, the event to which it applies, the set of seats it involves, and the timestamps relevant to its processing. The following integrity constraints shall hold in the system:
+- Every reservation shall belong to exactly one customer and exactly one administrator.
+- Every event created in the system shall have been created by exactly one administrator.
+- Every seat shall belong to exactly one event and shall carry exactly one category assignemnet.
+- A seat shall belong to at most one active reservation at any given moment. A reservation is active if it is currently pending (held, awaiting payment) or confirmed.
 
-# 3.2. Non-functional requirements
+
+## 3.2. Non-functional requirements
 - The program shall process reservation requests in under 200ms.
 - It must maintain strict data integrity and prevent race conditions for at least 50 concurrent users per event.
 - The system shall support the management of 100 active events with seating grids up to 250,000 units (500x500).
 - The automated 15-minute expiration logic for Pending reservations must operate with a maximum drift of 5 seconds.
 
-# 3.3. Verification approach
+## 3.3. Verification approach
+Verification of the SeatsReservation system shall be performed by the evaluator through black_box assessment of program outputs and resonses to given actions. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
 
 # 4. Appendices
 

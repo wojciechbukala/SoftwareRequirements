@@ -380,9 +380,14 @@ run findPlanWithUndeliverable {
 } for 4 but 10 Int, exactly 1 Vehicle, exactly 2 Package, exactly 2 Location
 ```
 
+The Alloy model declares priority: one Bool on the Package signature but does not constrain how the flag affects assignment, because the priority rule is conditional on capacity conflict between specific packages — a constraint that depends on counterfactual reasoning ("what would happen if both were considered together") which the model does not express.
+The implementation shall enforce the following rule: for any pair of packages P (priority = True) and N (priority = False) such that both are individually feasible for the same vehicle, but the vehicle cannot accommodate both due to weight, volume, or driver-time constraints, P shall be assigned and N shall not. More generally, when the planner resolves any capacity conflict by dropping packages from a vehicle's assignment, priority packages shall be retained before non-priority ones.
+A priority package that is dropped shall be reported in undeliverable.csv with the reason code appropriate to the constraint that caused the conflict (typically NO_VEHICLE, since individually the package would fit).
+The priority: Bool field in the model maps to the integer column priority in packages.csv as follows: True corresponds to 1, False corresponds to 0.
+
 # 3. Operational envelope
 
-# 3.1. I/O operations
+## 3.1. I/O operations
 All input and output files shall use the CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. 
 **inputs**
 - *packages.csv*: package_id, destination_id, weight_kg, volume_m3, tw_open, tw_close, service_min, priority
@@ -400,7 +405,10 @@ Time values in all input and output files must follow the format HH:MM, distance
 
 Additionally the source code must adhere to clean code principles.
 
-# 3.2. Non-functional requirements
+## 3.2. Optimization
+The Alloy model in Section 2 defines feasibility constraints only; it does not express optimality. The implementation shall, among all plans satisfying validPlan, select one that minimizes total distance driven across all vehicle routes; in case of a tie, minimize total route duration.
+
+## 3.2. Non-functional requirements
 The program shall be able to run on the reference machine with at least specification of:
 - CPU: 4-core, 2 GHz base clock
 - RAM: 8 GB
@@ -409,7 +417,8 @@ The program shall be able to run on the reference machine with at least specific
 
 The system shall support input datasets containing up to 500 packages and 50 vehicles in a single planning run with a maxiumum of 200 distinct locations and 40,000 entries in *distances.csv* (200x200).
 
-# 3.3. Verification approach
+## 3.3. Verification approach
+Verification of the FleetRouter system shall be performed by the evaluator through black_box assessment of program outputs against provided input files. No specific testing framework or automated test suite is prescribed. The delivered software shall be submitted to an authorized evaluator responsible for all testing and verification activities.
 
 # 4. Appendices
 

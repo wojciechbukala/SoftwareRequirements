@@ -70,7 +70,7 @@ The only reference is CONTEXT-Copilot.md file with the task description, in the 
 Functional requirements for Copilot are listed below. 
 
 ### FR-01 - System State and Mode Transitions
-Copilot shall maintain one of the following states at all times: Disengaged, Engaged, AwaitingResponse, and Alarming. The starting state is Disengaged.
+Copilot shall maintain one of the following states at all times: Disengaged, Engaged, AwaitingResponse, and Alarming. The starting state is Disengaged. A state transition is an actual change of state; events that keep the system in the same state shall not be recorded in *state_log.csv*.
 
 ### FR-02 - Autonomous Driving Logic and Priority
 When in Engaged mode, the system shall process every sensor event and produce a feature decision for each applicable autonomous feature: lane keeping, cruise control, and emergency braking. Emergency braking should be evaluated first, before any other feature.
