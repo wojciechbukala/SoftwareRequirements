@@ -3,26 +3,24 @@
 # OPTIONS:
 #   -r      path to REQ
 #   -n      number of runs per specification
-#   -m      model (default claude-sonnet)
-
+#   -m      model (default claude-sonet)
 
 set -euo pipefail
 
 # Set defaults
 REQ_PATH=""
 RUNS=3
-MODEL="claude-sonnet-4-6"
+MODEL="gemini-2.5-flash-lite"
 
 PROMPT="You are an expert software engineer. Read the requirements specification at REQUIREMENTS.md and implement the system in the current directory. Do not ask clarifying questions. Provide a summary of the work done in SUMMARY.md"
 
-DOCKER_IMAGE="experiment-claude-code:latest"
+DOCKER_IMAGE="experiment-gemini-cli:latest"
 
 # Directories
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DOCKERFILE="${REPO_ROOT}/Automation/Dockerfile.claude"
+DOCKERFILE="${REPO_ROOT}/Automation/Dockerfile.gemini"
 RUNS_DIR="${REPO_ROOT}/Runs"
 DATE_TAG="$(date '+%d-%m-%Y')"
-
 
 # Arguments parsing
 die() { echo "Error: $*" >&2; exit 1; }
@@ -40,9 +38,6 @@ done
 [[ -n "$REQ_PATH" ]]                || die "-r (REQ path) is required"
 [[ -f "${REPO_ROOT}/${REQ_PATH}" ]] || die "REQ file not found: ${REPO_ROOT}/${REQ_PATH}"
 
-command -v docker &>/dev/null || die "Docker not found"
-command -v jq     &>/dev/null || die "jq not found — install with: apt-get install jq"
-docker info &>/dev/null       || die "Docker daemon is not running"
 
 # Build docker image
 if ! docker image inspect "$DOCKER_IMAGE" &>/dev/null; then
@@ -51,18 +46,11 @@ if ! docker image inspect "$DOCKER_IMAGE" &>/dev/null; then
     echo "Image built."
 fi
 
-
 # Run experiments
 REQ_LABEL="${REQ_PATH%.md}"
 REQ_LABEL="${REQ_LABEL//\//-}"
 
 mkdir -p "$RUNS_DIR"
-
-TOTAL_INPUT=0
-TOTAL_OUTPUT=0
-TOTAL_CACHE_READ=0
-TOTAL_CACHE_CREATE=0
-TOTAL_COST="0"
 
 for ((i = 1; i <= RUNS; i++)); do
     RUN_ID="run-${DATE_TAG}-${REQ_LABEL}-${i}"
@@ -78,33 +66,15 @@ for ((i = 1; i <= RUNS; i++)); do
         --rm \
         --user "$(id -u):$(id -g)" \
         -e HOME=/home/researcher \
-        -v "${HOME}/.claude:/home/researcher/.claude" \
-        -v "${HOME}/.claude.json:/home/researcher/.claude.json" \
+        -v "${HOME}/.gemini:/home/researcher/.gemini" \
         -v "${RUN_DIR}:/workspace" \
         -w /workspace \
         "$DOCKER_IMAGE" \
-        claude \
+        gemini \
             --model "${MODEL}" \
-            --permission-mode bypassPermissions \
-            --output-format json \
+            --yolo \
             -p "${PROMPT}" \
-        > "${RUN_DIR}/result.json" \
-        2> >(tee "${RUN_DIR}/session.log" >&2) || EXIT_CODE=$?
-
-    INPUT=$(jq -r       '.usage.input_tokens                // 0' "${RUN_DIR}/result.json" 2>/dev/null || echo 0)
-    OUTPUT=$(jq -r      '.usage.output_tokens               // 0' "${RUN_DIR}/result.json" 2>/dev/null || echo 0)
-    CACHE_READ=$(jq -r  '.usage.cache_read_input_tokens     // 0' "${RUN_DIR}/result.json" 2>/dev/null || echo 0)
-    CACHE_CREATE=$(jq -r '.usage.cache_creation_input_tokens // 0' "${RUN_DIR}/result.json" 2>/dev/null || echo 0)
-    COST=$(jq -r        '.cost_usd                          // 0' "${RUN_DIR}/result.json" 2>/dev/null || echo 0)
-
-    printf "  Tokens — input: %s  output: %s  cache_read: %s  cache_create: %s  cost: \$%s\n" \
-        "$INPUT" "$OUTPUT" "$CACHE_READ" "$CACHE_CREATE" "$COST"
-
-    TOTAL_INPUT=$(( TOTAL_INPUT + INPUT ))
-    TOTAL_OUTPUT=$(( TOTAL_OUTPUT + OUTPUT ))
-    TOTAL_CACHE_READ=$(( TOTAL_CACHE_READ + CACHE_READ ))
-    TOTAL_CACHE_CREATE=$(( TOTAL_CACHE_CREATE + CACHE_CREATE ))
-    TOTAL_COST=$(awk "BEGIN { printf \"%.6f\", $TOTAL_COST + $COST }")
+        2>&1 | tee "${RUN_DIR}/session.log"; EXIT_CODE=${PIPESTATUS[0]}
 
     echo "Exit code: ${EXIT_CODE}"
     echo ""

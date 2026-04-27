@@ -1,0 +1,26 @@
+************* Module copilot
+copilot.py:49: [C0301] Line too long (107/100)
+copilot.py:50: [C0301] Line too long (108/100)
+copilot.py:51: [C0301] Line too long (108/100)
+copilot.py:63: [C0301] Line too long (103/100)
+copilot.py:288: [C0301] Line too long (110/100)
+copilot.py:289: [C0301] Line too long (104/100)
+copilot.py:21: [C0415] Import outside toplevel (datetime.datetime, datetime.timezone)
+copilot.py:37: [W0707] Consider explicitly re-raising using 'except ValueError as exc' and 'raise ValueError(f'Unrecognised timestamp format: {raw!r}') from exc'
+copilot.py:40: [C0115] Missing class docstring
+copilot.py:40: [R0902] Too many instance attributes (10/7)
+copilot.py:49: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:50: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:51: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:167: [C0116] Missing function or method docstring
+copilot.py:167: [R0913] Too many arguments (7/5)
+copilot.py:167: [R0917] Too many positional arguments (7/5)
+copilot.py:171: [W0613] Unused argument 'sensor_id'
+copilot.py:174: [W0613] Unused argument 'unit'
+copilot.py:200: [C0116] Missing function or method docstring
+copilot.py:237: [C0116] Missing function or method docstring
+copilot.py:283: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 8.81/10 (previous run: 9.43/10, -0.62)
+

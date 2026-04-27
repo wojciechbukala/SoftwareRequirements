@@ -26,7 +26,7 @@ Claude code is defaultly invoked with the following arguments and options:
 - p (prompt as above)
 
 To run experiment pipeline with claude code system provide following commad:
-*bash Automation/claude-code-run.sh -r "<RequirementsSpecificationPath> -n <NumberOfRun>
+`bash Automation/claude-code-run.sh -r "<RequirementsSpecificationPath> -n <NumberOfRun>`
 
 Number of runs is set for 3 as a default.
 

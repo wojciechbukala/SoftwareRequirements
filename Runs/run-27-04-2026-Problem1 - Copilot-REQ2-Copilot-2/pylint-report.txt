@@ -1,0 +1,9 @@
+************* Module copilot.state_machine
+copilot/state_machine.py:11: [W0611] Unused field imported from dataclasses
+************* Module main
+main.py:322: [C0301] Line too long (101/100)
+main.py:19: [W0611] Unused ActuatorCommand imported from copilot.actuator
+
+-----------------------------------
+Your code has been rated at 9.90/10
+

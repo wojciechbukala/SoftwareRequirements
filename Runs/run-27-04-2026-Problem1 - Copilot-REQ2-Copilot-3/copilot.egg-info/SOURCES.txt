@@ -1,0 +1,13 @@
+setup.py
+copilot/__init__.py
+copilot/__main__.py
+copilot/actuators.py
+copilot/features.py
+copilot/ingestion.py
+copilot/output.py
+copilot/state_machine.py
+copilot.egg-info/PKG-INFO
+copilot.egg-info/SOURCES.txt
+copilot.egg-info/dependency_links.txt
+copilot.egg-info/entry_points.txt
+copilot.egg-info/top_level.txt

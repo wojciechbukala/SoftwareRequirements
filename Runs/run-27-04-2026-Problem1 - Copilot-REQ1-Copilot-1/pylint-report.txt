@@ -1,0 +1,19 @@
+************* Module copilot_analyzed
+copilot_analyzed.py:207: [C0301] Line too long (102/100)
+copilot_analyzed.py:40: [C0116] Missing function or method docstring
+copilot_analyzed.py:48: [C0115] Missing class docstring
+copilot_analyzed.py:54: [C0115] Missing class docstring
+copilot_analyzed.py:156: [C0116] Missing function or method docstring
+copilot_analyzed.py:156: [R0913] Too many arguments (7/5)
+copilot_analyzed.py:156: [R0917] Too many positional arguments (7/5)
+copilot_analyzed.py:160: [W0613] Unused argument 'sensor_id'
+copilot_analyzed.py:163: [W0613] Unused argument 'unit'
+copilot_analyzed.py:178: [C0116] Missing function or method docstring
+copilot_analyzed.py:216: [C0116] Missing function or method docstring
+copilot_analyzed.py:233: [C0116] Missing function or method docstring
+copilot_analyzed.py:249: [C0116] Missing function or method docstring
+copilot_analyzed.py:7: [W0611] Unused import sys
+
+-----------------------------------
+Your code has been rated at 9.14/10
+

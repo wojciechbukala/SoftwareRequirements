@@ -1,0 +1,23 @@
+************* Module copilot.output
+copilot/output.py:18: [C0301] Line too long (105/100)
+copilot/output.py:25: [C0301] Line too long (102/100)
+copilot/output.py:45: [C0301] Line too long (102/100)
+copilot/output.py:16: [R1732] Consider using 'with' for resource-allocating operations
+copilot/output.py:17: [R1732] Consider using 'with' for resource-allocating operations
+copilot/output.py:18: [R1732] Consider using 'with' for resource-allocating operations
+************* Module copilot.cli
+copilot/cli.py:27: [C0301] Line too long (102/100)
+copilot/cli.py:12: [C0116] Missing function or method docstring
+copilot/cli.py:34: [W1309] Using an f-string that does not have any interpolated variables
+************* Module copilot.perception
+copilot/perception.py:43: [C0415] Import outside toplevel (datetime.datetime, datetime.timezone)
+************* Module copilot.state_machine
+copilot/state_machine.py:121: [C0301] Line too long (107/100)
+copilot/state_machine.py:19: [C0115] Missing class docstring
+copilot/state_machine.py:35: [R0903] Too few public methods (1/2)
+************* Module setup
+setup.py:3: [E0401] Unable to import 'setuptools'
+
+-----------------------------------
+Your code has been rated at 9.32/10
+

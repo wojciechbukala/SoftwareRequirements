@@ -32,85 +32,20 @@ The Copilot program is a simulation of an onboard computer for advanced driver a
 ## 1.3. Product overview
 
 ### 1.3.1. Product perspective
-The domain of the Copilot program with necessary dependencies and relations is presented below using domain class diagram. It is a conceptual model of the system in a given environment and it does not determine the class for implementation.
+The Copilot program operates in an environment composed of sensors, a driver, and vehicle actuators, and its behavior is organized around a few conceptual entities.
 
-```
-classDiagram
-    class SensorEvent {
-        +timestamp
-        +sensor_id
-        +sensor_type
-        +data_value
-        +unit
-    }
-    class DriverEvent {
-        +timestamp
-        +event_type
-        +value
-    }
-    class CopilotSystem {
-        +mode
-        +last_prompt_time
-        +awaiting_response
-    }
-    class StateTransition {
-        +timestamp
-        +previous_state
-        +current_state
-        +trigger_event
-    }
-    class ActuatorCommand {
-        +timestamp
-        +actuator_id
-        +values
-    }
-    class FeatureDecision {
-        +timestamp
-        +feature
-        +decision
-    }
-    class AttentivenessCheck {
-        +prompt_time
-        +deadline
-        +status
-    }
+The program consumes two kinds of inputs from its environment. A sensor event is a single reading produced by one of the on-board sensors, and a driver event is a single interaction orginating from the driver.
 
-    SensorEvent "1..*" --> "1" CopilotSystem : triggers processing cycle
-    DriverEvent "0..*" --> "1" CopilotSystem : triggers event
-    CopilotSystem "1" --> "0..*" StateTransition : records
-    CopilotSystem "1" --> "0..*" ActuatorCommand : issues
-    CopilotSystem "1" --> "0..*" FeatureDecision : produces
-    CopilotSystem "1" --> "0..1" AttentivenessCheck : manages
-```
+In response to these inputs, the program maintains its own runtime context with its currently operating mode, the time of the most recent attentiveness prompt, and whether a driver response is currently being awaited - and produces three kinds of outputs. A state transition record of changes of the operating mode. An actuator command is an instruction sent to one of the vehicle's actuators. Lastly, a feature decision is the outcome of evaluating one autonomous feature for a given input.
+
+The above is a conceptual description of the program's environment and internal data and is not intended to prescribe a class structure for implementation.
 
 ### 1.3.2. Product functions
-The core behaviour of the Copilot system is governed by a state machine with four states: Disengaged, Engaged, AwaitingResponse, and Alarming. The state machine is presented below. 
-
-```
-stateDiagram-v2
-    [*] --> Disengaged
-
-    Disengaged --> Engaged : driver engaged
-
-    Engaged --> Disengaged : driver disengaged
-    Engaged --> Disengaged : steering force > 10 N
-    Engaged --> AwaitingResponse : attentiveness prompt issued
-
-    AwaitingResponse --> Engaged : steering force <= 3 N [within 5s]
-    AwaitingResponse --> AwaitingResponse : 3 N < steering force < 10 N [ignored]
-    AwaitingResponse --> Disengaged : steering force > 10 N
-    AwaitingResponse --> Alarming : no valid response for 5s
-
-    Alarming --> Engaged : steering force <= 3 N
-    Alarming --> Disengaged : steering force > 10 N
-
-    Engaged --> [*] : car turned off
-    AwaitingResponse --> [*] : car turned off
-    Alarming --> [*] : car turned off
-    Disengaged --> [*] : car turned off
-```
-
-Emergency braking (Lidar < 5 m → BRAKE command) is evaluated in every state, including Disengaged. See PF-01.
+At the highest level, Copilot provides five main functions.
+- **Autonomous mode management** - Copilot maintains an operating mode that determines how it reacts to incoming events. It can be either disengaged or engaged. The driver controls transitions between these two modes, and the program may additionally enter transient safety-oriented modes in reaction to conditions described below. 
+- **Emergency braking** - Copilot continuously monitors Lidar readings and, when an obstacle is detected at a crucial distance, issues a braking command to the vehicle's braking system. This safety function takes precedence over every other function and is active at all times.
+- **Driver attentiveness monitoring** - While in engaged mode, Copilot periodically verifies that the driver remains attentive by prompting them for a confirming steering wheel action. If the driver reacts appropriately within the allotted window, autonomous operation continues.
+- **Driver override** - at any moment, a sufficient force applied by the driver to the steering wheel is interpreted as an intent to take manual control.
 
 ### 1.3.3. User characteristics
 The users of the Copilot simulation software are primarliy Automotive Software Engineers - Qualified technical staff who use the simulation to verify the correctness of autonomous algorithms.
@@ -135,7 +70,7 @@ The only reference is CONTEXT-Copilot.md file with the task description, in the 
 Functional requirements for Copilot are listed below. 
 
 ### FR-01 - System State and Mode Transitions
-Copilot shall at all times maintain exactly one system state as defined by the state machine in Section 1.3.2. The starting state on program launch shall be Disengaged. Every state transition, regardless of its trigger, shall be recorded as one row in *state_log.csv* with the columns specified in Section 2.5. A state transition is an actual change of state; events that keep the system in the same state shall not be recorded in *state_log.csv*.
+Copilot shall maintain one of the following states at all times: Disengaged, Engaged, AwaitingResponse, and Alarming. The starting state is Disengaged. A state transition is an actual change of state; events that keep the system in the same state shall not be recorded in *state_log.csv*.
 
 ### FR-02 - Autonomous Driving Logic and Priority
 When in Engaged mode, the system shall process every sensor event and produce a feature decision for each applicable autonomous feature: lane keeping, cruise control, and emergency braking. Emergency braking should be evaluated first, before any other feature.
@@ -149,21 +84,11 @@ The system shall record every feature decision to *feature_decision.csv* and eve
 When in Disengaged mode, data shall be logged but without further actions on actuator commands or feature decisions.
 
 ### FR-03 - Attentiveness Monitoring and Alarm
-While the system is in the Engaged state, Copilot shall issue an attentiveness
-prompt every 120 seconds. Issuing a prompt consists of:
-  (a) sending a small steering wheel movement command to the Steering Motor
-      actuator (recorded in *commands_log.csv*), and
-  (b) transitioning to the AwaitingResponse state as defined in Section 1.3.2.
+When in Engaged mode, the system shall issue an attentiveness prompt every 120 seconds by issuing a small steering wheel movement command to the steering wheel actuator and transitioning to the AwaitingResponse state.
 
-The state-transition guards and timing for valid, ignored, and missing driver
-responses are defined by the state machine in Section 1.3.2 and shall not be
-duplicated here.
+In AwaitingResponse state, system must wait up to 5 seconds for a valid driver response. A valid response is assumed to be wheel force of 3N or less within the 5-second window. When valid response registered system shall transition back to engaged state and reset the 120-second prompt timer. A steering wheel force event with a value strictly greater than 3N and strictly less than 10N shall be ignored, and the system shall continue waiting for a valid response. If no valid response is received within 5 seconds, the system shall transition to the Alarming state and emit a continuous alarm command to the alarm actuator. The system escapes the Alarming state na transitions to Engaged state if a steering wheel force event with a value of 3N or less is received.
 
-While in the Alarming state, Copilot shall continuously issue alarm commands to
-the Alarm Actuator until the state machine transitions the system out of Alarming.
-
-Upon returning from AwaitingResponse to Engaged on a valid response, the
-120-second prompt timer shall be reset.
+Every state transition produced by the attentiveness monitoring mechanism shall be recorded to *state_log.csv*.
 
 ### FR-04 - Driver Override
 A steering wheel force event with a value strictly greater than 10N shall cause immediate transition to Disengaged mode regardless of the current system state. 
@@ -174,52 +99,14 @@ Copilot shall read sensor events from *sensor_log.csv* and driver events from *d
 ## 3.2. Functions - Processing Flows
 
 ### PF-01 - Sensor event
-The processing logic applied to each sensor event depends on the sensor type and the current system state. The diagram below specifies th evaluation order of autonomous features and the resulting writes to output files for a single sensor processing cycle.
+This processing flow specifies, for a single incoming sensor event, the order in which Copilot evaluates autonomous features, the conditions under which each feature produces a decision, and the resulting writes to output files.
 
-```
-flowchart TD
-    A([sensor event received]) --> B[log raw event]
-    B --> D{sensor_type == Lidar?}
+Every sensor event is first recorded by the program as received. If the event originates from a Lidar sensor, the program evaluates emergency braking before considering any other feature and does so regardless of the current operating mode. When the reported distance is strictly less than 5 meters, the program decides on emergency braking, writes a corresponding feature decision to *feature_decision.csv*, issues a braking command to the Braking System actuator, and records that command in *commands_log.csv*. Otherwise, when the reported distance is 5 meters or greater, the program records a non-braking decision.
 
-    D -- Yes --> E{data_value < 5 m?}
-    E -- Yes --> F[decide: emergency_braking = BRAKE]
-    F --> G[issue command to BrakingSystem actuator]
-    G --> H[write to feature_decision.csv\nwrite to commands_log.csv]
-    H --> Z([end cycle])
-
-    E -- No --> I[decide: emergency_braking = NO_BRAKE]
-    I --> J[write to feature_decision.csv]
-    J --> Z
-
-    D -- No --> C{system state == Engaged?}
-    C -- No --> Z
-    C -- Yes --> K{sensor_type == Camera?}
-    K -- Yes --> L[compute lane keeping correction]
-    L --> M[compute cruise control adjustment]
-    M --> N[issue commands to SteeringMotor\nand SpeedActuator]
-    N --> O[write to feature_decision.csv x2\nwrite to commands_log.csv x2]
-    O --> Z
-    K -- No --> Z
-```
+If the event originates from a sensor other than Lidar, the program only takes further action when it is currently in engaged mode. A camera sensor event causes the program to compute a lane keeping correction and a cruise control adjustment, to issue the resulting commands to the Steering Motor actuator and the speed actuator, to record both commands in commands_log.csv, and to record the two corresponding feature decisions in feature_decision.csv.
 
 ### PF-02 - Loop execution flow
-Copilot reads events from two independent input files which are merged into a single chronological stream before processing begins. The diagram below shows the program execution flow startup to termination, including the merging of input surces and the sequential dispatching of events.
-
-```
-flowchart TD
-A([program start]) --> B[read sensor_log.csv]
-A --> C[read driver_events.csv]
-B --> D[merge into single event stream\nsorted by timestamp ascending]
-C --> D
-D --> E{next event in stream?}
-E -- No --> F[flush all output buffers]
-F --> G([program end])
-E -- Yes --> H{event type?}
-H -- sensor event --> I[run sensor processing cycle]
-H -- driver event --> J[run driver event processing]
-I --> E
-J --> E
-```
+On program start, Copilot reads all events from sensor_log.csv and all events from driver_events.csv and merges them into a single event stream ordered by ascending timestamp. The program then iterates over this stream in order, dispatching each event to the appropriate handler: sensor events are handled according to PF-01, and driver events are handled according to the rules specified in FR-01, FR-03, and FR-04. When the stream is exhausted, the program flushes all output files and terminates.
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:

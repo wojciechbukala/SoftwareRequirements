@@ -1,0 +1,10 @@
+Implementation complete. Here's a summary of what was built:
+
+**`/workspace/copilot`** — a single executable Python 3 script implementing a 3-state machine (DISENGAGED → ENGAGED → ALARM):
+
+- **Emergency braking**: evaluated on every Lidar reading in all modes; distance < 5 m → `BRAKE` decision + `BrakingSystem` command.
+- **Lane keeping & cruise control**: camera-triggered, ENGAGED mode only.
+- **Attentiveness check**: every 120 s while ENGAGED, issues a `SteeringWheel / small_movement` command; times out after 5 s with no valid response → ALARM; force ≤ 3 N clears it; force > 10 N disengages immediately.
+- **Event stream**: sensor and driver events are merged and sorted by timestamp before processing.
+
+**`/workspace/SUMMARY.md`** — documents the architecture, state transitions, feature logic, and design decisions.

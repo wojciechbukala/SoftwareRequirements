@@ -1,0 +1,15 @@
+************* Module copilot
+copilot.py:19: [C0116] Missing function or method docstring
+copilot.py:23: [C0415] Import outside toplevel (datetime.datetime, datetime.timezone)
+copilot.py:30: [C0115] Missing class docstring
+copilot.py:95: [R1723] Unnecessary "else" after "break", remove the "else" and de-indent the code inside it
+copilot.py:132: [C0116] Missing function or method docstring
+copilot.py:162: [C0116] Missing function or method docstring
+copilot.py:192: [C0116] Missing function or method docstring
+copilot.py:219: [C0116] Missing function or method docstring
+copilot.py:224: [C0116] Missing function or method docstring
+copilot.py:250: [C0116] Missing function or method docstring
+
+-----------------------------------
+Your code has been rated at 9.43/10
+

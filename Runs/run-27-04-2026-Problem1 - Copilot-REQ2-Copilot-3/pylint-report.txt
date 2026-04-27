@@ -1,0 +1,19 @@
+************* Module copilot.__main__
+copilot/__main__.py:27: [C0301] Line too long (101/100)
+copilot/__main__.py:12: [C0116] Missing function or method docstring
+copilot/__main__.py:64: [C0116] Missing function or method docstring
+copilot/__main__.py:72: [W0718] Catching too general exception Exception
+************* Module copilot.output
+copilot/output.py:69: [C0301] Line too long (104/100)
+************* Module copilot.state_machine
+copilot/state_machine.py:115: [C0301] Line too long (107/100)
+copilot/state_machine.py:123: [C0301] Line too long (111/100)
+copilot/state_machine.py:163: [C0301] Line too long (112/100)
+copilot/state_machine.py:164: [C0301] Line too long (113/100)
+copilot/state_machine.py:80: [C0116] Missing function or method docstring
+************* Module setup
+setup.py:3: [E0401] Unable to import 'setuptools'
+
+------------------------------------------------------------------
+Your code has been rated at 9.37/10 (previous run: 0.00/10, +9.37)
+

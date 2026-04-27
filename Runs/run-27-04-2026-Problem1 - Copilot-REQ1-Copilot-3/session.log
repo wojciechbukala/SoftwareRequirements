@@ -1,0 +1,10 @@
+Implementation complete. Here's a summary of what was built:
+
+**`/workspace/copilot`** — a single executable Python script (~260 lines, no external dependencies) invoked as `copilot --input <dir> --output <dir>`.
+
+**Key design decisions:**
+- Event-driven simulation: both CSV files are merged and sorted by timestamp; time-based conditions (120 s attentiveness interval, 5 s response window) are evaluated at each arriving event's timestamp
+- Two states: `DISENGAGED` (default) and `ENGAGED`; only actual transitions are written to `state_log.csv`
+- Emergency braking (Lidar < 5 m) is evaluated on every Lidar reading regardless of mode
+- Lane keeping (camera) and cruise control (Lidar, proportional distance-based) run only while ENGAGED
+- Attentiveness: prompt issued via `SteeringWheel HAPTIC` command, alarm via `Alarm ON/OFF` commands; force > 10 N disengages immediately; force 3–10 N is ignored during the wait window; force ≤ 3 N is a valid response

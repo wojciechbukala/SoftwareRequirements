@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# Wrapper script — allows calling the simulator as:
+#   copilot --input <dir> --output <dir>
+# from the repository root after making this file executable.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+exec python3 "$SCRIPT_DIR/main.py" "$@"

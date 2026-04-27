@@ -1,0 +1,101 @@
+************* Module cli
+copilot/cli.py:8: [C0115] Missing class docstring
+************* Module decision
+copilot/decision.py:141: [C0301] Line too long (102/100)
+copilot/decision.py:31: [R0903] Too few public methods (1/2)
+************* Module engine
+copilot/engine.py:13: [R0903] Too few public methods (1/2)
+************* Module main
+copilot/main.py:13: [C0413] Import "from cli import parse_args" should be placed at the top of the module
+copilot/main.py:14: [C0413] Import "from engine import CopilotEngine" should be placed at the top of the module
+copilot/main.py:17: [C0116] Missing function or method docstring
+************* Module models
+copilot/models.py:9: [C0115] Missing class docstring
+copilot/models.py:16: [C0115] Missing class docstring
+copilot/models.py:21: [C0115] Missing class docstring
+copilot/models.py:27: [C0115] Missing class docstring
+copilot/models.py:34: [C0115] Missing class docstring
+copilot/models.py:40: [C0115] Missing class docstring
+************* Module test_actuator
+copilot/tests/test_actuator.py:8: [C0413] Import "from actuator import write_commands_log, write_feature_decisions, write_state_log" should be placed at the top of the module
+copilot/tests/test_actuator.py:9: [C0413] Import "from models import ActuatorId, CommandEntry, Decision, Feature, FeatureDecisionEntry, State, StateLogEntry" should be placed at the top of the module
+copilot/tests/test_actuator.py:15: [C0115] Missing class docstring
+copilot/tests/test_actuator.py:16: [C0116] Missing function or method docstring
+copilot/tests/test_actuator.py:28: [C0116] Missing function or method docstring
+copilot/tests/test_actuator.py:31: [C1803] "rows == []" can be simplified to "not rows", if it is strictly a sequence, as an empty list is falsey
+copilot/tests/test_actuator.py:34: [C0115] Missing class docstring
+copilot/tests/test_actuator.py:35: [C0116] Missing function or method docstring
+copilot/tests/test_actuator.py:34: [R0903] Too few public methods (1/2)
+copilot/tests/test_actuator.py:43: [C0115] Missing class docstring
+copilot/tests/test_actuator.py:44: [C0116] Missing function or method docstring
+copilot/tests/test_actuator.py:43: [R0903] Too few public methods (1/2)
+************* Module test_decision
+copilot/tests/test_decision.py:11: [C0413] Import "from decision import LIDAR_DANGER, OVERRIDE_FORCE, PROMPT_INTERVAL, RESPONSE_WINDOW, VALID_RESPONSE_FORCE, CopilotStateMachine" should be placed at the top of the module
+copilot/tests/test_decision.py:15: [C0413] Import "from models import ActuatorId, Decision, DriverEvent, DriverEventType, Feature, SensorEvent, SensorType, State" should be placed at the top of the module
+copilot/tests/test_decision.py:58: [C0115] Missing class docstring
+copilot/tests/test_decision.py:59: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:63: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:72: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:77: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:81: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:87: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:97: [C0115] Missing class docstring
+copilot/tests/test_decision.py:98: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:105: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:111: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:117: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:131: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:141: [C0115] Missing class docstring
+copilot/tests/test_decision.py:142: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:148: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:154: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:161: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:172: [C0115] Missing class docstring
+copilot/tests/test_decision.py:173: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:177: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:182: [W0212] Access to a protected member _internal_tick of a client class
+copilot/tests/test_decision.py:187: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:192: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:207: [C0115] Missing class docstring
+copilot/tests/test_decision.py:214: [W0212] Access to a protected member _internal_tick of a client class
+copilot/tests/test_decision.py:218: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:222: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:230: [W0212] Access to a protected member _internal_tick of a client class
+copilot/tests/test_decision.py:235: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:238: [W0212] Access to a protected member _internal_tick of a client class
+copilot/tests/test_decision.py:242: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:247: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:257: [C0115] Missing class docstring
+copilot/tests/test_decision.py:262: [W0212] Access to a protected member _internal_tick of a client class
+copilot/tests/test_decision.py:266: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:272: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:280: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:292: [C0115] Missing class docstring
+copilot/tests/test_decision.py:293: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:299: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:310: [C0115] Missing class docstring
+copilot/tests/test_decision.py:311: [C0116] Missing function or method docstring
+copilot/tests/test_decision.py:315: [W0212] Access to a protected member _internal_tick of a client class
+copilot/tests/test_decision.py:310: [R0903] Too few public methods (1/2)
+************* Module test_perception
+copilot/tests/test_perception.py:7: [E0401] Unable to import 'pytest'
+copilot/tests/test_perception.py:11: [C0413] Import "from models import DriverEventType, SensorType" should be placed at the top of the module
+copilot/tests/test_perception.py:12: [C0413] Import "from perception import load_all_events, load_driver_events, load_sensor_events" should be placed at the top of the module
+copilot/tests/test_perception.py:19: [C0115] Missing class docstring
+copilot/tests/test_perception.py:20: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:34: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:42: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:51: [C0115] Missing class docstring
+copilot/tests/test_perception.py:52: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:61: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:70: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:79: [C0115] Missing class docstring
+copilot/tests/test_perception.py:80: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:94: [C0116] Missing function or method docstring
+copilot/tests/test_perception.py:103: [C0415] Import outside toplevel (models.DriverEvent, models.SensorEvent)
+copilot/tests/test_perception.py:3: [W0611] Unused import tempfile
+copilot/tests/test_perception.py:7: [W0611] Unused import pytest
+
+-----------------------------------
+Your code has been rated at 8.29/10
+

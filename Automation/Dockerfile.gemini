@@ -1,0 +1,7 @@
+FROM node:22-slim
+
+RUN npm install -g @google/gemini-cli
+
+RUN mkdir -p /home/researcher /workspace
+
+WORKDIR /workspace
