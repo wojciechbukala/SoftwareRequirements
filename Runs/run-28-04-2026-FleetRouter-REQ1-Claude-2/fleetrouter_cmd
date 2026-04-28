@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+import sys
+import os
+sys.path.insert(0, '/workspace')
+from fleetrouter.main import main
+main()

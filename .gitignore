@@ -2,3 +2,7 @@
 **/.sonar/
 **/*test*/
 **/__pycache__
+**/.deps/
+**/.pip_packages/
+**/bin/
+**/build/

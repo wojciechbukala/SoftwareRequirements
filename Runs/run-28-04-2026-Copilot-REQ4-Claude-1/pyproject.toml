@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "copilot"
+version = "1.0.0"
+description = "Copilot ADAS – offline autonomous-driving simulation"
+requires-python = ">=3.9"
+
+[project.scripts]
+copilot = "copilot.cli:main"

@@ -1,0 +1,5 @@
+timestamp,sensor_id,sensor_type,data_value,unit
+2,lidar-1,Lidar,10,m
+15,cam-1,Camera,0,px
+50,lidar-1,Lidar,3,m
+130,cam-1,Camera,0,px

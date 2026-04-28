@@ -53,8 +53,12 @@ fi
 
 
 # Run experiments
-REQ_LABEL="${REQ_PATH%.md}"
-REQ_LABEL="${REQ_LABEL//\//-}"
+# Extract project name from parent dir (part after " - ") and REQ id from filename (part before first "-")
+_REQ_DIR="$(dirname "$REQ_PATH")"
+_REQ_BASENAME="$(basename "$REQ_PATH" .md)"
+PROJECT="${_REQ_DIR##* - }"
+REQ_ID="${_REQ_BASENAME%%-*}"
+REQ_LABEL="${PROJECT}-${REQ_ID}"
 
 mkdir -p "$RUNS_DIR"
 
@@ -65,7 +69,7 @@ TOTAL_CACHE_CREATE=0
 TOTAL_COST="0"
 
 for ((i = 1; i <= RUNS; i++)); do
-    RUN_ID="run-${DATE_TAG}-${REQ_LABEL}-${i}"
+    RUN_ID="run-${DATE_TAG}-${REQ_LABEL}-Claude-${i}"
     RUN_DIR="${RUNS_DIR}/${RUN_ID}"
 
     mkdir -p "$RUN_DIR"

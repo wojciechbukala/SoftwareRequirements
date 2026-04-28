@@ -1,0 +1,5 @@
+timestamp,feature,decision
+2,EmergencyBraking,NO_BRAKE
+15,LaneKeeping,ADJUST
+15,CruiseControl,ADJUST
+50,EmergencyBraking,BRAKE

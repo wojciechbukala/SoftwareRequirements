@@ -1,0 +1,5 @@
+timestamp,previous_state,current_state,trigger_event
+1,Disengaged,Engaged,ENGAGE
+121,Engaged,AwaitingResponse,PROMPT_TIMEOUT
+126,AwaitingResponse,Alarming,RESPONSE_TIMEOUT
+300,Alarming,Disengaged,DISENGAGE

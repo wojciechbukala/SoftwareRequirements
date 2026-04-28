@@ -1,2 +1,0 @@
-************* Module copilot
-copilot.py:400: [E0001] Parsing failed: 'unindent does not match any outer indentation level (copilot, line 400)'
