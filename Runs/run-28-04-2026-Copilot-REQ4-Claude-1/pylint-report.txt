@@ -1,7 +1,3 @@
-************* Module copilot.engine
-copilot/engine.py:49: [R0903] Too few public methods (1/2)
-************* Module copilot.models
-copilot/models.py:3: [W0611] Unused field imported from dataclasses
 ************* Module tests.test_engine
 tests/test_engine.py:18: [C0413] Import "from copilot.engine import PROMPT_INTERVAL, RESPONSE_WINDOW, SimulationEngine" should be placed at the top of the module
 tests/test_engine.py:23: [C0413] Import "from copilot.models import Actuator, Decision, DriverEvent, DriverEventType, Feature, SensorEvent, SensorType, State" should be placed at the top of the module
@@ -25,7 +21,11 @@ tests/test_engine.py:230: [C0116] Missing function or method docstring
 tests/test_engine.py:235: [C0116] Missing function or method docstring
 tests/test_engine.py:242: [C0116] Missing function or method docstring
 tests/test_engine.py:277: [W0718] Catching too general exception Exception
+************* Module copilot.models
+copilot/models.py:3: [W0611] Unused field imported from dataclasses
+************* Module copilot.engine
+copilot/engine.py:49: [R0903] Too few public methods (1/2)
 
------------------------------------
-Your code has been rated at 9.40/10
+------------------------------------------------------------------
+Your code has been rated at 9.40/10 (previous run: 9.40/10, +0.00)
 

@@ -1,0 +1,12 @@
+Run,Tokens,,,,,Pylint score,SonarQube,,,,,,,,,,,,,,,,
+,Input tokens,Output tokens,Cache read tokens,Cache create tokens,Tokens summary,,Security,,,,Reliability,,,,Maintainability,,,,,,,,
+,,,,,,,Low,Medium,High,Summary,Low,Medium,High,Summary,Low,Medium,High,Summary,,,,,
+run-28-04-2026-FleetRouter-REQ1-Claude-1,37,33364,1528526,51376,1613303,9.22,,,,,,,,,,,,,,,,,
+run-28-04-2026-FleetRouter-REQ1-Claude-2,85,69407,4364156,88089,4521737,8.81,,,,,,,,,,,,,,,,,
+run-28-04-2026-FleetRouter-REQ1-Claude-3,74,44518,4052625,83999,4181216,9.05,,,,,,,,,,,,,,,,,
+run-29-04-2026-FleetRouter-REQ2-Claude-1,34,40890,1607688,54284,1702896,9.40,,,,,,,,,,,,,,,,,
+run-28-04-2026-FleetRouter-REQ2-Claude-2,24,42900,1128898,50079,1221901,9.28,,,,,,,,,,,,,,,,,
+run-28-04-2026-FleetRouter-REQ2-Claude-3,22,40796,934190,50268,1025276,9.41,,,,,,,,,,,,,,,,,
+run-28-04-2026-FleetRouter-REQ4-Claude-1,18,32170,611742,43905,687835,8.93,,,,,,,,,,,,run-29-04-2026-FleetRouter-REQ4-Claude-1,18,32170,611724,43905,687817
+run-29-04-2026-FleetRouter-REQ4-Claude-2,49,70099,2004174,50347,2124669,9.19,,,,,,,,,,,,,,,,,
+run-29-04-2026-FleetRouter-REQ4-Claude-3,26,40870,1067754,54788,1163438,9.32,,,,,,,,,,,,,,,,,

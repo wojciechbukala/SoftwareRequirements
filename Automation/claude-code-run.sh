@@ -104,11 +104,21 @@ for ((i = 1; i <= RUNS; i++)); do
     printf "  Tokens — input: %s  output: %s  cache_read: %s  cache_create: %s  cost: \$%s\n" \
         "$INPUT" "$OUTPUT" "$CACHE_READ" "$CACHE_CREATE" "$COST"
 
+    TOKENS_SUM=$(( INPUT + OUTPUT + CACHE_READ + CACHE_CREATE ))
+    CSV_FILE="${REPO_ROOT}/Results/${PROJECT}.csv"
+    if [[ -f "$CSV_FILE" ]]; then
+        echo "${RUN_ID},${INPUT},${OUTPUT},${CACHE_READ},${CACHE_CREATE},${TOKENS_SUM}" >> "$CSV_FILE"
+    fi
+
     TOTAL_INPUT=$(( TOTAL_INPUT + INPUT ))
     TOTAL_OUTPUT=$(( TOTAL_OUTPUT + OUTPUT ))
     TOTAL_CACHE_READ=$(( TOTAL_CACHE_READ + CACHE_READ ))
     TOTAL_CACHE_CREATE=$(( TOTAL_CACHE_CREATE + CACHE_CREATE ))
     TOTAL_COST=$(awk "BEGIN { printf \"%.6f\", $TOTAL_COST + $COST }")
+
+    echo "=== Pylint: ${RUN_ID} ==="
+    (cd "$RUN_DIR" && "${REPO_ROOT}/.venv/bin/python3" "${REPO_ROOT}/Verifiaction/pylint_verification.py")
+    echo ""
 
     echo "Exit code: ${EXIT_CODE}"
     echo ""

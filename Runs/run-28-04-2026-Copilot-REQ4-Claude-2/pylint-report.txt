@@ -1,5 +1,20 @@
-************* Module copilot.__main__
-copilot/__main__.py:46: [C0116] Missing function or method docstring
+************* Module tests.test_engine
+tests/test_engine.py:107: [C0301] Line too long (104/100)
+tests/test_engine.py:116: [C0301] Line too long (104/100)
+tests/test_engine.py:122: [C0301] Line too long (107/100)
+tests/test_engine.py:138: [C0301] Line too long (104/100)
+tests/test_engine.py:149: [C0301] Line too long (103/100)
+tests/test_engine.py:313: [C0301] Line too long (104/100)
+tests/test_engine.py:10: [E0611] No name 'decision' in module 'copilot'
+tests/test_engine.py:11: [E0611] No name 'models' in module 'copilot'
+tests/test_engine.py:65: [C0115] Missing class docstring
+tests/test_engine.py:102: [C0115] Missing class docstring
+tests/test_engine.py:146: [C0115] Missing class docstring
+tests/test_engine.py:188: [C0115] Missing class docstring
+tests/test_engine.py:220: [C0115] Missing class docstring
+tests/test_engine.py:260: [C0115] Missing class docstring
+tests/test_engine.py:301: [C0115] Missing class docstring
+tests/test_engine.py:340: [W0612] Unused variable 'transitions'
 ************* Module copilot.decision
 copilot/decision.py:98: [R1724] Unnecessary "else" after "continue", remove the "else" and de-indent the code inside it
 copilot/decision.py:113: [R1724] Unnecessary "else" after "continue", remove the "else" and de-indent the code inside it
@@ -10,22 +25,9 @@ copilot/perception.py:31: [W0707] Consider explicitly re-raising using 'except V
 copilot/perception.py:56: [W0707] Consider explicitly re-raising using 'except ValueError as exc' and 'raise ValueError(f"sensor_log.csv row {row_num}: unknown sensor_type '{sensor_type_raw}'") from exc'
 copilot/perception.py:90: [W0707] Consider explicitly re-raising using 'except ValueError as exc' and 'raise ValueError(f"driver_events.csv row {row_num}: unknown event_type '{event_type_raw}'") from exc'
 copilot/perception.py:8: [W0611] Unused Tuple imported from typing
-************* Module tests.test_engine
-tests/test_engine.py:107: [C0301] Line too long (104/100)
-tests/test_engine.py:116: [C0301] Line too long (104/100)
-tests/test_engine.py:122: [C0301] Line too long (107/100)
-tests/test_engine.py:138: [C0301] Line too long (104/100)
-tests/test_engine.py:149: [C0301] Line too long (103/100)
-tests/test_engine.py:313: [C0301] Line too long (104/100)
-tests/test_engine.py:65: [C0115] Missing class docstring
-tests/test_engine.py:102: [C0115] Missing class docstring
-tests/test_engine.py:146: [C0115] Missing class docstring
-tests/test_engine.py:188: [C0115] Missing class docstring
-tests/test_engine.py:220: [C0115] Missing class docstring
-tests/test_engine.py:260: [C0115] Missing class docstring
-tests/test_engine.py:301: [C0115] Missing class docstring
-tests/test_engine.py:340: [W0612] Unused variable 'transitions'
+************* Module copilot.__main__
+copilot/__main__.py:46: [C0116] Missing function or method docstring
 
 ------------------------------------------------------------------
-Your code has been rated at 9.50/10 (previous run: 9.50/10, +0.00)
+Your code has been rated at 9.29/10 (previous run: 9.32/10, -0.03)
 

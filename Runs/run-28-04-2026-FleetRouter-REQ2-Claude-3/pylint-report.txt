@@ -1,0 +1,27 @@
+************* Module writer
+writer.py:1: [C0114] Missing module docstring
+writer.py:13: [C0116] Missing function or method docstring
+writer.py:43: [C0116] Missing function or method docstring
+writer.py:61: [C0116] Missing function or method docstring
+************* Module reader
+reader.py:33: [C0301] Line too long (101/100)
+reader.py:1: [C0114] Missing module docstring
+reader.py:15: [C0116] Missing function or method docstring
+reader.py:24: [C0116] Missing function or method docstring
+************* Module models
+models.py:1: [C0114] Missing module docstring
+models.py:9: [C0115] Missing class docstring
+models.py:9: [R0902] Too many instance attributes (8/7)
+models.py:21: [C0115] Missing class docstring
+models.py:29: [C0115] Missing class docstring
+models.py:35: [C0115] Missing class docstring
+models.py:43: [C0115] Missing class docstring
+************* Module main
+main.py:33: [C0116] Missing function or method docstring
+************* Module planner
+planner.py:1: [C0114] Missing module docstring
+planner.py:144: [R0914] Too many local variables (19/15)
+
+-----------------------------------
+Your code has been rated at 9.41/10
+

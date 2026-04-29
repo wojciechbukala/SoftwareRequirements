@@ -1,0 +1,50 @@
+************* Module models
+models.py:56: [C0301] Line too long (111/100)
+models.py:1: [C0114] Missing module docstring
+models.py:6: [C0115] Missing class docstring
+models.py:12: [C0115] Missing class docstring
+models.py:12: [R0902] Too many instance attributes (8/7)
+models.py:24: [C0115] Missing class docstring
+models.py:32: [C0115] Missing class docstring
+models.py:40: [C0115] Missing class docstring
+models.py:46: [C0116] Missing function or method docstring
+models.py:49: [C0116] Missing function or method docstring
+models.py:54: [C0115] Missing class docstring
+models.py:2: [W0611] Unused Optional imported from typing
+************* Module main
+main.py:12: [C0116] Missing function or method docstring
+main.py:13: [W0612] Unused variable 'locations'
+main.py:3: [W0611] Unused import sys
+main.py:4: [W0611] Unused _route_distance imported from csv_io
+************* Module solver
+solver.py:324: [C0301] Line too long (101/100)
+solver.py:76: [R0913] Too many arguments (6/5)
+solver.py:76: [R0917] Too many positional arguments (6/5)
+solver.py:76: [R0914] Too many local variables (18/15)
+solver.py:110: [R0911] Too many return statements (9/6)
+solver.py:110: [R0912] Too many branches (15/12)
+solver.py:165: [R0912] Too many branches (19/12)
+solver.py:255: [R0914] Too many local variables (33/15)
+solver.py:268: [C0200] Consider using enumerate instead of iterating with range and len
+solver.py:255: [R0912] Too many branches (17/12)
+solver.py:255: [R0915] Too many statements (62/50)
+solver.py:350: [R0914] Too many local variables (26/15)
+solver.py:350: [R0912] Too many branches (18/12)
+solver.py:350: [R0915] Too many statements (59/50)
+solver.py:452: [R0914] Too many local variables (22/15)
+solver.py:481: [C0200] Consider using enumerate instead of iterating with range and len
+solver.py:4: [W0611] Unused import math
+************* Module csv_io
+csv_io.py:1: [C0114] Missing module docstring
+csv_io.py:7: [W0613] Unused argument 'field_name'
+csv_io.py:7: [W0613] Unused argument 'row_id'
+csv_io.py:28: [C0116] Missing function or method docstring
+csv_io.py:98: [C0116] Missing function or method docstring
+csv_io.py:116: [C0116] Missing function or method docstring
+csv_io.py:144: [C0116] Missing function or method docstring
+csv_io.py:152: [C0116] Missing function or method docstring
+csv_io.py:4: [W0611] Unused UndeliverableEntry imported from models
+
+-----------------------------------
+Your code has been rated at 9.19/10
+

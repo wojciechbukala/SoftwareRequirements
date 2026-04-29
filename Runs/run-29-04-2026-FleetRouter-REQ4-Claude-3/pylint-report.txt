@@ -1,0 +1,35 @@
+************* Module models
+models.py:1: [C0114] Missing module docstring
+models.py:6: [C0115] Missing class docstring
+models.py:12: [C0115] Missing class docstring
+models.py:12: [R0902] Too many instance attributes (8/7)
+models.py:24: [C0115] Missing class docstring
+models.py:32: [C0115] Missing class docstring
+models.py:41: [C0115] Missing class docstring
+models.py:50: [C0115] Missing class docstring
+models.py:59: [C0115] Missing class docstring
+models.py:1: [W0611] Unused field imported from dataclasses
+models.py:2: [W0611] Unused Optional imported from typing
+************* Module main
+main.py:22: [C0116] Missing function or method docstring
+************* Module validator
+validator.py:58: [C0301] Line too long (102/100)
+validator.py:17: [C0116] Missing function or method docstring
+validator.py:24: [C0116] Missing function or method docstring
+validator.py:5: [W0611] Unused Tuple imported from typing
+************* Module io_handler
+io_handler.py:1: [C0114] Missing module docstring
+io_handler.py:23: [C0116] Missing function or method docstring
+io_handler.py:91: [R0916] Too many boolean expressions in if statement (6/5)
+io_handler.py:125: [C0116] Missing function or method docstring
+io_handler.py:2: [W0611] Unused import sys
+************* Module planner
+planner.py:104: [R0914] Too many local variables (18/15)
+planner.py:148: [C0116] Missing function or method docstring
+planner.py:153: [C0116] Missing function or method docstring
+planner.py:219: [R0914] Too many local variables (16/15)
+planner.py:255: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 9.32/10 (previous run: 9.41/10, -0.10)
+
