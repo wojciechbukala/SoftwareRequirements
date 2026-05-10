@@ -1,3 +1,8 @@
+```
+python3 -m fleetrouter.main --input <input-dir> --output <output-dir>
+```
+
+
 # FleetRouter — Implementation Summary
 
 ## What was built

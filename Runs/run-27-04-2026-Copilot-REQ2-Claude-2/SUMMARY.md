@@ -1,3 +1,6 @@
+```
+python3 main.py --input <input_dir> --output <output_dir>
+```
 # Copilot Implementation Summary
 
 ## What was built

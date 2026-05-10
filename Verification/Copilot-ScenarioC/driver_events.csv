@@ -1,0 +1,6 @@
+timestamp,event_type,value
+1.0,ENGAGE,
+2.0,DISENGAGE,
+2.5,DISENGAGE,
+3.0,ENGAGE,
+4.0,ENGAGE,

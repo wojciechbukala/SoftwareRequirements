@@ -1,0 +1,4 @@
+timestamp,actuator_id,values
+2.0,ThrottleActuator,-12.5
+3.0,BrakingSystem,ENGAGE
+8.0,BrakingSystem,ENGAGE

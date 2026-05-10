@@ -1,0 +1,6 @@
+timestamp,actuator_id,values
+2.0,SteeringMotor,lane_correction=-0.1
+2.0,SpeedActuator,speed_adjustment=0.02
+122.0,SteeringMotor,ATTENTIVENESS_PROMPT
+247.0,SteeringMotor,ATTENTIVENESS_PROMPT
+255.0,AlarmActuator,CONTINUOUS_ALARM

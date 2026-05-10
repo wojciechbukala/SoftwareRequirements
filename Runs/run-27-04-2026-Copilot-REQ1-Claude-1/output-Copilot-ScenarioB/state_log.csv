@@ -1,0 +1,5 @@
+timestamp,previous_state,current_state,trigger_event
+1.0,DISENGAGED,ENGAGED,engage
+5.0,ENGAGED,DISENGAGED,steering_wheel_force
+6.0,DISENGAGED,ENGAGED,engage
+7.0,ENGAGED,DISENGAGED,steering_wheel_force

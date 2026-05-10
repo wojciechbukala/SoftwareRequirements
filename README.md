@@ -30,6 +30,14 @@ To run experiment pipeline with claude code system provide following commad:
 
 Number of runs is set for 3 as a default.
 
+### Gemini CLI
+```
+docker run -it \
+  -v /home/wojciech/.config/gcloud \
+  -e GOOGLE_APPLICATION_CREDENTIALS=/root/.config/gcloud/application_default_credentials.json \
+  Dockerfile.gemini
+```
+
 ## AI usage
 Following the princliple of full disclosure when working with GenAI, every usage of GenAI is listed below.
 - Text correction (Cluade, Gemini)

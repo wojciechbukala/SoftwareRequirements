@@ -1,0 +1,4 @@
+timestamp,actuator_id,values
+1.5,SteeringMotor,lane_correction=-0.05
+1.5,SpeedActuator,speed_adjustment=0.01
+3.5,BrakingSystem,EMERGENCY_BRAKE

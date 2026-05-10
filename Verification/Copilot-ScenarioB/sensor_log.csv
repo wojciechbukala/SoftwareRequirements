@@ -1,0 +1,4 @@
+timestamp,sensor_id,sensor_type,data_value,unit
+2.0,LID01,Lidar,5.0,m
+3.0,LID01,Lidar,4.999,m
+8.0,LID01,Lidar,3.0,m

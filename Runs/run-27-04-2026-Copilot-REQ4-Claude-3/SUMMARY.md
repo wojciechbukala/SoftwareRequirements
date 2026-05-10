@@ -1,3 +1,6 @@
+```bash
+python3 copilot/main.py --input <input_dir> --output <output_dir>
+```
 # Copilot ADAS Simulation — Implementation Summary
 
 ## Overview

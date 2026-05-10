@@ -1,0 +1,6 @@
+timestamp,actuator_id,values
+2.0,SteeringActuator,-0.1
+122.0,SteeringWheel,HAPTIC
+247.0,SteeringWheel,HAPTIC
+255.0,Alarm,ON
+255.0,Alarm,OFF

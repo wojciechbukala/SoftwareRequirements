@@ -28,7 +28,7 @@ one sig AlarmActuator extends Actuator {}
 fun LIDAR_DANGER: Int {5}
 fun OVERRIDE_FORCE: Int {10}
 fun VALID_RESPONSE_FORCE : Int {3}
-fun PROMPT_INTERVAL: Int {120}
+fun PROMPT_INTERVAL: Int {120} // Int only for Alloy modeling (float in input and output)
 fun RESPONSE_WINDOW: Int {5}
 
 // representation of one State log entry.

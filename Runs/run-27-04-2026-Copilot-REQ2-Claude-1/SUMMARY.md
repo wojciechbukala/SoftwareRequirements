@@ -1,3 +1,6 @@
+```
+python3 -m copilot --input <input-dir> --output <output-dir>
+```
 # Copilot System — Implementation Summary
 
 ## What Was Built

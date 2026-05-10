@@ -1,3 +1,6 @@
+```
+fleetrouter --input <input_dir> --output <output_dir>
+```
 # FleetRouter — Implementation Summary
 
 ## Overview

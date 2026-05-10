@@ -1,3 +1,7 @@
+```
+.venv/bin/python -m copilot --input <input_dir> --output <output_dir>
+```
+
 # Copilot Implementation Summary
 
 ## What Was Built

@@ -1,0 +1,4 @@
+timestamp,feature,decision
+1.5,LaneKeeping,CORRECTION:-0.1000
+1.5,CruiseControl,ADJUSTMENT:0.1000
+3.5,EmergencyBraking,BRAKE

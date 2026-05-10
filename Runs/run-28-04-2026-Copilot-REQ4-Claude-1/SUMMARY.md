@@ -1,3 +1,6 @@
+```bash
+python main.py --input <dir> --output <dir>
+```
 # Copilot ADAS Simulation – Implementation Summary
 
 ## What was built

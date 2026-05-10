@@ -1,0 +1,2 @@
+timestamp,sensor_id,sensor_type,data_value,unit
+2.0,CAM01,Camera,0.2,offset

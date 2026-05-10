@@ -13,7 +13,7 @@ REQ_PATH=""
 RUNS=3
 MODEL="claude-sonnet-4-6"
 
-PROMPT="You are an expert software engineer. Read the requirements specification at REQUIREMENTS.md and implement the system in the current directory. Do not ask clarifying questions. Provide a summary of the work done in SUMMARY.md"
+PROMPT="You are an expert software engineer. Read the requirements specification at REQUIREMENTS.md and implement the system in the current directory. Do not ask clarifying questions. Provide a summary of the work done in SUMMARY.md. Begin SUMMARY.md with a single fenced code block containing only the run command (no surrounding text or headings)."
 
 DOCKER_IMAGE="experiment-claude-code:latest"
 
@@ -68,7 +68,12 @@ TOTAL_CACHE_READ=0
 TOTAL_CACHE_CREATE=0
 TOTAL_COST="0"
 
-for ((i = 1; i <= RUNS; i++)); do
+START=1
+while [[ -d "${RUNS_DIR}/run-${DATE_TAG}-${REQ_LABEL}-Claude-${START}" ]]; do
+    (( START++ ))
+done
+
+for ((i = START; i < START + RUNS; i++)); do
     RUN_ID="run-${DATE_TAG}-${REQ_LABEL}-Claude-${i}"
     RUN_DIR="${RUNS_DIR}/${RUN_ID}"
 
@@ -106,9 +111,6 @@ for ((i = 1; i <= RUNS; i++)); do
 
     TOKENS_SUM=$(( INPUT + OUTPUT + CACHE_READ + CACHE_CREATE ))
     CSV_FILE="${REPO_ROOT}/Results/${PROJECT}.csv"
-    if [[ -f "$CSV_FILE" ]]; then
-        echo "${RUN_ID},${INPUT},${OUTPUT},${CACHE_READ},${CACHE_CREATE},${TOKENS_SUM}" >> "$CSV_FILE"
-    fi
 
     TOTAL_INPUT=$(( TOTAL_INPUT + INPUT ))
     TOTAL_OUTPUT=$(( TOTAL_OUTPUT + OUTPUT ))
@@ -117,8 +119,29 @@ for ((i = 1; i <= RUNS; i++)); do
     TOTAL_COST=$(awk "BEGIN { printf \"%.6f\", $TOTAL_COST + $COST }")
 
     echo "=== Pylint: ${RUN_ID} ==="
-    (cd "$RUN_DIR" && "${REPO_ROOT}/.venv/bin/python3" "${REPO_ROOT}/Verifiaction/pylint_verification.py")
+    (cd "$RUN_DIR" && "${REPO_ROOT}/.venv/bin/python3" "${REPO_ROOT}/Verification/pylint_verification.py")
+    PYLINT_SCORE=$(grep -oP '(?<=rated at )\d+\.\d+' "${RUN_DIR}/pylint-report.txt" 2>/dev/null || echo "")
     echo ""
+
+    echo "=== SonarQube: ${RUN_ID} ==="
+    SONAR_CSV_DATA=""
+    if SONAR_OUT=$("${REPO_ROOT}/.venv/bin/python3" "${REPO_ROOT}/Verification/sonar_verification.py" "$RUN_DIR" 2>&1); then
+        echo "$SONAR_OUT"
+        SONAR_CSV_DATA=$(echo "$SONAR_OUT" | grep "^SONAR_CSV:" | cut -d: -f2 || true)
+    else
+        echo "$SONAR_OUT"
+        echo "  SonarQube skipped (not running or error)"
+    fi
+    echo ""
+
+    CSV_ROW="${RUN_ID},${INPUT},${OUTPUT},${CACHE_READ},${CACHE_CREATE},${TOKENS_SUM},${PYLINT_SCORE},${SONAR_CSV_DATA}"
+    if [[ -f "$CSV_FILE" ]]; then
+        echo "$CSV_ROW" >> "$CSV_FILE"
+        echo "  CSV: zapisano -> $(basename "$CSV_FILE")"
+    else
+        echo "  WARN: plik CSV nie istnieje: $CSV_FILE"
+        echo "  CSV row: $CSV_ROW"
+    fi
 
     echo "Exit code: ${EXIT_CODE}"
     echo ""

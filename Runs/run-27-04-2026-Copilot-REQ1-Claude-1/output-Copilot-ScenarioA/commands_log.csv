@@ -1,0 +1,7 @@
+timestamp,actuator_id,values
+2.0,SteeringActuator,-0.1
+2.0,ThrottleActuator,0.2
+122.0,SteeringWheel,small_movement
+247.0,SteeringWheel,small_movement
+255.0,Alarm,on
+255.0,Alarm,off

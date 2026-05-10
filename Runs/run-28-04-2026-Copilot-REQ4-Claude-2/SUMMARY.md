@@ -1,3 +1,7 @@
+```bash
+python3 -m copilot --input <input_dir> --output <output_dir>
+```
+
 # Copilot ADAS Simulation – Implementation Summary
 
 ## What was built

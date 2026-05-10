@@ -1,3 +1,6 @@
+```
+copilot --input <dir> --output <dir>
+```
 # Copilot Implementation Summary
 
 ## What was built
