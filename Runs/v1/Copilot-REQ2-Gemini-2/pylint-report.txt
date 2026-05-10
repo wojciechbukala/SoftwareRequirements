@@ -1,0 +1,2 @@
+************* Module copilot
+copilot.py:334: [E0001] Parsing failed: 'unterminated string literal (detected at line 334) (copilot, line 334)'

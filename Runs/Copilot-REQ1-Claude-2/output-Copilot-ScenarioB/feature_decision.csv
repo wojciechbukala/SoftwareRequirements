@@ -1,0 +1,4 @@
+timestamp,feature,decision
+2.0,emergency braking,NO BRAKE
+3.0,emergency braking,BRAKE
+8.0,emergency braking,BRAKE

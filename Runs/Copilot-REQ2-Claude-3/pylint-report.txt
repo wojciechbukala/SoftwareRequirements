@@ -1,0 +1,13 @@
+************* Module copilot.decision
+copilot/decision.py:70: [C0301] Line too long (103/100)
+************* Module copilot.state_machine
+copilot/state_machine.py:163: [C0415] Import outside toplevel (copilot.actuator.prompt_command, copilot.actuator.alarm_command)
+copilot/state_machine.py:22: [W0611] Unused field imported from dataclasses
+************* Module copilot.actuator
+copilot/actuator.py:104: [C0301] Line too long (101/100)
+************* Module copilot.__main__
+copilot/__main__.py:36: [W0611] Unused AnyEvent imported from copilot.perception
+
+------------------------------------------------------------------
+Your code has been rated at 9.81/10 (previous run: 9.50/10, +0.31)
+

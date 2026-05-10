@@ -1,0 +1,47 @@
+************* Module copilot
+copilot.py:35: [C0301] Line too long (106/100)
+copilot.py:38: [C0301] Line too long (109/100)
+copilot.py:41: [C0301] Line too long (113/100)
+copilot.py:66: [C0301] Line too long (131/100)
+copilot.py:67: [C0301] Line too long (117/100)
+copilot.py:76: [C0301] Line too long (107/100)
+copilot.py:77: [C0301] Line too long (104/100)
+copilot.py:80: [C0301] Line too long (146/100)
+copilot.py:81: [C0301] Line too long (113/100)
+copilot.py:85: [C0301] Line too long (177/100)
+copilot.py:86: [C0301] Line too long (111/100)
+copilot.py:90: [C0301] Line too long (144/100)
+copilot.py:91: [C0301] Line too long (103/100)
+copilot.py:95: [C0301] Line too long (126/100)
+copilot.py:105: [C0301] Line too long (102/100)
+copilot.py:113: [C0301] Line too long (108/100)
+copilot.py:122: [C0301] Line too long (102/100)
+copilot.py:128: [C0301] Line too long (168/100)
+copilot.py:131: [C0301] Line too long (107/100)
+copilot.py:133: [C0301] Line too long (141/100)
+copilot.py:135: [C0301] Line too long (108/100)
+copilot.py:138: [C0303] Trailing whitespace
+copilot.py:139: [C0301] Line too long (102/100)
+copilot.py:147: [C0301] Line too long (111/100)
+copilot.py:148: [C0301] Line too long (107/100)
+copilot.py:154: [C0301] Line too long (106/100)
+copilot.py:157: [C0301] Line too long (109/100)
+copilot.py:160: [C0301] Line too long (113/100)
+copilot.py:175: [C0301] Line too long (107/100)
+copilot.py:187: [C0301] Line too long (134/100)
+copilot.py:188: [C0301] Line too long (150/100)
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:7: [C0115] Missing class docstring
+copilot.py:7: [R0902] Too many instance attributes (8/7)
+copilot.py:61: [C0116] Missing function or method docstring
+copilot.py:61: [R0912] Too many branches (22/12)
+copilot.py:61: [R0915] Too many statements (66/50)
+copilot.py:153: [C0116] Missing function or method docstring
+copilot.py:164: [C0116] Missing function or method docstring
+copilot.py:185: [C0116] Missing function or method docstring
+copilot.py:3: [W0611] Unused datetime imported from datetime
+copilot.py:5: [W0611] Unused import time
+
+------------------------------------------------------------------
+Your code has been rated at 7.50/10 (previous run: 8.18/10, -0.68)
+

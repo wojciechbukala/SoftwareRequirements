@@ -1,0 +1,36 @@
+************* Module copilot
+copilot.py:63: [W0311] Bad indentation. Found 16 spaces, expected 12
+copilot.py:64: [W0311] Bad indentation. Found 16 spaces, expected 12
+copilot.py:108: [C0301] Line too long (143/100)
+copilot.py:113: [C0301] Line too long (126/100)
+copilot.py:119: [C0301] Line too long (136/100)
+copilot.py:126: [C0301] Line too long (160/100)
+copilot.py:132: [C0301] Line too long (126/100)
+copilot.py:139: [C0301] Line too long (127/100)
+copilot.py:148: [C0301] Line too long (116/100)
+copilot.py:152: [C0301] Line too long (102/100)
+copilot.py:160: [C0301] Line too long (119/100)
+copilot.py:165: [C0301] Line too long (122/100)
+copilot.py:172: [C0301] Line too long (105/100)
+copilot.py:176: [C0301] Line too long (105/100)
+copilot.py:178: [C0303] Trailing whitespace
+copilot.py:179: [C0301] Line too long (107/100)
+copilot.py:193: [C0301] Line too long (122/100)
+copilot.py:194: [C0301] Line too long (131/100)
+copilot.py:195: [C0301] Line too long (164/100)
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:22: [C0115] Missing class docstring
+copilot.py:22: [R0902] Too many instance attributes (12/7)
+copilot.py:148: [R1716] Simplify chained comparison between the operands
+copilot.py:151: [W0107] Unnecessary pass statement
+copilot.py:102: [R0912] Too many branches (16/12)
+copilot.py:102: [R0915] Too many statements (56/50)
+copilot.py:105: [W0612] Unused variable 'trigger_event_str'
+copilot.py:182: [C0116] Missing function or method docstring
+copilot.py:22: [R0903] Too few public methods (1/2)
+copilot.py:192: [C0116] Missing function or method docstring
+copilot.py:5: [W0611] Unused deque imported from collections
+
+------------------------------------------------------------------
+Your code has been rated at 7.85/10 (previous run: 6.84/10, +1.01)
+

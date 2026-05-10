@@ -1,0 +1,37 @@
+************* Module copilot
+copilot.py:91: [C0301] Line too long (119/100)
+copilot.py:144: [C0301] Line too long (104/100)
+copilot.py:162: [C0301] Line too long (102/100)
+copilot.py:170: [C0301] Line too long (115/100)
+copilot.py:173: [C0301] Line too long (102/100)
+copilot.py:176: [C0301] Line too long (105/100)
+copilot.py:179: [C0301] Line too long (115/100)
+copilot.py:191: [C0301] Line too long (101/100)
+copilot.py:196: [C0301] Line too long (104/100)
+copilot.py:200: [C0301] Line too long (112/100)
+copilot.py:205: [C0301] Line too long (109/100)
+copilot.py:208: [C0301] Line too long (102/100)
+copilot.py:229: [C0301] Line too long (153/100)
+copilot.py:235: [C0301] Line too long (134/100)
+copilot.py:236: [C0301] Line too long (150/100)
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:9: [C0115] Missing class docstring
+copilot.py:15: [C0115] Missing class docstring
+copilot.py:19: [C0115] Missing class docstring
+copilot.py:24: [C0115] Missing class docstring
+copilot.py:30: [C0115] Missing class docstring
+copilot.py:50: [C0115] Missing class docstring
+copilot.py:54: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:58: [C0116] Missing function or method docstring
+copilot.py:61: [C0116] Missing function or method docstring
+copilot.py:64: [C0116] Missing function or method docstring
+copilot.py:69: [C0115] Missing class docstring
+copilot.py:127: [R1705] Unnecessary "else" after "return", remove the "else" and de-indent the code inside it
+copilot.py:207: [C0116] Missing function or method docstring
+copilot.py:216: [C0116] Missing function or method docstring
+copilot.py:223: [C0116] Missing function or method docstring
+copilot.py:233: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 8.18/10 (previous run: 7.69/10, +0.50)
+

@@ -1,0 +1,8 @@
+************* Module copilot
+copilot.py:255: [C0301] Line too long (117/100)
+copilot.py:256: [C0301] Line too long (109/100)
+copilot.py:92: [R1705] Unnecessary "else" after "return", remove the "else" and de-indent the code inside it
+
+------------------------------------------------------------------
+Your code has been rated at 9.80/10 (previous run: 9.80/10, +0.00)
+

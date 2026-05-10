@@ -21,7 +21,6 @@ DOCKER_IMAGE="experiment-claude-code:latest"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DOCKERFILE="${REPO_ROOT}/Automation/Dockerfile.claude"
 RUNS_DIR="${REPO_ROOT}/Runs"
-DATE_TAG="$(date '+%d-%m-%Y')"
 
 
 # Arguments parsing
@@ -44,6 +43,32 @@ command -v docker &>/dev/null || die "Docker not found"
 command -v jq     &>/dev/null || die "jq not found — install with: apt-get install jq"
 docker info &>/dev/null       || die "Docker daemon is not running"
 
+ensure_sonarqube() {
+    local url="${SONAR_URL:-http://localhost:9015}"
+    local port="${url##*:}"; port="${port%%/*}"
+    if curl -sf "${url}/api/system/status" -o /dev/null 2>/dev/null; then
+        return 0
+    fi
+    echo "SonarQube nie odpowiada na porcie ${port} — próba uruchomienia kontenera..."
+    local container
+    container=$(docker ps -a --filter "publish=${port}" --format "{{.Names}}" | head -1)
+    [[ -n "$container" ]] || { echo "  WARN: nie znaleziono kontenera SonarQube na porcie ${port} — pomijam"; return 1; }
+    docker start "$container"
+    echo -n "  Oczekiwanie na SonarQube"
+    for _ in $(seq 1 20); do
+        sleep 3
+        echo -n "."
+        if curl -sf "${url}/api/system/status" -o /dev/null 2>/dev/null; then
+            echo " gotowy."
+            return 0
+        fi
+    done
+    echo " timeout — pomijam SonarQube"
+    return 1
+}
+
+ensure_sonarqube || true
+
 # Build docker image
 if ! docker image inspect "$DOCKER_IMAGE" &>/dev/null; then
     echo "Building Docker image..."
@@ -56,7 +81,7 @@ fi
 # Extract project name from parent dir (part after " - ") and REQ id from filename (part before first "-")
 _REQ_DIR="$(dirname "$REQ_PATH")"
 _REQ_BASENAME="$(basename "$REQ_PATH" .md)"
-PROJECT="${_REQ_DIR##* - }"
+PROJECT="${_REQ_DIR##*-}"
 REQ_ID="${_REQ_BASENAME%%-*}"
 REQ_LABEL="${PROJECT}-${REQ_ID}"
 
@@ -69,12 +94,12 @@ TOTAL_CACHE_CREATE=0
 TOTAL_COST="0"
 
 START=1
-while [[ -d "${RUNS_DIR}/run-${DATE_TAG}-${REQ_LABEL}-Claude-${START}" ]]; do
+while [[ -d "${RUNS_DIR}/${REQ_LABEL}-Claude-${START}" ]]; do
     (( START++ ))
 done
 
 for ((i = START; i < START + RUNS; i++)); do
-    RUN_ID="run-${DATE_TAG}-${REQ_LABEL}-Claude-${i}"
+    RUN_ID="${REQ_LABEL}-Claude-${i}"
     RUN_DIR="${RUNS_DIR}/${RUN_ID}"
 
     mkdir -p "$RUN_DIR"

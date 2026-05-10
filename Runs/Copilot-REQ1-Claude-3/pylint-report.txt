@@ -1,0 +1,20 @@
+************* Module copilot
+copilot.py:256: [C0301] Line too long (101/100)
+copilot.py:257: [C0301] Line too long (111/100)
+copilot.py:261: [C0301] Line too long (104/100)
+copilot.py:266: [C0301] Line too long (108/100)
+copilot.py:276: [C0301] Line too long (115/100)
+copilot.py:23: [C0115] Missing class docstring
+copilot.py:29: [C0116] Missing function or method docstring
+copilot.py:48: [C0116] Missing function or method docstring
+copilot.py:65: [C0115] Missing class docstring
+copilot.py:65: [R0902] Too many instance attributes (8/7)
+copilot.py:176: [C0116] Missing function or method docstring
+copilot.py:215: [C0116] Missing function or method docstring
+copilot.py:244: [C0116] Missing function or method docstring
+copilot.py:253: [C0116] Missing function or method docstring
+copilot.py:274: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 9.10/10 (previous run: 9.39/10, -0.29)
+

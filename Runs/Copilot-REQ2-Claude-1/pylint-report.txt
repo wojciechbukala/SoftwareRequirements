@@ -1,0 +1,14 @@
+************* Module copilot
+copilot.py:110: [C0301] Line too long (103/100)
+copilot.py:200: [C0301] Line too long (102/100)
+copilot.py:207: [C0301] Line too long (105/100)
+copilot.py:230: [C0301] Line too long (105/100)
+copilot.py:383: [C0301] Line too long (106/100)
+copilot.py:171: [R0903] Too few public methods (0/2)
+copilot.py:238: [W0613] Unused argument 'ctx'
+copilot.py:388: [C0116] Missing function or method docstring
+copilot.py:12: [W0611] Unused import sys
+
+------------------------------------------------------------------
+Your code has been rated at 9.52/10 (previous run: 9.10/10, +0.42)
+

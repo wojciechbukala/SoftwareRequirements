@@ -1,0 +1,38 @@
+************* Module copilot
+copilot.py:37: [C0301] Line too long (104/100)
+copilot.py:45: [C0301] Line too long (105/100)
+copilot.py:57: [C0301] Line too long (110/100)
+copilot.py:85: [C0301] Line too long (101/100)
+copilot.py:117: [C0301] Line too long (126/100)
+copilot.py:131: [C0303] Trailing whitespace
+copilot.py:154: [C0301] Line too long (106/100)
+copilot.py:194: [C0301] Line too long (109/100)
+copilot.py:195: [C0303] Trailing whitespace
+copilot.py:209: [C0301] Line too long (123/100)
+copilot.py:211: [C0301] Line too long (119/100)
+copilot.py:213: [C0303] Trailing whitespace
+copilot.py:215: [C0301] Line too long (199/100)
+copilot.py:217: [C0301] Line too long (102/100)
+copilot.py:220: [C0301] Line too long (114/100)
+copilot.py:224: [C0301] Line too long (105/100)
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:22: [C0115] Missing class docstring
+copilot.py:22: [R0902] Too many instance attributes (13/7)
+copilot.py:35: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:36: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:37: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:55: [C0116] Missing function or method docstring
+copilot.py:59: [C0116] Missing function or method docstring
+copilot.py:62: [C0116] Missing function or method docstring
+copilot.py:65: [C0116] Missing function or method docstring
+copilot.py:65: [R0912] Too many branches (17/12)
+copilot.py:65: [R0915] Too many statements (53/50)
+copilot.py:75: [W0612] Unused variable 'unit'
+copilot.py:136: [C0116] Missing function or method docstring
+copilot.py:140: [W0612] Unused variable 'header'
+copilot.py:160: [C0116] Missing function or method docstring
+copilot.py:5: [W0611] Unused import sys
+
+------------------------------------------------------------------
+Your code has been rated at 7.83/10 (previous run: 7.28/10, +0.55)
+

@@ -15,7 +15,6 @@ PROMPT="You are an expert software engineer. Read the requirements specification
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNS_DIR="${REPO_ROOT}/Runs"
-DATE_TAG="$(date '+%d-%m-%Y')"
 
 die() { echo "Error: $*" >&2; exit 1; }
 
@@ -31,6 +30,32 @@ done
 [[ -n "$REQ_PATH" ]]                || die "-r (REQ path) is required"
 [[ -f "${REPO_ROOT}/${REQ_PATH}" ]] || die "REQ file not found: ${REPO_ROOT}/${REQ_PATH}"
 
+ensure_sonarqube() {
+    local url="${SONAR_URL:-http://localhost:9015}"
+    local port="${url##*:}"; port="${port%%/*}"
+    if curl -sf "${url}/api/system/status" -o /dev/null 2>/dev/null; then
+        return 0
+    fi
+    echo "SonarQube nie odpowiada na porcie ${port} — próba uruchomienia kontenera..."
+    local container
+    container=$(docker ps -a --filter "publish=${port}" --format "{{.Names}}" | head -1)
+    [[ -n "$container" ]] || { echo "  WARN: nie znaleziono kontenera SonarQube na porcie ${port} — pomijam"; return 1; }
+    docker start "$container"
+    echo -n "  Oczekiwanie na SonarQube"
+    for _ in $(seq 1 20); do
+        sleep 3
+        echo -n "."
+        if curl -sf "${url}/api/system/status" -o /dev/null 2>/dev/null; then
+            echo " gotowy."
+            return 0
+        fi
+    done
+    echo " timeout — pomijam SonarQube"
+    return 1
+}
+
+ensure_sonarqube || true
+
 _REQ_DIR="$(dirname "$REQ_PATH")"
 _REQ_BASENAME="$(basename "$REQ_PATH" .md)"
 PROJECT="${_REQ_DIR##* - }"
@@ -45,12 +70,12 @@ TOTAL_CACHE_READ=0
 TOTAL_CACHE_CREATE=0
 
 START=1
-while [[ -d "${RUNS_DIR}/run-${DATE_TAG}-${REQ_LABEL}-Gemini-${START}" ]]; do
+while [[ -d "${RUNS_DIR}/${REQ_LABEL}-Gemini-${START}" ]]; do
     (( START++ ))
 done
 
 for ((i = START; i < START + RUNS; i++)); do
-    RUN_ID="run-${DATE_TAG}-${REQ_LABEL}-Gemini-${i}"
+    RUN_ID="${REQ_LABEL}-Gemini-${i}"
     RUN_DIR="${RUNS_DIR}/${RUN_ID}"
 
     mkdir -p "$RUN_DIR"

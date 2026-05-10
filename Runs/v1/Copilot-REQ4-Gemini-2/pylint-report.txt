@@ -1,0 +1,60 @@
+************* Module copilot
+copilot.py:114: [C0301] Line too long (104/100)
+copilot.py:123: [C0301] Line too long (107/100)
+copilot.py:179: [C0301] Line too long (111/100)
+copilot.py:194: [C0301] Line too long (114/100)
+copilot.py:208: [C0301] Line too long (118/100)
+copilot.py:225: [C0301] Line too long (132/100)
+copilot.py:228: [C0301] Line too long (135/100)
+copilot.py:231: [C0301] Line too long (124/100)
+copilot.py:232: [C0301] Line too long (126/100)
+copilot.py:253: [C0301] Line too long (103/100)
+copilot.py:264: [C0301] Line too long (102/100)
+copilot.py:278: [C0303] Trailing whitespace
+copilot.py:285: [C0303] Trailing whitespace
+copilot.py:287: [C0303] Trailing whitespace
+copilot.py:288: [C0301] Line too long (101/100)
+copilot.py:291: [C0303] Trailing whitespace
+copilot.py:293: [C0301] Line too long (114/100)
+copilot.py:297: [C0301] Line too long (111/100)
+copilot.py:298: [C0303] Trailing whitespace
+copilot.py:301: [C0301] Line too long (120/100)
+copilot.py:310: [C0303] Trailing whitespace
+copilot.py:312: [C0301] Line too long (141/100)
+copilot.py:314: [C0303] Trailing whitespace
+copilot.py:316: [C0303] Trailing whitespace
+copilot.py:317: [C0303] Trailing whitespace
+copilot.py:326: [C0301] Line too long (129/100)
+copilot.py:327: [C0303] Trailing whitespace
+copilot.py:335: [C0301] Line too long (121/100)
+copilot.py:336: [C0303] Trailing whitespace
+copilot.py:339: [C0301] Line too long (101/100)
+copilot.py:341: [C0301] Line too long (110/100)
+copilot.py:345: [C0303] Trailing whitespace
+copilot.py:346: [C0301] Line too long (122/100)
+copilot.py:348: [C0301] Line too long (111/100)
+copilot.py:352: [C0303] Trailing whitespace
+copilot.py:353: [C0301] Line too long (125/100)
+copilot.py:354: [C0303] Trailing whitespace
+copilot.py:355: [C0301] Line too long (126/100)
+copilot.py:359: [C0301] Line too long (128/100)
+copilot.py:361: [C0303] Trailing whitespace
+copilot.py:364: [C0301] Line too long (139/100)
+copilot.py:366: [C0303] Trailing whitespace
+copilot.py:369: [C0303] Trailing whitespace
+copilot.py:370: [C0301] Line too long (150/100)
+copilot.py:375: [C0301] Line too long (106/100)
+copilot.py:376: [C0301] Line too long (144/100)
+copilot.py:377: [C0301] Line too long (178/100)
+copilot.py:378: [C0303] Trailing whitespace
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:101: [R0902] Too many instance attributes (8/7)
+copilot.py:297: [W0612] Unused variable 'state_before_tick'
+copilot.py:127: [R0903] Too few public methods (1/2)
+copilot.py:374: [C0116] Missing function or method docstring
+copilot.py:4: [W0611] Unused field imported from dataclasses
+copilot.py:5: [W0611] Unused Dict imported from typing
+
+------------------------------------------------------------------
+Your code has been rated at 7.59/10 (previous run: 7.18/10, +0.41)
+

@@ -1,0 +1,14 @@
+************* Module copilot
+copilot.py:19: [C0116] Missing function or method docstring
+copilot.py:19: [R0914] Too many local variables (36/15)
+copilot.py:96: [C0321] More than one statement on a single line
+copilot.py:97: [C0321] More than one statement on a single line
+copilot.py:102: [C0321] More than one statement on a single line
+copilot.py:133: [R1702] Too many nested blocks (6/5)
+copilot.py:19: [R0912] Too many branches (21/12)
+copilot.py:19: [R0915] Too many statements (112/50)
+copilot.py:208: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 9.39/10 (previous run: 9.39/10, -0.01)
+

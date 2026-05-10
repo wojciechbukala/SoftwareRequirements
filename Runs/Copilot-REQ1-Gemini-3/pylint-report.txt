@@ -1,0 +1,54 @@
+************* Module copilot
+copilot.py:20: [C0301] Line too long (112/100)
+copilot.py:21: [C0301] Line too long (118/100)
+copilot.py:22: [C0301] Line too long (126/100)
+copilot.py:28: [C0301] Line too long (101/100)
+copilot.py:43: [C0301] Line too long (107/100)
+copilot.py:53: [C0301] Line too long (149/100)
+copilot.py:55: [C0301] Line too long (124/100)
+copilot.py:61: [C0301] Line too long (114/100)
+copilot.py:68: [C0301] Line too long (115/100)
+copilot.py:74: [C0301] Line too long (102/100)
+copilot.py:85: [C0301] Line too long (105/100)
+copilot.py:88: [C0301] Line too long (117/100)
+copilot.py:92: [C0301] Line too long (105/100)
+copilot.py:98: [C0301] Line too long (101/100)
+copilot.py:110: [C0303] Trailing whitespace
+copilot.py:113: [C0301] Line too long (114/100)
+copilot.py:116: [C0301] Line too long (106/100)
+copilot.py:119: [C0301] Line too long (111/100)
+copilot.py:126: [C0301] Line too long (107/100)
+copilot.py:130: [C0301] Line too long (111/100)
+copilot.py:131: [C0303] Trailing whitespace
+copilot.py:138: [C0301] Line too long (112/100)
+copilot.py:145: [C0301] Line too long (117/100)
+copilot.py:149: [C0301] Line too long (108/100)
+copilot.py:159: [C0301] Line too long (109/100)
+copilot.py:172: [C0301] Line too long (131/100)
+copilot.py:173: [C0301] Line too long (164/100)
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:6: [C0115] Missing class docstring
+copilot.py:12: [C0115] Missing class docstring
+copilot.py:12: [R0902] Too many instance attributes (13/7)
+copilot.py:20: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:21: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:22: [R1732] Consider using 'with' for resource-allocating operations
+copilot.py:41: [C0116] Missing function or method docstring
+copilot.py:45: [C0116] Missing function or method docstring
+copilot.py:48: [C0116] Missing function or method docstring
+copilot.py:53: [C0116] Missing function or method docstring
+copilot.py:53: [R0913] Too many arguments (9/5)
+copilot.py:53: [R0917] Too many positional arguments (9/5)
+copilot.py:78: [R1705] Unnecessary "elif" after "return", remove the leading "el" from "elif"
+copilot.py:53: [R0912] Too many branches (25/12)
+copilot.py:53: [R0915] Too many statements (79/50)
+copilot.py:53: [W0613] Unused argument 'sensor_id'
+copilot.py:53: [W0613] Unused argument 'unit'
+copilot.py:55: [W0612] Unused variable 'trigger_event'
+copilot.py:170: [C0116] Missing function or method docstring
+copilot.py:176: [C0116] Missing function or method docstring
+copilot.py:186: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 6.84/10 (previous run: 7.83/10, -0.99)
+
