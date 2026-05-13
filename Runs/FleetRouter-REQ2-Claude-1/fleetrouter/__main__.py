@@ -1,85 +1,82 @@
 import argparse
-import os
 import sys
+from pathlib import Path
 
-from .planner import plan_routes
-from .reader import read_distances, read_locations, read_packages, read_vehicles
-from .writer import (
-    ensure_output_dir,
-    write_stops_order,
-    write_summary,
-    write_undeliverable,
-)
+from . import reader, planner, writer
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
+    arg_parser = argparse.ArgumentParser(
         prog="fleetrouter",
-        description="Daily route planner for courier fleets.",
+        description="FleetRouter: daily route planning for courier companies.",
     )
-    parser.add_argument(
-        "--input", required=True, metavar="<dir>", help="Directory containing input CSV files"
+    arg_parser.add_argument(
+        "--input",
+        required=True,
+        metavar="<dir>",
+        help="Directory containing the four input CSV files.",
     )
-    parser.add_argument(
-        "--output", required=True, metavar="<dir>", help="Directory for output CSV files"
+    arg_parser.add_argument(
+        "--output",
+        required=True,
+        metavar="<dir>",
+        help="Directory where the three output CSV files will be written.",
     )
-    args = parser.parse_args()
+    args = arg_parser.parse_args()
 
-    in_dir: str = args.input
-    out_dir: str = args.output
+    input_dir = Path(args.input)
+    output_dir = Path(args.output)
 
-    if not os.path.isdir(in_dir):
-        print(f"ERROR: Input directory does not exist: {in_dir}", file=sys.stderr)
-        sys.exit(1)
+    required_inputs = {
+        "locations.csv": input_dir / "locations.csv",
+        "packages.csv": input_dir / "packages.csv",
+        "vehicles.csv": input_dir / "vehicles.csv",
+        "distances.csv": input_dir / "distances.csv",
+    }
+    for name, path in required_inputs.items():
+        if not path.exists():
+            print(f"Error: Required input file not found: {path}", file=sys.stderr)
+            sys.exit(1)
 
-    ensure_output_dir(out_dir)
+    print("Reading input data...")
+    locations = reader.read_locations(required_inputs["locations.csv"])
+    distances = reader.read_distances(required_inputs["distances.csv"])
 
-    print("Reading and validating input data...")
-
-    locations = read_locations(os.path.join(in_dir, "locations.csv"))
-    dist_map = read_distances(os.path.join(in_dir, "distances.csv"))
-    location_ids = set(locations.keys())
-    vehicles = read_vehicles(os.path.join(in_dir, "vehicles.csv"), location_ids)
-    packages, validation_undeliverable = read_packages(
-        os.path.join(in_dir, "packages.csv"), location_ids
+    vehicles, vehicle_warnings = reader.read_vehicles(
+        required_inputs["vehicles.csv"], locations
+    )
+    packages, pre_undeliverable, package_warnings = reader.read_packages(
+        required_inputs["packages.csv"], locations
     )
 
-    print(
-        f"  Loaded {len(locations)} locations, {len(dist_map)} distance entries,"
-        f" {len(vehicles)} vehicles, {len(packages)} valid packages."
-    )
-    if validation_undeliverable:
-        print(
-            f"  {len(validation_undeliverable)} package(s) excluded during validation."
-        )
+    for msg in vehicle_warnings + package_warnings:
+        print(f"Warning: {msg}", file=sys.stderr)
 
     if not vehicles:
-        print("ERROR: No valid vehicles available — cannot plan routes.", file=sys.stderr)
+        print("Error: No valid vehicles found. Cannot plan routes.", file=sys.stderr)
         sys.exit(1)
 
-    print("Planning routes...")
-    assignments, planning_undeliverable = plan_routes(packages, vehicles, dist_map)
+    print("Planning and optimizing routes...")
+    routes, planning_undeliverable = planner.plan_routes(
+        packages, vehicles, locations, distances
+    )
 
-    all_undeliverable = {**validation_undeliverable, **planning_undeliverable}
+    all_undeliverable = pre_undeliverable + planning_undeliverable
 
-    delivered_count = sum(len(pkgs) for pkgs in assignments.values())
-    total_processed = len(packages) + len(validation_undeliverable)
-
+    output_dir.mkdir(parents=True, exist_ok=True)
     print("Writing output files...")
-    write_stops_order(
-        os.path.join(out_dir, "stops_order.csv"), vehicles, assignments, dist_map
-    )
-    write_summary(
-        os.path.join(out_dir, "summary.csv"), vehicles, assignments, dist_map
-    )
-    write_undeliverable(
-        os.path.join(out_dir, "undeliverable.csv"), all_undeliverable
-    )
+    writer.write_stops_order(output_dir / "stops_order.csv", routes)
+    writer.write_summary(output_dir / "summary.csv", routes, vehicles)
+    writer.write_undeliverable(output_dir / "undeliverable.csv", all_undeliverable)
+
+    total_processed = len(packages) + len(pre_undeliverable)
+    delivered = sum(len(r.package_sequence) for r in routes)
+    undeliverable_count = len(all_undeliverable)
 
     print(
-        f"\nPlanning complete: {total_processed} packages processed,"
-        f" {delivered_count} delivered,"
-        f" {len(all_undeliverable)} undeliverable."
+        f"\nDone: {total_processed} packages processed | "
+        f"{delivered} delivered | "
+        f"{undeliverable_count} undeliverable."
     )
 
 

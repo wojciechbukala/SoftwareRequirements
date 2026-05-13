@@ -33,124 +33,21 @@ The principal function of the FleetRouter program is to produce the best possibl
 ## 1.3. Product overview
 
 ### 1.3.1. Product perspective
-Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the classes for implementation.
+FleetRouter is a program used internally by a courier company as a planning tool. It is invoked once per planning cycle - typically onese per day, and produces a plan that is then handed off to dispatchers and drivers.
 
-Domain class diagram transformed to Mermaid.js form:
+The program sits between two well-defined data boundaries. On the input side, FleetRouter relies entirely on a set of files prepared in advance that together describe the state of the world for the planning run: the list of packages to be delivered on a given day, the fleet of vehicles available for that day, the set of physical locations referenced by packages and depots, and a table of pairwise distances and travel times between those locations.
 
-```
-classDiagram
-    class Location {
-        +location_id
-        +name
-    }
+On the output side, FleetRouter produces a set of files that together constitute the daily plan: an ordered list of stops for each vehicle, a per-vehicle summary, and a list of packages that could not be delivered along with the reason. These files are the sole means by which FleetRouter communicates its results.
 
-    class Distance {
-        +origin_id
-        +destination_id
-        +distance
-        +travel_time
-    }
-
-    class Vehicle {
-        +vehicle_id
-        +weight_capacity
-        +volume_capacity
-        +depot_location_id
-    }
-
-    class Package {
-        +package_id
-        +destination_id
-        +weight
-        +volume
-        +tw_open
-        +tw_close
-        +priority
-    }
-
-    class Stops {
-        +route_id
-        +vehicle_id
-        +location_id
-        +delivered_id
-        +position_in_order
-        +arrival_time
-        +departure_time
-    }
-
-    class RouteSummary {
-        +route_id
-        +total_distance
-        +total_time
-        +packages_delivered
-    }
-
-    class Undeliverable {
-        +package_id
-        +reason
-    }
-
-    Location "0..*" -- "1..*" Distance : origin of
-    Location "0..*" -- "1..*" Distance : destination of
-    Location "1" -- "1..*" Vehicle : has depot
-    Location "1" -- "0..*" Package : desired destination
-    Location "1" -- "0..*" Stops : takes place at
-    Vehicle "1" -- "0..*" Stops : delivered by
-    Package "1" -- "0..1" Stops : delivered package
-    Package "1" -- "0..1" Undeliverable : can be
-    RouteSummary "1" -- "0..*" Stops : is element of
-```
+The program has no other external dependencies. It does not require network access, a database engine, specialized hardware, or any runtime service. A single invocation on a single workstation is a complete interaction with the program.
 
 ### 1.3.2. Product functions
-The core processing logic of FleetRouter is captured by two state machines. The firs one models the lifecycle of a single package. The second one models the lifecycle of a route being constructed for a given vehicle.
-
-Package state machine:
-
-```
-stateDiagram-v2
-    [*] --> Unassigned
-
-    Unassigned --> Assigned : Fits constraints
-    Unassigned --> Undeliverable : No vehicle fits
-
-    Assigned --> Delivered : Route executed
-    Delivered --> [*]
-
-    state Undeliverable {
-        direction LR
-        state pick <<choice>>
-        [*] --> pick
-        pick --> CAPACITY_WEIGHT   : weight limit exceeded
-        pick --> CAPACITY_VOLUME   : volume limit exceeded
-        pick --> TIME_WINDOW       : window infeasible / invalid
-        pick --> MAX_DRIVER_TIME   : 8h driver limit exceeded
-        pick --> NO_VEHICLE        : no vehicle fits after all checks
-        CAPACITY_WEIGHT --> [*]
-        CAPACITY_VOLUME --> [*]
-        TIME_WINDOW     --> [*]
-        MAX_DRIVER_TIME --> [*]
-        NO_VEHICLE      --> [*]
-        UNREACHABLE     --> [*]
-    }
-
-    Undeliverable --> [*]
-```
-
-Route state diagram:
-
-```
-stateDiagram-v2
-    [*] --> Empty
-    
-    Empty --> BuildingRoute : Add stop
-    
-    state "Building route" as BuildingRoute
-    BuildingRoute --> BuildingRoute : Add stop
-    BuildingRoute --> Validated : Validate constraints
-    
-    Validated --> [*]
-```
-
+A single invocation of FleetRouter carries out the complete daily planning process in one uninterrupted pass. The program performs five main functions.
+- **Ingestion and validation of input data** - FleetRouter reads all four input files and checks their contents for internal consistency before any planning begins.
+- **Assignment of packages to vehicles** - Each package that has passed validation is considered for assignment to exactly one vehicle in the fleet. An assignment is accepted only if it respects the vehicle's weight and volume capacity, fits within the package's delivery time window, and does not cause the total working time of the vehicle's driver to exceed the allowed daily limit. Packages that cannot be assigned under any such constraint are classified as undeliverable, each with a specific reason. Packages marked as priority are considered ahead of non-priority packages whenever capacity forces a choice.
+- **Route construction** - For every vehicle to which at least one package has been assigned, FleetRouter builds a route that starts at the vehicle's depot, visits the delivery location of each assigned package in some order, and returns to the depot.
+- **Route optimization** - Among the routes that satisfy all of the above constraints, FleetRouter selects those that minimize the total distance driven across the entire fleet. When two candidate solutions are tied on total distance, the tie is broken in favor of the one with the shorter total route duration.
+- **Output generation** - Once the plan has been finalized, FleetRouter writes three files describing, respectively, the ordered stops of each route, a per-vehicle summary of distance, duration, and delivered package counts, and the list of undeliverable packages together with their reasons.
 
 ### 1.3.3. User characteristics
 The only user of the program are employees of the courier company. They are qualified staff with an understanding of the process. We call them Fleet Operator, or simply a user.
@@ -180,7 +77,12 @@ The only reference is CONTEXT-FleetRouter.md file with the task description, in 
 ## 3.1. Function - Functional Requirements
 
 ### FR-01 - Read input data
-The system shall read the four mandatory CSV files (*packages.csv*, *vehicles.csv*, *locations.csv*, *distances.csv*) whose contents realize the domain model in Section 1.3.1. If any file is missing or unreadable, the system shall terminate and report the missing file.
+The system shall read input data including:
+- Package data from *packages.csv*, including package ID, weight in kg, volume in m^3, opening of time window, closing of time window, time of service in minutes, and priority of package. 
+- Vehicle data from *vehicles.csv*, including vehicle ID, maximum weight capacity in kg, maximum volume capacity in m^3, and depot location ID.
+- Location data from *locations.csv*, including location ID and name.
+- Distances data from *distances.csv*, including origin location ID, destination location ID, distance in km, and travel time in minutes. 
+The system shall treat all four input files as mandatory; if any file is missing or unreadable, the system shall terminate and report the missing file.
 
 ### FR-02 Input data validation
 The system shall:
@@ -220,36 +122,15 @@ The system shall:
 ## 3.2. Function - Use Cases
 
 ### UC-01 - Run daily route planning
-UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence diagram below illustrates the complete message flow between the operator, the system, and the file system.
+UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process.
 
-```
-sequenceDiagram
-actor Operator as FleetOperator
-participant FR as FleetRouter
-participant FS as File System
-
-Operator->+FR: fleetrouter --input <dir> --output <dir>
-FR->+FS: read packages.csv, vehicles.csv, locations.csv, distances.csv
-
-alt any file missing or unreadable
-    FS-->>FR: file not found error
-    FR-->>Operator: terminate: report missing files
-else all files good
-    FS-->>-FR: raw data
-    
-    FR->>FR: validate input data
-    
-    FR->>FR: assign packages to vehicles
-    
-    FR->>FR: build and optimize routes
-    
-    FR->FS: write stops_order.csv
-    FR->FS: write summary.csv
-    FR->FS: write undeliverable.csv
-    
-    FR-->>-Operator: print summary (processed / delivered / undeliverable)
-end
-```
+| | |
+|---|---|
+| **Actor** | Fleet Operator |
+| **Entry condition** | All four input CSV files are provided |
+| **Event flow** | 1. The system reads and validates all input files. 2. The system assigns packages to vehicles, respecting all constraints. 3. The system builds and optimizes routes. 4. The system writes output files. 5. The system reports completion with package counts. |
+| **Exit condition** | All three output files have been written successfully |
+| **Exceptions** | EX1. Input file missing — system terminates and reports which file is absent. |
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
@@ -270,16 +151,16 @@ Upon completion, the system shall print a single summary line stating the number
 ## 3.5. Design constraints
 All input and output files shall use the CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. 
 **inputs**
-- *packages.csv*: package_id, destination_id, weight_kg, volume_m3, tw_open, tw_close, service_min, priority
+- *packages.csv*: package_id (string), destination_id (string), weight_kg (float), volume_m3 (float), tw_open (string HH:MM), tw_close (string HH:MM), service_min (int), priority (int)
 The priority column in packages.csv shall contain an integer value from the set {0, 1}, where 1 marks a priority package and 0 marks a non-priority package. No other values are permitted; any package with a value outside this set shall be reported and excluded from processing in the same way as other invalid input rows (see FR-02).
 
-- *vehicles.csv*: vehicle_id, max_weight_kg, max_volume_m3, depot_location_id
-- *locations.csv*: location_id, name
-- *distances.csv*: from_location_id, to_location_id, distance_km, travel_time_min
+- *vehicles.csv*: vehicle_id (string), max_weight_kg (float), max_volume_m3 (float), depot_location_id (string)
+- *locations.csv*: location_id (string), name (string)
+- *distances.csv*: from_location_id (stiring), to_location_id (string), distance_km (float), travel_time_min (int)
 **outputs**
-- *stops_order.csv* - route_id, vehicle_id, stop_position_in_order, location_id, delivered_id, arrival_time, departure_time
-- *undeliverable.csv* - package_id, reason
-- *summary.csv* - vehicle_id, total_distance_km, total_time_min, packages_delivered
+- *stops_order.csv* - route_id (string), vehicle_id (string), stop_position_in_order (int), location_id (string), delivered_id (string), arrival_time (string HH:MM), departure_time (string HH:MM)
+- *undeliverable.csv* - package_id (string), reason (string)
+- *summary.csv* - vehicle_id (string), total_distance_km (float), total_time_min (int), packages_delivered (int)
 
 Time values in all input and output files must follow the format HH:MM, distance values in kilometers rounded to two decimal places, and duration values as integer minutes.
 
@@ -323,5 +204,3 @@ Each functional requirement shall be considered satisfied if the contents of the
 - CSV - Comma-Separated Values
 - CLI - Command-Line Interface
 - RAM - Random Access Memory
-
-

@@ -1,175 +1,231 @@
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from .models import (
-    DistanceMap,
     Package,
     Vehicle,
-    MAX_DRIVER_TIME_MIN,
+    VehicleRoute,
+    RouteStop,
     START_TIME_MIN,
+    MAX_DRIVER_TIME_MIN,
 )
 
-# Lower value = higher reporting priority when package is undeliverable
+DistanceMap = Dict[Tuple[str, str], Tuple[float, int]]
+PackageMap = Dict[str, Package]
+
+# Lower number = higher priority when reporting undeliverable reason
 _REASON_PRIORITY: Dict[str, int] = {
-    "UNREACHABLE": 0,
-    "CAPACITY_WEIGHT": 1,
-    "CAPACITY_VOLUME": 2,
-    "TIME_WINDOW": 3,
-    "MAX_DRIVER_TIME": 4,
-    "NO_VEHICLE": 5,
+    "UNREACHABLE": 1,
+    "TIME_WINDOW": 2,
+    "MAX_DRIVER_TIME": 3,
+    "CAPACITY_WEIGHT": 4,
+    "CAPACITY_VOLUME": 5,
+    "NO_VEHICLE": 6,
 }
 
-# (arrival_min, departure_min) per stop
-StopTimes = List[Tuple[int, int]]
-RouteResult = Tuple[StopTimes, float, int]  # (times, total_dist_km, total_time_min)
+
+def _better_reason(current: str, candidate: str) -> str:
+    if _REASON_PRIORITY.get(candidate, 99) < _REASON_PRIORITY.get(current, 99):
+        return candidate
+    return current
 
 
-def simulate_route(
-    vehicle: Vehicle,
-    packages: List[Package],
-    dist_map: DistanceMap,
-) -> Tuple[Optional[RouteResult], Optional[str]]:
+def compute_route(
+    depot_id: str,
+    sequence: List[str],
+    pkg_map: PackageMap,
+    distances: DistanceMap,
+) -> Tuple[bool, List[dict], float, int]:
     """
-    Simulate a vehicle route through packages in the given order.
-
-    Returns (RouteResult, None) on success or (None, reason_code) on failure.
-    All vehicles depart their depot at START_TIME_MIN (08:00).
+    Simulate a route and return timing data.
+    Returns (feasible, stops_data, total_distance_km, total_time_min).
+    stops_data entries: {location_id, package_id, arrival, departure}.
     """
-    if not packages:
-        return ([], 0.0, 0), None
-
-    current_loc = vehicle.depot_location_id
     current_time = START_TIME_MIN
+    current_loc = depot_id
     total_dist = 0.0
-    times: StopTimes = []
+    stops_data: List[dict] = []
 
-    for pkg in packages:
-        edge = (current_loc, pkg.destination_id)
-        if current_loc == pkg.destination_id:
-            arrival = current_time
-        elif edge not in dist_map:
-            return None, "UNREACHABLE"
-        else:
-            d = dist_map[edge]
-            arrival = current_time + d.travel_time_min
-            total_dist += d.distance_km
-        service_start = max(arrival, pkg.tw_open)
-        if service_start > pkg.tw_close:
-            return None, "TIME_WINDOW"
-        departure = service_start + pkg.service_min
-        times.append((arrival, departure))
-        current_loc = pkg.destination_id
+    for pkg_id in sequence:
+        pkg = pkg_map[pkg_id]
+        dest = pkg.destination_id
+        key = (current_loc, dest)
+
+        if key not in distances:
+            return False, [], 0.0, 0
+
+        dist_km, travel_min = distances[key]
+        arrival = current_time + travel_min
+
+        if arrival > pkg.tw_close:
+            return False, [], 0.0, 0
+
+        departure = max(arrival, pkg.tw_open) + pkg.service_min
+        total_dist += dist_km
+        stops_data.append(
+            {
+                "location_id": dest,
+                "package_id": pkg_id,
+                "arrival": arrival,
+                "departure": departure,
+            }
+        )
         current_time = departure
+        current_loc = dest
 
-    edge = (current_loc, vehicle.depot_location_id)
-    if current_loc == vehicle.depot_location_id:
-        return_travel_min = 0
-    elif edge not in dist_map:
-        return None, "UNREACHABLE"
+    if sequence:
+        ret_key = (current_loc, depot_id)
+        if ret_key not in distances:
+            return False, [], 0.0, 0
+        dist_km, travel_min = distances[ret_key]
+        total_dist += dist_km
+        end_time = current_time + travel_min
     else:
-        d = dist_map[edge]
-        total_dist += d.distance_km
-        return_travel_min = d.travel_time_min
-    total_time = current_time + return_travel_min - START_TIME_MIN
+        end_time = START_TIME_MIN
 
+    total_time = end_time - START_TIME_MIN
     if total_time > MAX_DRIVER_TIME_MIN:
-        return None, "MAX_DRIVER_TIME"
+        return False, [], 0.0, 0
 
-    return (times, total_dist, total_time), None
-
-
-class _VehicleState:
-    """Tracks a vehicle's partial route during the construction phase."""
-
-    def __init__(self, vehicle: Vehicle) -> None:
-        self.vehicle = vehicle
-        self.packages: List[Package] = []
-        self.total_weight = 0.0
-        self.total_volume = 0.0
-        self.route_distance = 0.0
-
-    def within_weight(self, weight: float) -> bool:
-        return self.total_weight + weight <= self.vehicle.max_weight_kg + 1e-9
-
-    def within_volume(self, volume: float) -> bool:
-        return self.total_volume + volume <= self.vehicle.max_volume_m3 + 1e-9
-
-    def commit_insertion(self, pkg: Package, pos: int, new_dist: float) -> None:
-        self.packages.insert(pos, pkg)
-        self.total_weight += pkg.weight_kg
-        self.total_volume += pkg.volume_m3
-        self.route_distance = new_dist
+    return True, stops_data, total_dist, total_time
 
 
-def _select_reason(blocking: Set[str]) -> str:
-    if not blocking:
-        return "NO_VEHICLE"
-    return min(blocking, key=lambda r: _REASON_PRIORITY[r])
+def _route_failure_reason(
+    depot_id: str,
+    sequence: List[str],
+    pkg_map: PackageMap,
+    distances: DistanceMap,
+) -> Optional[str]:
+    """Return why this route sequence is infeasible, or None if feasible."""
+    current_time = START_TIME_MIN
+    current_loc = depot_id
+
+    for pkg_id in sequence:
+        pkg = pkg_map[pkg_id]
+        dest = pkg.destination_id
+        key = (current_loc, dest)
+
+        if key not in distances:
+            return "UNREACHABLE"
+
+        _, travel_min = distances[key]
+        arrival = current_time + travel_min
+
+        if arrival > pkg.tw_close:
+            return "TIME_WINDOW"
+
+        departure = max(arrival, pkg.tw_open) + pkg.service_min
+        current_time = departure
+        current_loc = dest
+
+    if sequence:
+        ret_key = (current_loc, depot_id)
+        if ret_key not in distances:
+            return "UNREACHABLE"
+        _, travel_min = distances[ret_key]
+        if current_time + travel_min - START_TIME_MIN > MAX_DRIVER_TIME_MIN:
+            return "MAX_DRIVER_TIME"
+
+    return None
 
 
-def _two_opt(vehicle: Vehicle, packages: List[Package], dist_map: DistanceMap) -> List[Package]:
-    """Improve route distance with 2-opt edge swaps."""
-    if len(packages) <= 1:
-        return packages
+def _find_best_insertion(
+    vehicle: Vehicle,
+    current_seq: List[str],
+    pkg: Package,
+    pkg_map: PackageMap,
+    distances: DistanceMap,
+    current_weight: float,
+    current_volume: float,
+) -> Tuple[Optional[int], float, int]:
+    """
+    Find the best position to insert pkg into vehicle's route.
+    Returns (best_position, best_total_distance, best_total_time),
+    or (None, inf, inf) if no feasible insertion exists.
+    """
+    if current_weight + pkg.weight_kg > vehicle.max_weight_kg + 1e-9:
+        return None, float("inf"), float("inf")
+    if current_volume + pkg.volume_m3 > vehicle.max_volume_m3 + 1e-9:
+        return None, float("inf"), float("inf")
 
-    best = packages[:]
-    result, _ = simulate_route(vehicle, best, dist_map)
-    if result is None:
-        return best
-    _, best_dist, best_time = result
+    best_pos: Optional[int] = None
+    best_dist = float("inf")
+    best_time_val = float("inf")
+
+    for pos in range(len(current_seq) + 1):
+        new_seq = current_seq[:pos] + [pkg.package_id] + current_seq[pos:]
+        ok, _, dist, time_val = compute_route(
+            vehicle.depot_location_id, new_seq, pkg_map, distances
+        )
+        if ok:
+            if dist < best_dist or (dist == best_dist and time_val < best_time_val):
+                best_dist = dist
+                best_time_val = time_val
+                best_pos = pos
+
+    return best_pos, best_dist, best_time_val
+
+
+def _get_vehicle_failure_reason(
+    vehicle: Vehicle,
+    current_seq: List[str],
+    pkg: Package,
+    pkg_map: PackageMap,
+    distances: DistanceMap,
+    current_weight: float,
+    current_volume: float,
+) -> str:
+    """Determine the best (most specific) reason this vehicle cannot accept the package."""
+    if current_weight + pkg.weight_kg > vehicle.max_weight_kg + 1e-9:
+        return "CAPACITY_WEIGHT"
+    if current_volume + pkg.volume_m3 > vehicle.max_volume_m3 + 1e-9:
+        return "CAPACITY_VOLUME"
+
+    # Return path must exist regardless of insertion position
+    if (pkg.destination_id, vehicle.depot_location_id) not in distances:
+        return "UNREACHABLE"
+
+    best_reason = "NO_VEHICLE"
+    for pos in range(len(current_seq) + 1):
+        new_seq = current_seq[:pos] + [pkg.package_id] + current_seq[pos:]
+        reason = _route_failure_reason(
+            vehicle.depot_location_id, new_seq, pkg_map, distances
+        )
+        if reason is not None:
+            best_reason = _better_reason(best_reason, reason)
+
+    return best_reason
+
+
+def _two_opt(
+    depot_id: str,
+    sequence: List[str],
+    pkg_map: PackageMap,
+    distances: DistanceMap,
+) -> List[str]:
+    """Improve a route using 2-opt local search (first-improvement strategy)."""
+    if len(sequence) < 2:
+        return sequence
+
+    best = list(sequence)
+    _, _, best_dist, best_time = compute_route(depot_id, best, pkg_map, distances)
 
     improved = True
     while improved:
         improved = False
         n = len(best)
         for i in range(n - 1):
-            for j in range(i + 1, n):
-                candidate = best[:i] + best[i : j + 1][::-1] + best[j + 1 :]
-                result, _ = simulate_route(vehicle, candidate, dist_map)
-                if result is None:
-                    continue
-                _, cand_dist, cand_time = result
-                if cand_dist < best_dist - 1e-9 or (
-                    abs(cand_dist - best_dist) < 1e-9 and cand_time < best_time
+            for j in range(i + 2, n):
+                new_seq = best[:i] + best[i : j + 1][::-1] + best[j + 1 :]
+                ok, _, dist, time_val = compute_route(
+                    depot_id, new_seq, pkg_map, distances
+                )
+                if ok and (
+                    dist < best_dist - 1e-9
+                    or (abs(dist - best_dist) < 1e-9 and time_val < best_time)
                 ):
-                    best, best_dist, best_time = candidate, cand_dist, cand_time
-                    improved = True
-                    break
-            if improved:
-                break
-
-    return best
-
-
-def _or_opt(vehicle: Vehicle, packages: List[Package], dist_map: DistanceMap) -> List[Package]:
-    """Improve route by relocating individual stops to cheaper positions."""
-    if len(packages) <= 2:
-        return packages
-
-    best = packages[:]
-    result, _ = simulate_route(vehicle, best, dist_map)
-    if result is None:
-        return best
-    _, best_dist, best_time = result
-
-    improved = True
-    while improved:
-        improved = False
-        n = len(best)
-        for i in range(n):
-            pkg = best[i]
-            remaining = best[:i] + best[i + 1 :]
-            for j in range(len(remaining) + 1):
-                if j == i:
-                    continue
-                candidate = remaining[:j] + [pkg] + remaining[j:]
-                result, _ = simulate_route(vehicle, candidate, dist_map)
-                if result is None:
-                    continue
-                _, cand_dist, cand_time = result
-                if cand_dist < best_dist - 1e-9 or (
-                    abs(cand_dist - best_dist) < 1e-9 and cand_time < best_time
-                ):
-                    best, best_dist, best_time = candidate, cand_dist, cand_time
+                    best = new_seq
+                    best_dist = dist
+                    best_time = time_val
                     improved = True
                     break
             if improved:
@@ -181,65 +237,111 @@ def _or_opt(vehicle: Vehicle, packages: List[Package], dist_map: DistanceMap) ->
 def plan_routes(
     packages: List[Package],
     vehicles: List[Vehicle],
-    dist_map: DistanceMap,
-) -> Tuple[Dict[str, List[Package]], Dict[str, str]]:
+    locations: dict,
+    distances: DistanceMap,
+) -> Tuple[List[VehicleRoute], List[Tuple[str, str]]]:
     """
-    Assign packages to vehicles with best-insertion and optimise with 2-opt + or-opt.
-
-    Returns:
-        assignments  – vehicle_id -> ordered list of assigned packages
-        undeliverable – package_id -> reason code for packages that could not be assigned
+    Assign packages to vehicles and build optimized routes.
+    Returns (routes, undeliverable_list) where undeliverable_list is
+    [(package_id, reason_code)].
     """
-    # Priority packages first; within the same priority level, earlier time windows first
-    sorted_pkgs = sorted(packages, key=lambda p: (-p.priority, p.tw_open, p.tw_close))
+    pkg_map: PackageMap = {p.package_id: p for p in packages}
 
-    states = [_VehicleState(v) for v in vehicles]
-    undeliverable: Dict[str, str] = {}
+    vehicle_seqs: Dict[str, List[str]] = {v.vehicle_id: [] for v in vehicles}
+    vehicle_weight: Dict[str, float] = {v.vehicle_id: 0.0 for v in vehicles}
+    vehicle_volume: Dict[str, float] = {v.vehicle_id: 0.0 for v in vehicles}
+
+    undeliverable: List[Tuple[str, str]] = []
+
+    # Priority packages first, then earlier time windows first
+    sorted_pkgs = sorted(packages, key=lambda p: (-p.priority, p.tw_open))
 
     for pkg in sorted_pkgs:
-        best_cost = float("inf")
-        best_state_idx = -1
-        best_pos = -1
-        blocking: Set[str] = set()
+        best_vehicle_id: Optional[str] = None
+        best_pos: Optional[int] = None
+        best_dist = float("inf")
+        best_time_val = float("inf")
+        worst_reason = "NO_VEHICLE"
 
-        for s_idx, state in enumerate(states):
-            if not state.within_weight(pkg.weight_kg):
-                blocking.add("CAPACITY_WEIGHT")
-                continue
-            if not state.within_volume(pkg.volume_m3):
-                blocking.add("CAPACITY_VOLUME")
-                continue
+        for vehicle in vehicles:
+            v_id = vehicle.vehicle_id
+            seq = vehicle_seqs[v_id]
+            w = vehicle_weight[v_id]
+            vol = vehicle_volume[v_id]
 
-            base_dist = state.route_distance
-            n = len(state.packages)
+            pos, dist, time_val = _find_best_insertion(
+                vehicle, seq, pkg, pkg_map, distances, w, vol
+            )
 
-            for pos in range(n + 1):
-                candidate = state.packages[:pos] + [pkg] + state.packages[pos:]
-                result, reason = simulate_route(state.vehicle, candidate, dist_map)
-                if result is None:
-                    blocking.add(reason)
-                    continue
-                _, cand_dist, _ = result
-                cost = cand_dist - base_dist
-                if cost < best_cost - 1e-9:
-                    best_cost = cost
-                    best_state_idx = s_idx
+            if pos is not None:
+                if dist < best_dist or (dist == best_dist and time_val < best_time_val):
+                    best_dist = dist
+                    best_time_val = time_val
                     best_pos = pos
+                    best_vehicle_id = v_id
+            else:
+                reason = _get_vehicle_failure_reason(
+                    vehicle, seq, pkg, pkg_map, distances, w, vol
+                )
+                worst_reason = _better_reason(worst_reason, reason)
 
-        if best_state_idx >= 0:
-            state = states[best_state_idx]
-            candidate = state.packages[:best_pos] + [pkg] + state.packages[best_pos:]
-            result, _ = simulate_route(state.vehicle, candidate, dist_map)
-            _, new_dist, _ = result  # type: ignore[misc]
-            state.commit_insertion(pkg, best_pos, new_dist)
+        if best_vehicle_id is not None:
+            seq = vehicle_seqs[best_vehicle_id]
+            vehicle_seqs[best_vehicle_id] = (
+                seq[:best_pos] + [pkg.package_id] + seq[best_pos:]
+            )
+            vehicle_weight[best_vehicle_id] += pkg.weight_kg
+            vehicle_volume[best_vehicle_id] += pkg.volume_m3
         else:
-            undeliverable[pkg.package_id] = _select_reason(blocking)
+            undeliverable.append((pkg.package_id, worst_reason))
 
-    # Improve each vehicle route with local search
-    for state in states:
-        if len(state.packages) > 1:
-            state.packages = _two_opt(state.vehicle, state.packages, dist_map)
-            state.packages = _or_opt(state.vehicle, state.packages, dist_map)
+    # Optimize each vehicle's route with 2-opt
+    for vehicle in vehicles:
+        v_id = vehicle.vehicle_id
+        if vehicle_seqs[v_id]:
+            vehicle_seqs[v_id] = _two_opt(
+                vehicle.depot_location_id,
+                vehicle_seqs[v_id],
+                pkg_map,
+                distances,
+            )
 
-    assignments = {state.vehicle.vehicle_id: state.packages for state in states}
-    return assignments, undeliverable
+    # Build final VehicleRoute objects
+    routes: List[VehicleRoute] = []
+    for vehicle in vehicles:
+        v_id = vehicle.vehicle_id
+        seq = vehicle_seqs[v_id]
+
+        if seq:
+            _, stops_data, total_dist, total_time = compute_route(
+                vehicle.depot_location_id, seq, pkg_map, distances
+            )
+        else:
+            stops_data = []
+            total_dist = 0.0
+            total_time = 0
+
+        stops = [
+            RouteStop(
+                stop_position=i + 1,
+                location_id=s["location_id"],
+                package_id=s["package_id"],
+                arrival_time=s["arrival"],
+                departure_time=s["departure"],
+            )
+            for i, s in enumerate(stops_data)
+        ]
+
+        routes.append(
+            VehicleRoute(
+                vehicle=vehicle,
+                package_sequence=seq,
+                stops=stops,
+                total_distance_km=total_dist,
+                total_time_min=total_time,
+                total_weight_kg=vehicle_weight[v_id],
+                total_volume_m3=vehicle_volume[v_id],
+            )
+        )
+
+    return routes, undeliverable

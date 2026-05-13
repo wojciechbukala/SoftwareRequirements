@@ -1,0 +1,82 @@
+************* Module copilot
+copilot.py:50: [C0301] Line too long (102/100)
+copilot.py:126: [C0301] Line too long (113/100)
+copilot.py:133: [C0301] Line too long (101/100)
+copilot.py:150: [C0301] Line too long (108/100)
+copilot.py:159: [C0301] Line too long (111/100)
+copilot.py:171: [C0301] Line too long (114/100)
+copilot.py:176: [C0301] Line too long (110/100)
+copilot.py:181: [C0301] Line too long (108/100)
+copilot.py:188: [C0301] Line too long (114/100)
+copilot.py:191: [C0301] Line too long (117/100)
+copilot.py:197: [C0301] Line too long (110/100)
+copilot.py:198: [C0301] Line too long (112/100)
+copilot.py:207: [C0301] Line too long (104/100)
+copilot.py:224: [C0303] Trailing whitespace
+copilot.py:246: [C0301] Line too long (123/100)
+copilot.py:247: [C0301] Line too long (127/100)
+copilot.py:255: [C0301] Line too long (125/100)
+copilot.py:258: [C0301] Line too long (106/100)
+copilot.py:297: [C0303] Trailing whitespace
+copilot.py:299: [C0301] Line too long (103/100)
+copilot.py:304: [C0303] Trailing whitespace
+copilot.py:321: [C0303] Trailing whitespace
+copilot.py:323: [C0301] Line too long (104/100)
+copilot.py:328: [C0301] Line too long (113/100)
+copilot.py:330: [C0301] Line too long (107/100)
+copilot.py:336: [C0301] Line too long (116/100)
+copilot.py:357: [C0301] Line too long (120/100)
+copilot.py:376: [C0301] Line too long (123/100)
+copilot.py:389: [C0301] Line too long (103/100)
+copilot.py:414: [C0301] Line too long (108/100)
+copilot.py:416: [C0301] Line too long (141/100)
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:9: [C0115] Missing class docstring
+copilot.py:15: [C0115] Missing class docstring
+copilot.py:19: [C0115] Missing class docstring
+copilot.py:24: [C0115] Missing class docstring
+copilot.py:29: [C0115] Missing class docstring
+copilot.py:34: [C0115] Missing class docstring
+copilot.py:49: [C0115] Missing class docstring
+copilot.py:49: [R0903] Too few public methods (0/2)
+copilot.py:56: [C0115] Missing class docstring
+copilot.py:56: [R0903] Too few public methods (0/2)
+copilot.py:62: [C0115] Missing class docstring
+copilot.py:62: [R0903] Too few public methods (0/2)
+copilot.py:70: [C0115] Missing class docstring
+copilot.py:70: [R0903] Too few public methods (0/2)
+copilot.py:74: [C0115] Missing class docstring
+copilot.py:74: [R0903] Too few public methods (0/2)
+copilot.py:80: [C0115] Missing class docstring
+copilot.py:80: [R0903] Too few public methods (0/2)
+copilot.py:88: [R0902] Too many instance attributes (8/7)
+copilot.py:126: [C0116] Missing function or method docstring
+copilot.py:130: [C0116] Missing function or method docstring
+copilot.py:133: [C0116] Missing function or method docstring
+copilot.py:136: [C0116] Missing function or method docstring
+copilot.py:139: [C0116] Missing function or method docstring
+copilot.py:102: [W0201] Attribute 'current_state' defined outside __init__
+copilot.py:115: [W0201] Attribute 'current_state' defined outside __init__
+copilot.py:103: [W0201] Attribute 'current_time' defined outside __init__
+copilot.py:116: [W0201] Attribute 'current_time' defined outside __init__
+copilot.py:308: [W0201] Attribute 'current_time' defined outside __init__
+copilot.py:104: [W0201] Attribute 'last_prompt' defined outside __init__
+copilot.py:117: [W0201] Attribute 'last_prompt' defined outside __init__
+copilot.py:105: [W0201] Attribute 'awaiting_since' defined outside __init__
+copilot.py:118: [W0201] Attribute 'awaiting_since' defined outside __init__
+copilot.py:107: [W0201] Attribute 'state_log' defined outside __init__
+copilot.py:120: [W0201] Attribute 'state_log' defined outside __init__
+copilot.py:108: [W0201] Attribute 'commands_log' defined outside __init__
+copilot.py:121: [W0201] Attribute 'commands_log' defined outside __init__
+copilot.py:109: [W0201] Attribute 'feature_decision_log' defined outside __init__
+copilot.py:122: [W0201] Attribute 'feature_decision_log' defined outside __init__
+copilot.py:111: [W0201] Attribute 'processed_events_times' defined outside __init__
+copilot.py:124: [W0201] Attribute 'processed_events_times' defined outside __init__
+copilot.py:262: [W0107] Unnecessary pass statement
+copilot.py:358: [W0718] Catching too general exception Exception
+copilot.py:377: [W0718] Catching too general exception Exception
+copilot.py:411: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 7.09/10 (previous run: 7.42/10, -0.32)
+

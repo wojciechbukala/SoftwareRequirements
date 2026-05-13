@@ -1,27 +1,46 @@
-************* Module writer
-writer.py:1: [C0114] Missing module docstring
-writer.py:13: [C0116] Missing function or method docstring
-writer.py:43: [C0116] Missing function or method docstring
-writer.py:61: [C0116] Missing function or method docstring
-************* Module reader
-reader.py:33: [C0301] Line too long (101/100)
-reader.py:1: [C0114] Missing module docstring
-reader.py:15: [C0116] Missing function or method docstring
-reader.py:24: [C0116] Missing function or method docstring
-************* Module models
-models.py:1: [C0114] Missing module docstring
-models.py:9: [C0115] Missing class docstring
-models.py:9: [R0902] Too many instance attributes (8/7)
-models.py:21: [C0115] Missing class docstring
-models.py:29: [C0115] Missing class docstring
-models.py:35: [C0115] Missing class docstring
-models.py:43: [C0115] Missing class docstring
-************* Module main
-main.py:33: [C0116] Missing function or method docstring
-************* Module planner
-planner.py:1: [C0114] Missing module docstring
-planner.py:144: [R0914] Too many local variables (19/15)
+************* Module fleetrouter.route
+fleetrouter/route.py:1: [C0114] Missing module docstring
+fleetrouter/route.py:13: [C0115] Missing class docstring
+fleetrouter/route.py:18: [C0116] Missing function or method docstring
+fleetrouter/route.py:52: [C0116] Missing function or method docstring
+fleetrouter/route.py:79: [C0116] Missing function or method docstring
+fleetrouter/route.py:82: [C0116] Missing function or method docstring
+fleetrouter/route.py:85: [C0116] Missing function or method docstring
+fleetrouter/route.py:88: [C0116] Missing function or method docstring
+fleetrouter/route.py:91: [C0116] Missing function or method docstring
+************* Module fleetrouter.writer
+fleetrouter/writer.py:1: [C0114] Missing module docstring
+fleetrouter/writer.py:9: [C0116] Missing function or method docstring
+fleetrouter/writer.py:49: [C0116] Missing function or method docstring
+fleetrouter/writer.py:90: [C0116] Missing function or method docstring
+fleetrouter/writer.py:3: [W0611] Unused Tuple imported from typing
+************* Module fleetrouter.reader
+fleetrouter/reader.py:1: [C0114] Missing module docstring
+fleetrouter/reader.py:16: [C0116] Missing function or method docstring
+fleetrouter/reader.py:24: [C0116] Missing function or method docstring
+fleetrouter/reader.py:108: [C0116] Missing function or method docstring
+************* Module fleetrouter.models
+fleetrouter/models.py:1: [C0114] Missing module docstring
+fleetrouter/models.py:24: [C0115] Missing class docstring
+fleetrouter/models.py:24: [R0902] Too many instance attributes (8/7)
+fleetrouter/models.py:36: [C0115] Missing class docstring
+fleetrouter/models.py:44: [C0115] Missing class docstring
+fleetrouter/models.py:50: [C0115] Missing class docstring
+************* Module fleetrouter.__main__
+fleetrouter/__main__.py:1: [C0114] Missing module docstring
+fleetrouter/__main__.py:11: [C0116] Missing function or method docstring
+fleetrouter/__main__.py:11: [R0914] Too many local variables (17/15)
+************* Module fleetrouter.optimizer
+fleetrouter/optimizer.py:66: [C0301] Line too long (103/100)
+fleetrouter/optimizer.py:80: [C0301] Line too long (112/100)
+fleetrouter/optimizer.py:1: [C0114] Missing module docstring
+fleetrouter/optimizer.py:43: [R0914] Too many local variables (16/15)
+fleetrouter/optimizer.py:1: [W0611] Unused List imported from typing
+************* Module fleetrouter.planner
+fleetrouter/planner.py:1: [C0114] Missing module docstring
+fleetrouter/planner.py:39: [R0911] Too many return statements (7/6)
+fleetrouter/planner.py:74: [R0914] Too many local variables (22/15)
 
------------------------------------
-Your code has been rated at 9.41/10
+------------------------------------------------------------------
+Your code has been rated at 9.16/10 (previous run: 9.12/10, +0.05)
 

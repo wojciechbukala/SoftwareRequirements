@@ -1,0 +1,11 @@
+************* Module decision
+decision.py:123: [C0301] Line too long (102/100)
+decision.py:62: [R0903] Too few public methods (1/2)
+decision.py:15: [W0611] Unused field imported from dataclasses
+decision.py:16: [W0611] Unused Optional imported from typing
+************* Module copilot
+copilot.py:38: [C0116] Missing function or method docstring
+
+-----------------------------------
+Your code has been rated at 9.77/10
+

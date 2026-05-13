@@ -1,36 +1,35 @@
-************* Module fleet_router.writer
-fleet_router/writer.py:1: [C0114] Missing module docstring
-fleet_router/writer.py:7: [C0116] Missing function or method docstring
-fleet_router/writer.py:13: [C0116] Missing function or method docstring
-fleet_router/writer.py:42: [C0116] Missing function or method docstring
-fleet_router/writer.py:59: [C0116] Missing function or method docstring
-************* Module fleet_router.cli
-fleet_router/cli.py:1: [C0114] Missing module docstring
-fleet_router/cli.py:11: [C0116] Missing function or method docstring
-fleet_router/cli.py:11: [R0914] Too many local variables (21/15)
-************* Module fleet_router.reader
-fleet_router/reader.py:1: [C0114] Missing module docstring
-fleet_router/reader.py:16: [C0116] Missing function or method docstring
-fleet_router/reader.py:26: [C0116] Missing function or method docstring
-fleet_router/reader.py:91: [C0116] Missing function or method docstring
-************* Module fleet_router.models
-fleet_router/models.py:1: [C0114] Missing module docstring
-fleet_router/models.py:9: [C0115] Missing class docstring
-fleet_router/models.py:9: [R0902] Too many instance attributes (8/7)
-fleet_router/models.py:21: [C0115] Missing class docstring
-fleet_router/models.py:29: [C0115] Missing class docstring
-fleet_router/models.py:35: [C0115] Missing class docstring
-fleet_router/models.py:43: [C0115] Missing class docstring
-fleet_router/models.py:52: [C0115] Missing class docstring
-************* Module fleet_router.validator
-fleet_router/validator.py:1: [C0114] Missing module docstring
-************* Module fleet_router.planner
-fleet_router/planner.py:218: [C0301] Line too long (108/100)
-fleet_router/planner.py:1: [C0114] Missing module docstring
-fleet_router/planner.py:118: [C0115] Missing class docstring
-fleet_router/planner.py:126: [R0914] Too many local variables (21/15)
-fleet_router/planner.py:297: [R0914] Too many local variables (16/15)
+************* Module fleetrouter_run
+fleetrouter_run.py:7: [C0413] Import "from fleetrouter.cli import main" should be placed at the top of the module
+************* Module setup
+setup.py:3: [E0401] Unable to import 'setuptools'
+************* Module fleetrouter.writer
+fleetrouter/writer.py:60: [R0914] Too many local variables (16/15)
+fleetrouter/writer.py:123: [R0913] Too many arguments (6/5)
+fleetrouter/writer.py:123: [R0917] Too many positional arguments (6/5)
+fleetrouter/writer.py:7: [W0611] Unused RouteResult imported from models
+************* Module fleetrouter.cli
+fleetrouter/cli.py:12: [C0116] Missing function or method docstring
+************* Module fleetrouter.reader
+fleetrouter/reader.py:175: [C0301] Line too long (115/100)
+fleetrouter/reader.py:6: [W0611] Unused Set imported from typing
+************* Module fleetrouter.models
+fleetrouter/models.py:24: [C0115] Missing class docstring
+fleetrouter/models.py:24: [R0902] Too many instance attributes (8/7)
+fleetrouter/models.py:36: [C0115] Missing class docstring
+fleetrouter/models.py:44: [C0115] Missing class docstring
+fleetrouter/models.py:50: [C0115] Missing class docstring
+fleetrouter/models.py:57: [C0115] Missing class docstring
+fleetrouter/models.py:3: [W0611] Unused field imported from dataclasses
+fleetrouter/models.py:4: [W0611] Unused Optional imported from typing
+************* Module fleetrouter.solver
+fleetrouter/solver.py:31: [R0914] Too many local variables (17/15)
+fleetrouter/solver.py:90: [R0913] Too many arguments (7/5)
+fleetrouter/solver.py:90: [R0917] Too many positional arguments (7/5)
+fleetrouter/solver.py:159: [R0914] Too many local variables (30/15)
+fleetrouter/solver.py:159: [R0912] Too many branches (14/12)
+fleetrouter/solver.py:159: [R0915] Too many statements (51/50)
+fleetrouter/solver.py:3: [W0611] Unused import sys
 
 -----------------------------------
-Your code has been rated at 9.28/10
+Your code has been rated at 9.20/10
 

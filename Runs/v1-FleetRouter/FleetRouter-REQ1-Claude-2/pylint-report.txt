@@ -1,0 +1,1020 @@
+************* Module fleetrouter_run
+fleetrouter_run.py:6: [C0413] Import "from fleetrouter.main import main" should be placed at the top of the module
+************* Module setup
+setup.py:1: [C0114] Missing module docstring
+setup.py:1: [E0401] Unable to import 'setuptools'
+************* Module fleetrouter
+fleetrouter.py:3: [C0410] Multiple imports on one line (sys, os)
+fleetrouter.py:5: [C0413] Import "from fleetrouter.main import main" should be placed at the top of the module
+************* Module fleetrouter.models
+fleetrouter/models.py:1: [C0114] Missing module docstring
+fleetrouter/models.py:9: [C0116] Missing function or method docstring
+fleetrouter/models.py:14: [C0116] Missing function or method docstring
+fleetrouter/models.py:21: [C0115] Missing class docstring
+fleetrouter/models.py:21: [R0902] Too many instance attributes (8/7)
+fleetrouter/models.py:33: [C0115] Missing class docstring
+fleetrouter/models.py:41: [C0115] Missing class docstring
+fleetrouter/models.py:47: [C0115] Missing class docstring
+fleetrouter/models.py:55: [C0115] Missing class docstring
+************* Module fleetrouter.main
+fleetrouter/main.py:15: [C0301] Line too long (103/100)
+fleetrouter/main.py:106: [C0301] Line too long (117/100)
+fleetrouter/main.py:64: [C0116] Missing function or method docstring
+fleetrouter/main.py:7: [W0611] Unused Location imported from models
+************* Module fleetrouter.io
+fleetrouter/io.py:37: [C0301] Line too long (113/100)
+fleetrouter/io.py:38: [C0301] Line too long (113/100)
+fleetrouter/io.py:53: [C0301] Line too long (117/100)
+fleetrouter/io.py:56: [C0301] Line too long (120/100)
+fleetrouter/io.py:57: [C0301] Line too long (123/100)
+fleetrouter/io.py:58: [C0301] Line too long (107/100)
+fleetrouter/io.py:71: [C0301] Line too long (107/100)
+fleetrouter/io.py:72: [C0301] Line too long (102/100)
+fleetrouter/io.py:74: [C0301] Line too long (116/100)
+fleetrouter/io.py:19: [C0116] Missing function or method docstring
+fleetrouter/io.py:30: [C0116] Missing function or method docstring
+fleetrouter/io.py:45: [C0116] Missing function or method docstring
+fleetrouter/io.py:79: [C0116] Missing function or method docstring
+fleetrouter/io.py:80: [C0415] Import outside toplevel (models.format_time)
+fleetrouter/io.py:99: [C0116] Missing function or method docstring
+fleetrouter/io.py:107: [C0116] Missing function or method docstring
+fleetrouter/io.py:3: [W0611] Unused import os
+************* Module fleetrouter.router
+fleetrouter/router.py:19: [R0914] Too many local variables (18/15)
+fleetrouter/router.py:67: [R0914] Too many local variables (16/15)
+fleetrouter/router.py:102: [R0914] Too many local variables (16/15)
+fleetrouter/router.py:202: [R0914] Too many local variables (24/15)
+fleetrouter/router.py:202: [R0912] Too many branches (14/12)
+************* Module __editable___fleetrouter_1_0_0_finder
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:1: [C0114] Missing module docstring
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:16: [C0116] Missing function or method docstring
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:16: [W0613] Unused argument 'path'
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:16: [W0613] Unused argument 'target'
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:25: [W0612] Unused variable 'child'
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:14: [R0903] Too few public methods (1/2)
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:62: [C0116] Missing function or method docstring
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:62: [W0613] Unused argument 'target'
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:70: [C0116] Missing function or method docstring
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:74: [C0116] Missing function or method docstring
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:81: [W0212] Access to a protected member _path_hook of a client class
+.pip_packages/__editable___fleetrouter_1_0_0_finder.py:83: [W0212] Access to a protected member _path_hook of a client class
+build/lib/fleetrouter/models.py:1: [C0114] Missing module docstring
+build/lib/fleetrouter/models.py:9: [C0116] Missing function or method docstring
+build/lib/fleetrouter/models.py:14: [C0116] Missing function or method docstring
+build/lib/fleetrouter/models.py:21: [C0115] Missing class docstring
+build/lib/fleetrouter/models.py:21: [R0902] Too many instance attributes (8/7)
+build/lib/fleetrouter/models.py:33: [C0115] Missing class docstring
+build/lib/fleetrouter/models.py:41: [C0115] Missing class docstring
+build/lib/fleetrouter/models.py:47: [C0115] Missing class docstring
+build/lib/fleetrouter/models.py:55: [C0115] Missing class docstring
+build/lib/fleetrouter/main.py:15: [C0301] Line too long (103/100)
+build/lib/fleetrouter/main.py:106: [C0301] Line too long (117/100)
+build/lib/fleetrouter/main.py:64: [C0116] Missing function or method docstring
+build/lib/fleetrouter/main.py:7: [W0611] Unused Location imported from models
+build/lib/fleetrouter/io.py:37: [C0301] Line too long (113/100)
+build/lib/fleetrouter/io.py:38: [C0301] Line too long (113/100)
+build/lib/fleetrouter/io.py:53: [C0301] Line too long (117/100)
+build/lib/fleetrouter/io.py:56: [C0301] Line too long (120/100)
+build/lib/fleetrouter/io.py:57: [C0301] Line too long (123/100)
+build/lib/fleetrouter/io.py:58: [C0301] Line too long (107/100)
+build/lib/fleetrouter/io.py:71: [C0301] Line too long (107/100)
+build/lib/fleetrouter/io.py:72: [C0301] Line too long (102/100)
+build/lib/fleetrouter/io.py:74: [C0301] Line too long (116/100)
+build/lib/fleetrouter/io.py:19: [C0116] Missing function or method docstring
+build/lib/fleetrouter/io.py:30: [C0116] Missing function or method docstring
+build/lib/fleetrouter/io.py:45: [C0116] Missing function or method docstring
+build/lib/fleetrouter/io.py:79: [C0116] Missing function or method docstring
+build/lib/fleetrouter/io.py:80: [C0415] Import outside toplevel (models.format_time)
+build/lib/fleetrouter/io.py:99: [C0116] Missing function or method docstring
+build/lib/fleetrouter/io.py:107: [C0116] Missing function or method docstring
+build/lib/fleetrouter/io.py:3: [W0611] Unused import os
+build/lib/fleetrouter/router.py:19: [R0914] Too many local variables (18/15)
+build/lib/fleetrouter/router.py:67: [R0914] Too many local variables (16/15)
+build/lib/fleetrouter/router.py:102: [R0914] Too many local variables (16/15)
+build/lib/fleetrouter/router.py:202: [R0914] Too many local variables (24/15)
+build/lib/fleetrouter/router.py:202: [R0912] Too many branches (14/12)
+.deps/fleetrouter/models.py:1: [C0114] Missing module docstring
+.deps/fleetrouter/models.py:9: [C0116] Missing function or method docstring
+.deps/fleetrouter/models.py:14: [C0116] Missing function or method docstring
+.deps/fleetrouter/models.py:21: [C0115] Missing class docstring
+.deps/fleetrouter/models.py:21: [R0902] Too many instance attributes (8/7)
+.deps/fleetrouter/models.py:33: [C0115] Missing class docstring
+.deps/fleetrouter/models.py:41: [C0115] Missing class docstring
+.deps/fleetrouter/models.py:47: [C0115] Missing class docstring
+.deps/fleetrouter/models.py:55: [C0115] Missing class docstring
+.deps/fleetrouter/main.py:15: [C0301] Line too long (103/100)
+.deps/fleetrouter/main.py:106: [C0301] Line too long (117/100)
+.deps/fleetrouter/main.py:64: [C0116] Missing function or method docstring
+.deps/fleetrouter/main.py:7: [W0611] Unused Location imported from models
+.deps/fleetrouter/io.py:9: [C0116] Missing function or method docstring
+.deps/fleetrouter/io.py:19: [C0116] Missing function or method docstring
+.deps/fleetrouter/io.py:34: [C0116] Missing function or method docstring
+.deps/fleetrouter/io.py:65: [C0116] Missing function or method docstring
+.deps/fleetrouter/io.py:70: [C0415] Import outside toplevel (models.format_time)
+.deps/fleetrouter/io.py:85: [C0116] Missing function or method docstring
+.deps/fleetrouter/io.py:93: [C0116] Missing function or method docstring
+.deps/fleetrouter/io.py:3: [W0611] Unused import os
+.deps/fleetrouter/router.py:17: [R0914] Too many local variables (18/15)
+.deps/fleetrouter/router.py:65: [R0914] Too many local variables (16/15)
+.deps/fleetrouter/router.py:100: [R0914] Too many local variables (16/15)
+.deps/fleetrouter/router.py:200: [R0914] Too many local variables (24/15)
+.deps/fleetrouter/router.py:200: [R0912] Too many branches (14/12)
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.router:[8:272]
+==fleetrouter.router:[8:272]
+Distances = Dict[Tuple[str, str], Tuple[float, int]]
+Packages = Dict[str, Package]
+
+
+def _get_dist(distances: Distances, from_id: str, to_id: str) -> Optional[Tuple[float, int]]:
+    if from_id == to_id:
+        return (0.0, 0)
+    return distances.get((from_id, to_id))
+
+
+def _simulate(vehicle: Vehicle, package_ids: List[str],
+              packages: Packages,
+              distances: Distances) -> Optional[Tuple[List[Stop], float, int]]:
+    """
+    Simulate a full route and return (stops_with_depot_ends, distance_km, duration_min)
+    or None if infeasible for any reason.
+    """
+    stops: List[Stop] = []
+    current_loc = vehicle.depot_id
+    current_time = DEPOT_DEPARTURE
+    total_distance = 0.0
+
+    stops.append(Stop(vehicle.depot_id, None, DEPOT_DEPARTURE, DEPOT_DEPARTURE))
+
+    for pkg_id in package_ids:
+        pkg = packages[pkg_id]
+        edge = _get_dist(distances, current_loc, pkg.location_id)
+        if edge is None:
+            return None
+        dist_km, travel_min = edge
+
+        arrival = current_time + travel_min
+        if arrival > pkg.time_close:
+            return None
+
+        service_start = max(arrival, pkg.time_open)
+        departure = service_start + pkg.service_duration
+
+        stops.append(Stop(pkg.location_id, pkg_id, arrival, departure))
+        total_distance += dist_km
+        current_time = departure
+        current_loc = pkg.location_id
+
+    edge = _get_dist(distances, current_loc, vehicle.depot_id)
+    if edge is None:
+        return None
+    dist_km, travel_min = edge
+    depot_return_time = current_time + travel_min
+    total_distance += dist_km
+    total_duration = depot_return_time - DEPOT_DEPARTURE
+
+    if total_duration > MAX_DRIVER_MINUTES:
+        return None
+
+    stops.append(Stop(vehicle.depot_id, None, depot_return_time, depot_return_time))
+    return stops, total_distance, total_duration
+
+
+def _find_best_insertion(vehicle: Vehicle, route: Route,
+                         pkg: Package,
+                         packages: Packages,
+                         distances: Distances) -> Optional[Tuple[int, float, int]]:
+    """
+    Find cheapest valid insertion position for pkg.
+    Returns (position, added_dist, added_dur) or None.
+    """
+    if route.weight_used + pkg.weight > vehicle.max_weight:
+        return None
+    if route.volume_used + pkg.volume > vehicle.max_volume:
+        return None
+
+    best_pos = None
+    best_add_dist = float('inf')
+    best_add_dur = float('inf')
+    n = len(route.package_ids)
+
+    for pos in range(n + 1):
+        new_order = route.package_ids[:pos] + [pkg.id] + route.package_ids[pos:]
+        result = _simulate(vehicle, new_order, packages, distances)
+        if result is None:
+            continue
+        _, new_dist, new_dur = result
+        add_dist = new_dist - route.total_distance
+        add_dur = new_dur - route.total_duration
+        if (add_dist < best_add_dist or
+                (add_dist == best_add_dist and add_dur < best_add_dur)):
+            best_add_dist = add_dist
+            best_add_dur = add_dur
+            best_pos = pos
+
+    return (best_pos, best_add_dist, best_add_dur) if best_pos is not None else None
+
+
+def _two_opt(vehicle: Vehicle, package_ids: List[str],
+             packages: Packages,
+             distances: Distances) -> Tuple[List[str], float, int]:
+    """Apply 2-opt improvement until no improvement found."""
+    best_ids = list(package_ids)
+    result = _simulate(vehicle, best_ids, packages, distances)
+    if result is None:
+        return best_ids, 0.0, 0
+    _, best_dist, best_dur = result
+    improved = True
+
+    while improved:
+        improved = False
+        n = len(best_ids)
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                new_ids = best_ids[:i] + list(reversed(best_ids[i:j + 1])) + best_ids[j + 1:]
+                res = _simulate(vehicle, new_ids, packages, distances)
+                if res is None:
+                    continue
+                _, nd, ndu = res
+                if nd < best_dist or (nd == best_dist and ndu < best_dur):
+                    best_ids = new_ids
+                    best_dist = nd
+                    best_dur = ndu
+                    improved = True
+                    break
+            if improved:
+                break
+
+    return best_ids, best_dist, best_dur
+
+
+def _determine_reason(pkg: Package, routes: List[Route],
+                      vehicles: List[Vehicle],
+                      packages: Packages,
+                      distances: Distances) -> str:
+    """
+    Determine the single reason code for why a package cannot be delivered.
+    Precedence: CAPACITY_WEIGHT > CAPACITY_VOLUME > TIME_WINDOW >
+                MAX_DRIVER_TIME > UNREACHABLE > NO_VEHICLE
+    """
+    pairs = list(zip(vehicles, routes))
+
+    # 1. CAPACITY_WEIGHT: no vehicle has enough remaining weight
+    if all(r.weight_used + pkg.weight > v.max_weight for v, r in pairs):
+        return 'CAPACITY_WEIGHT'
+
+    # 2. CAPACITY_VOLUME: no vehicle has enough remaining volume
+    if all(r.volume_used + pkg.volume > v.max_volume for v, r in pairs):
+        return 'CAPACITY_VOLUME'
+
+    # 3. TIME_WINDOW: for all vehicles with sufficient capacity,
+    #    the earliest possible arrival (direct from depot) exceeds close time.
+    cap_ok_pairs = [(v, r) for v, r in pairs
+                    if r.weight_used + pkg.weight <= v.max_weight
+                    and r.volume_used + pkg.volume <= v.max_volume]
+
+    if cap_ok_pairs:
+        def time_feasible_direct(v: Vehicle) -> bool:
+            edge = _get_dist(distances, v.depot_id, pkg.location_id)
+            if edge is None:
+                return False
+            _, travel = edge
+            return DEPOT_DEPARTURE + travel <= pkg.time_close
+
+        if not any(time_feasible_direct(v) for v, _ in cap_ok_pairs):
+            return 'TIME_WINDOW'
+
+    # 4. MAX_DRIVER_TIME: for every vehicle (with capacity), adding the package
+    #    would exceed 8 hours even at the best position
+    def driver_time_ok(v: Vehicle, r: Route) -> bool:
+        if r.weight_used + pkg.weight > v.max_weight:
+            return True  # not a driver time issue
+        if r.volume_used + pkg.volume > v.max_volume:
+            return True
+        # Try all positions
+        n = len(r.package_ids)
+        for pos in range(n + 1):
+            new_order = r.package_ids[:pos] + [pkg.id] + r.package_ids[pos:]
+            res = _simulate(v, new_order, packages, distances)
+            if res is not None:
+                return True
+        return False
+
+    cap_ok = any(r.weight_used + pkg.weight <= v.max_weight and
+                 r.volume_used + pkg.volume <= v.max_volume
+                 for v, r in pairs)
+    if cap_ok and not any(driver_time_ok(v, r) for v, r in pairs):
+        return 'MAX_DRIVER_TIME'
+
+    # 5. UNREACHABLE: no vehicle can reach pkg from depot and back
+    if not any(_get_dist(distances, v.depot_id, pkg.location_id) is not None and
+               _get_dist(distances, pkg.location_id, v.depot_id) is not None
+               for v, _ in pairs):
+        return 'UNREACHABLE'
+
+    return 'NO_VEHICLE'
+
+
+def plan_routes(vehicles: List[Vehicle],
+                packages_list: List[Package],
+                distances: Distances) -> Tuple[List[Route], List[Tuple[str, str]]]:
+    """
+    Main planning function.
+    Returns (routes, undeliverable_list).
+    """
+    packages = {p.id: p for p in packages_list}
+
+    routes: List[Route] = []
+    for v in vehicles:
+        routes.append(Route(vehicle=v))
+
+    undeliverable: List[Tuple[str, str]] = []
+
+    # Priority first, then urgency (earliest close, then earliest open)
+    sorted_pkgs = sorted(
+        packages_list,
+        key=lambda p: (0 if p.priority else 1, p.time_close, p.time_open)
+    )
+
+    for pkg in sorted_pkgs:
+        best_v_idx = None
+        best_pos = None
+        best_add_dist = float('inf')
+        best_add_dur = float('inf')
+
+        for idx, (v, r) in enumerate(zip(vehicles, routes)):
+            result = _find_best_insertion(v, r, pkg, packages, distances)
+            if result is None:
+                continue
+            pos, add_dist, add_dur = result
+            if (add_dist < best_add_dist or
+                    (add_dist == best_add_dist and add_dur < best_add_dur)):
+                best_add_dist = add_dist
+                best_add_dur = add_dur
+                best_pos = pos
+                best_v_idx = idx
+
+        if best_v_idx is None:
+            reason = _determine_reason(pkg, routes, vehicles, packages, distances)
+            undeliverable.append((pkg.id, reason))
+        else:
+            r = routes[best_v_idx]
+            v = vehicles[best_v_idx]
+            r.package_ids.insert(best_pos, pkg.id)
+            r.weight_used += pkg.weight
+            r.volume_used += pkg.volume
+            sim = _simulate(v, r.package_ids, packages, distances)
+            if sim:
+                r.stops, r.total_distance, r.total_duration = sim
+
+    # 2-opt optimization
+    for v, r in zip(vehicles, routes):
+        if len(r.package_ids) < 2:
+            if len(r.package_ids) == 1:
+                sim = _simulate(v, r.package_ids, packages, distances)
+                if sim:
+                    r.stops, r.total_distance, r.total_duration = sim
+            continue
+        new_ids, new_dist, new_dur = _two_opt(v, r.package_ids, packages, distances)
+        if (new_dist < r.total_distance or
+                (new_dist == r.total_distance and new_dur < r.total_duration)):
+            r.package_ids = new_ids
+            r.total_distance = new_dist
+            r.total_duration = new_dur
+        sim = _simulate(v, r.package_ids, packages, distances)
+        if sim:
+            r.stops, r.total_distance, r.total_duration = sim
+
+    return routes, undeliverable
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.router:[13:270]
+==fleetrouter.router:[15:272]
+    return distances.get((from_id, to_id))
+
+
+def _simulate(vehicle: Vehicle, package_ids: List[str],
+              packages: Packages,
+              distances: Distances) -> Optional[Tuple[List[Stop], float, int]]:
+    """
+    Simulate a full route and return (stops_with_depot_ends, distance_km, duration_min)
+    or None if infeasible for any reason.
+    """
+    stops: List[Stop] = []
+    current_loc = vehicle.depot_id
+    current_time = DEPOT_DEPARTURE
+    total_distance = 0.0
+
+    stops.append(Stop(vehicle.depot_id, None, DEPOT_DEPARTURE, DEPOT_DEPARTURE))
+
+    for pkg_id in package_ids:
+        pkg = packages[pkg_id]
+        edge = _get_dist(distances, current_loc, pkg.location_id)
+        if edge is None:
+            return None
+        dist_km, travel_min = edge
+
+        arrival = current_time + travel_min
+        if arrival > pkg.time_close:
+            return None
+
+        service_start = max(arrival, pkg.time_open)
+        departure = service_start + pkg.service_duration
+
+        stops.append(Stop(pkg.location_id, pkg_id, arrival, departure))
+        total_distance += dist_km
+        current_time = departure
+        current_loc = pkg.location_id
+
+    edge = _get_dist(distances, current_loc, vehicle.depot_id)
+    if edge is None:
+        return None
+    dist_km, travel_min = edge
+    depot_return_time = current_time + travel_min
+    total_distance += dist_km
+    total_duration = depot_return_time - DEPOT_DEPARTURE
+
+    if total_duration > MAX_DRIVER_MINUTES:
+        return None
+
+    stops.append(Stop(vehicle.depot_id, None, depot_return_time, depot_return_time))
+    return stops, total_distance, total_duration
+
+
+def _find_best_insertion(vehicle: Vehicle, route: Route,
+                         pkg: Package,
+                         packages: Packages,
+                         distances: Distances) -> Optional[Tuple[int, float, int]]:
+    """
+    Find cheapest valid insertion position for pkg.
+    Returns (position, added_dist, added_dur) or None.
+    """
+    if route.weight_used + pkg.weight > vehicle.max_weight:
+        return None
+    if route.volume_used + pkg.volume > vehicle.max_volume:
+        return None
+
+    best_pos = None
+    best_add_dist = float('inf')
+    best_add_dur = float('inf')
+    n = len(route.package_ids)
+
+    for pos in range(n + 1):
+        new_order = route.package_ids[:pos] + [pkg.id] + route.package_ids[pos:]
+        result = _simulate(vehicle, new_order, packages, distances)
+        if result is None:
+            continue
+        _, new_dist, new_dur = result
+        add_dist = new_dist - route.total_distance
+        add_dur = new_dur - route.total_duration
+        if (add_dist < best_add_dist or
+                (add_dist == best_add_dist and add_dur < best_add_dur)):
+            best_add_dist = add_dist
+            best_add_dur = add_dur
+            best_pos = pos
+
+    return (best_pos, best_add_dist, best_add_dur) if best_pos is not None else None
+
+
+def _two_opt(vehicle: Vehicle, package_ids: List[str],
+             packages: Packages,
+             distances: Distances) -> Tuple[List[str], float, int]:
+    """Apply 2-opt improvement until no improvement found."""
+    best_ids = list(package_ids)
+    result = _simulate(vehicle, best_ids, packages, distances)
+    if result is None:
+        return best_ids, 0.0, 0
+    _, best_dist, best_dur = result
+    improved = True
+
+    while improved:
+        improved = False
+        n = len(best_ids)
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                new_ids = best_ids[:i] + list(reversed(best_ids[i:j + 1])) + best_ids[j + 1:]
+                res = _simulate(vehicle, new_ids, packages, distances)
+                if res is None:
+                    continue
+                _, nd, ndu = res
+                if nd < best_dist or (nd == best_dist and ndu < best_dur):
+                    best_ids = new_ids
+                    best_dist = nd
+                    best_dur = ndu
+                    improved = True
+                    break
+            if improved:
+                break
+
+    return best_ids, best_dist, best_dur
+
+
+def _determine_reason(pkg: Package, routes: List[Route],
+                      vehicles: List[Vehicle],
+                      packages: Packages,
+                      distances: Distances) -> str:
+    """
+    Determine the single reason code for why a package cannot be delivered.
+    Precedence: CAPACITY_WEIGHT > CAPACITY_VOLUME > TIME_WINDOW >
+                MAX_DRIVER_TIME > UNREACHABLE > NO_VEHICLE
+    """
+    pairs = list(zip(vehicles, routes))
+
+    # 1. CAPACITY_WEIGHT: no vehicle has enough remaining weight
+    if all(r.weight_used + pkg.weight > v.max_weight for v, r in pairs):
+        return 'CAPACITY_WEIGHT'
+
+    # 2. CAPACITY_VOLUME: no vehicle has enough remaining volume
+    if all(r.volume_used + pkg.volume > v.max_volume for v, r in pairs):
+        return 'CAPACITY_VOLUME'
+
+    # 3. TIME_WINDOW: for all vehicles with sufficient capacity,
+    #    the earliest possible arrival (direct from depot) exceeds close time.
+    cap_ok_pairs = [(v, r) for v, r in pairs
+                    if r.weight_used + pkg.weight <= v.max_weight
+                    and r.volume_used + pkg.volume <= v.max_volume]
+
+    if cap_ok_pairs:
+        def time_feasible_direct(v: Vehicle) -> bool:
+            edge = _get_dist(distances, v.depot_id, pkg.location_id)
+            if edge is None:
+                return False
+            _, travel = edge
+            return DEPOT_DEPARTURE + travel <= pkg.time_close
+
+        if not any(time_feasible_direct(v) for v, _ in cap_ok_pairs):
+            return 'TIME_WINDOW'
+
+    # 4. MAX_DRIVER_TIME: for every vehicle (with capacity), adding the package
+    #    would exceed 8 hours even at the best position
+    def driver_time_ok(v: Vehicle, r: Route) -> bool:
+        if r.weight_used + pkg.weight > v.max_weight:
+            return True  # not a driver time issue
+        if r.volume_used + pkg.volume > v.max_volume:
+            return True
+        # Try all positions
+        n = len(r.package_ids)
+        for pos in range(n + 1):
+            new_order = r.package_ids[:pos] + [pkg.id] + r.package_ids[pos:]
+            res = _simulate(v, new_order, packages, distances)
+            if res is not None:
+                return True
+        return False
+
+    cap_ok = any(r.weight_used + pkg.weight <= v.max_weight and
+                 r.volume_used + pkg.volume <= v.max_volume
+                 for v, r in pairs)
+    if cap_ok and not any(driver_time_ok(v, r) for v, r in pairs):
+        return 'MAX_DRIVER_TIME'
+
+    # 5. UNREACHABLE: no vehicle can reach pkg from depot and back
+    if not any(_get_dist(distances, v.depot_id, pkg.location_id) is not None and
+               _get_dist(distances, pkg.location_id, v.depot_id) is not None
+               for v, _ in pairs):
+        return 'UNREACHABLE'
+
+    return 'NO_VEHICLE'
+
+
+def plan_routes(vehicles: List[Vehicle],
+                packages_list: List[Package],
+                distances: Distances) -> Tuple[List[Route], List[Tuple[str, str]]]:
+    """
+    Main planning function.
+    Returns (routes, undeliverable_list).
+    """
+    packages = {p.id: p for p in packages_list}
+
+    routes: List[Route] = []
+    for v in vehicles:
+        routes.append(Route(vehicle=v))
+
+    undeliverable: List[Tuple[str, str]] = []
+
+    # Priority first, then urgency (earliest close, then earliest open)
+    sorted_pkgs = sorted(
+        packages_list,
+        key=lambda p: (0 if p.priority else 1, p.time_close, p.time_open)
+    )
+
+    for pkg in sorted_pkgs:
+        best_v_idx = None
+        best_pos = None
+        best_add_dist = float('inf')
+        best_add_dur = float('inf')
+
+        for idx, (v, r) in enumerate(zip(vehicles, routes)):
+            result = _find_best_insertion(v, r, pkg, packages, distances)
+            if result is None:
+                continue
+            pos, add_dist, add_dur = result
+            if (add_dist < best_add_dist or
+                    (add_dist == best_add_dist and add_dur < best_add_dur)):
+                best_add_dist = add_dist
+                best_add_dur = add_dur
+                best_pos = pos
+                best_v_idx = idx
+
+        if best_v_idx is None:
+            reason = _determine_reason(pkg, routes, vehicles, packages, distances)
+            undeliverable.append((pkg.id, reason))
+        else:
+            r = routes[best_v_idx]
+            v = vehicles[best_v_idx]
+            r.package_ids.insert(best_pos, pkg.id)
+            r.weight_used += pkg.weight
+            r.volume_used += pkg.volume
+            sim = _simulate(v, r.package_ids, packages, distances)
+            if sim:
+                r.stops, r.total_distance, r.total_duration = sim
+
+    # 2-opt optimization
+    for v, r in zip(vehicles, routes):
+        if len(r.package_ids) < 2:
+            if len(r.package_ids) == 1:
+                sim = _simulate(v, r.package_ids, packages, distances)
+                if sim:
+                    r.stops, r.total_distance, r.total_duration = sim
+            continue
+        new_ids, new_dist, new_dur = _two_opt(v, r.package_ids, packages, distances)
+        if (new_dist < r.total_distance or
+                (new_dist == r.total_distance and new_dur < r.total_duration)):
+            r.package_ids = new_ids
+            r.total_distance = new_dist
+            r.total_duration = new_dur
+        sim = _simulate(v, r.package_ids, packages, distances)
+        if sim:
+            r.stops, r.total_distance, r.total_duration = sim
+
+    return routes, undeliverable
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.io:[10:117]
+==fleetrouter.io:[10:117]
+    row_lower = {k.lower().strip(): v for k, v in row.items()}
+    for k in keys:
+        v = row_lower.get(k.lower())
+        if v is not None:
+            return v.strip() if isinstance(v, str) else v
+    return default
+
+
+def read_locations(path: str) -> Dict[str, Location]:
+    locations = {}
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            lid = _get(row, 'location_id', 'id', 'loc_id')
+            name = _get(row, 'name', 'location_name')
+            locations[lid] = Location(id=lid, name=name)
+    return locations
+
+
+def read_vehicles(path: str) -> List[Vehicle]:
+    vehicles = []
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            v = Vehicle(
+                id=_get(row, 'vehicle_id', 'id'),
+                max_weight=float(_get(row, 'max_weight', 'capacity_weight', 'weight_capacity', 'max_weight_kg')),
+                max_volume=float(_get(row, 'max_volume', 'capacity_volume', 'volume_capacity', 'max_volume_m3')),
+                depot_id=_get(row, 'depot_id', 'depot', 'depot_location', 'depot_location_id'),
+            )
+            vehicles.append(v)
+    return vehicles
+
+
+def read_packages(path: str) -> List[Package]:
+    packages = []
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            priority_val = _get(row, 'priority', 'is_priority', 'urgent').lower()
+            p = Package(
+                id=_get(row, 'package_id', 'id'),
+                location_id=_get(row, 'location_id', 'destination', 'delivery_location', 'loc_id', 'destination_id'),
+                weight=float(_get(row, 'weight', 'weight_kg')),
+                volume=float(_get(row, 'volume', 'volume_m3')),
+                time_open=parse_time(_get(row, 'time_open', 'open', 'opening_time', 'window_open', 'tw_open', 'start')),
+                time_close=parse_time(_get(row, 'time_close', 'close', 'closing_time', 'window_close', 'tw_close', 'end')),
+                service_duration=int(_get(row, 'service_duration', 'service_time', 'duration', 'service')),
+                priority=priority_val in ('true', '1', 'yes'),
+            )
+            packages.append(p)
+    return packages
+
+
+def read_distances(path: str) -> Dict[Tuple[str, str], Tuple[float, int]]:
+    """Returns {(from_id, to_id): (distance_km, travel_minutes)}."""
+    distances = {}
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            from_id = _get(row, 'from_id', 'from', 'origin', 'from_location', 'from_location_id', 'source')
+            to_id = _get(row, 'to_id', 'to', 'destination', 'to_location', 'to_location_id', 'target')
+            dist = float(_get(row, 'distance', 'dist', 'distance_km', 'km'))
+            time = int(_get(row, 'travel_time', 'time', 'duration', 'travel_time_min', 'minutes', 'travel_minutes'))
+            distances[(from_id, to_id)] = (dist, time)
+    return distances
+
+
+def write_stops_order(path: str, routes):
+    from .models import format_time
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['route_id', 'vehicle_id', 'stop_order', 'location_id',
+                         'package_id', 'arrival_time', 'departure_time'])
+        for route_idx, route in enumerate(routes, start=1):
+            route_id = f"ROUTE_{route_idx}"
+            for order, stop in enumerate(route.stops, start=1):
+                writer.writerow([
+                    route_id,
+                    route.vehicle.id,
+                    order,
+                    stop.location_id,
+                    stop.package_id if stop.package_id else '',
+                    format_time(stop.arrival_time),
+                    format_time(stop.departure_time),
+                ])
+
+
+def write_undeliverable(path: str, undeliverable: List[Tuple[str, str]]):
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['package_id', 'reason'])
+        for pkg_id, reason in undeliverable:
+            writer.writerow([pkg_id, reason])
+
+
+def write_summary(path: str, routes):
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['vehicle_id', 'total_distance', 'total_duration', 'packages_delivered'])
+        for route in routes:
+            writer.writerow([
+                route.vehicle.id,
+                f"{route.total_distance:.2f}",
+                route.total_duration,
+                len(route.package_ids),
+            ])
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.main:[19:111]
+==fleetrouter.main:[19:111]
+    valid_location_ids = set(locations.keys())
+
+    # Filter vehicles with invalid depot location
+    valid_vehicles = []
+    for v in vehicles:
+        if v.depot_id not in valid_location_ids:
+            print(f"[WARN] Vehicle {v.id} references unknown location {v.depot_id}, excluded.",
+                  file=sys.stderr)
+        else:
+            valid_vehicles.append(v)
+
+    # Collect all reachable depots for UNREACHABLE check
+    depot_ids = {v.depot_id for v in valid_vehicles}
+
+    valid_packages = []
+    for p in packages:
+        # Check location exists
+        if p.location_id not in valid_location_ids:
+            print(f"[WARN] Package {p.id} references unknown location {p.location_id}, excluded.",
+                  file=sys.stderr)
+            continue
+
+        # Validate time window
+        if p.time_open >= p.time_close:
+            undeliverable.append((p.id, 'TIME_WINDOW'))
+            continue
+
+        # Check UNREACHABLE: no depot can reach this package and return
+        if valid_vehicles:
+            reachable = False
+            for depot in depot_ids:
+                if ((depot, p.location_id) in distances and
+                        (p.location_id, depot) in distances):
+                    reachable = True
+                    break
+            if not reachable:
+                undeliverable.append((p.id, 'UNREACHABLE'))
+                continue
+
+        valid_packages.append(p)
+
+    return valid_packages, valid_vehicles
+
+
+def main():
+    parser = argparse.ArgumentParser(description='FleetRouter - daily route planner')
+    parser.add_argument('--input', required=True, help='Input directory')
+    parser.add_argument('--output', required=True, help='Output directory')
+    args = parser.parse_args()
+
+    in_dir = args.input
+    out_dir = args.output
+    os.makedirs(out_dir, exist_ok=True)
+
+    # Read inputs
+    locations = read_locations(os.path.join(in_dir, 'locations.csv'))
+    vehicles = read_vehicles(os.path.join(in_dir, 'vehicles.csv'))
+    packages = read_packages(os.path.join(in_dir, 'packages.csv'))
+    distances = read_distances(os.path.join(in_dir, 'distances.csv'))
+
+    undeliverable: List[Tuple[str, str]] = []
+
+    # Validate and filter
+    valid_packages, valid_vehicles = _validate_and_filter(
+        packages, vehicles, locations, distances, undeliverable
+    )
+
+    if not valid_vehicles:
+        print("[ERROR] No valid vehicles available.", file=sys.stderr)
+        # All remaining packages are undeliverable
+        for p in valid_packages:
+            undeliverable.append((p.id, 'NO_VEHICLE'))
+        valid_packages = []
+
+    # Plan routes
+    routes, new_undeliverable = plan_routes(valid_vehicles, valid_packages, distances)
+    undeliverable.extend(new_undeliverable)
+
+    # Only include routes that have at least one delivery stop
+    active_routes = [r for r in routes if r.package_ids]
+
+    # Write outputs
+    write_stops_order(os.path.join(out_dir, 'stops_order.csv'), active_routes)
+    write_undeliverable(os.path.join(out_dir, 'undeliverable.csv'), undeliverable)
+    write_summary(os.path.join(out_dir, 'summary.csv'), active_routes)
+
+    print(f"Done. {len(active_routes)} routes, {sum(len(r.package_ids) for r in active_routes)} packages delivered, "
+          f"{len(undeliverable)} undeliverable.")
+
+
+if __name__ == '__main__':
+    main()
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.models:[4:62]
+==fleetrouter.models:[4:62]
+DEPOT_DEPARTURE = 8 * 60   # 08:00 in minutes from midnight
+MAX_DRIVER_MINUTES = 8 * 60  # 480 minutes
+
+
+def parse_time(s: str) -> int:
+    h, m = s.strip().split(':')
+    return int(h) * 60 + int(m)
+
+
+def format_time(minutes: int) -> str:
+    h = minutes // 60
+    m = minutes % 60
+    return f"{h:02d}:{m:02d}"
+
+
+@dataclass
+class Package:
+    id: str
+    location_id: str
+    weight: float
+    volume: float
+    time_open: int   # minutes from midnight
+    time_close: int  # minutes from midnight
+    service_duration: int  # minutes
+    priority: bool
+
+
+@dataclass
+class Vehicle:
+    id: str
+    max_weight: float
+    max_volume: float
+    depot_id: str
+
+
+@dataclass
+class Location:
+    id: str
+    name: str
+
+
+@dataclass
+class Stop:
+    location_id: str
+    package_id: Optional[str]
+    arrival_time: int
+    departure_time: int
+
+
+@dataclass
+class Route:
+    vehicle: Vehicle
+    package_ids: List[str] = field(default_factory=list)
+    stops: List[Stop] = field(default_factory=list)
+    total_distance: float = 0.0
+    total_duration: int = 0
+    weight_used: float = 0.0
+    volume_used: float = 0.0
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.io:[61:103]
+==fleetrouter.io:[75:117]
+    return distances
+
+
+def write_stops_order(path: str, routes):
+    from .models import format_time
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['route_id', 'vehicle_id', 'stop_order', 'location_id',
+                         'package_id', 'arrival_time', 'departure_time'])
+        for route_idx, route in enumerate(routes, start=1):
+            route_id = f"ROUTE_{route_idx}"
+            for order, stop in enumerate(route.stops, start=1):
+                writer.writerow([
+                    route_id,
+                    route.vehicle.id,
+                    order,
+                    stop.location_id,
+                    stop.package_id if stop.package_id else '',
+                    format_time(stop.arrival_time),
+                    format_time(stop.departure_time),
+                ])
+
+
+def write_undeliverable(path: str, undeliverable: List[Tuple[str, str]]):
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['package_id', 'reason'])
+        for pkg_id, reason in undeliverable:
+            writer.writerow([pkg_id, reason])
+
+
+def write_summary(path: str, routes):
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['vehicle_id', 'total_distance', 'total_duration', 'packages_delivered'])
+        for route in routes:
+            writer.writerow([
+                route.vehicle.id,
+                f"{route.total_distance:.2f}",
+                route.total_duration,
+                len(route.package_ids),
+            ])
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.io:[47:59]
+==fleetrouter.io:[58:70]
+                priority=priority_val in ('true', '1', 'yes'),
+            )
+            packages.append(p)
+    return packages
+
+
+def read_distances(path: str) -> Dict[Tuple[str, str], Tuple[float, int]]:
+    """Returns {(from_id, to_id): (distance_km, travel_minutes)}."""
+    distances = {}
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.io:[28:38]
+==fleetrouter.io:[39:49]
+            )
+            vehicles.append(v)
+    return vehicles
+
+
+def read_packages(path: str) -> List[Package]:
+    packages = []
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.io:[15:24]
+==fleetrouter.io:[26:35]
+    return locations
+
+
+def read_vehicles(path: str) -> List[Vehicle]:
+    vehicles = []
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            v = Vehicle(
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.router:[233:238]
+==fleetrouter.router:[92:98]
+        if (add_dist < best_add_dist or
+                (add_dist == best_add_dist and add_dur < best_add_dur)):
+            best_add_dist = add_dist
+            best_add_dur = add_dur
+            best_pos = pos
+
+.deps/fleetrouter/router.py:1: [R0801] Similar lines in 2 files
+==fleetrouter.router:[233:238]
+==fleetrouter.router:[92:98]
+            if (add_dist < best_add_dist or
+                    (add_dist == best_add_dist and add_dur < best_add_dur)):
+                best_add_dist = add_dist
+                best_add_dur = add_dur
+                best_pos = pos
+
+-----------------------------------
+Your code has been rated at 8.81/10
+

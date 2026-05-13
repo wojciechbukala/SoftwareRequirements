@@ -1,0 +1,6 @@
+timestamp,actuator_id,values
+2.0,steering_motor,0.2
+2.0,speed_actuator,0.0
+122.0,steering_wheel_actuator,PROMPT
+247.0,steering_wheel_actuator,PROMPT
+255.0,alarm_actuator,ALARM

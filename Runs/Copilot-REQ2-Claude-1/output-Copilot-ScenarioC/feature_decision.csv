@@ -1,0 +1,4 @@
+timestamp,feature,decision
+1.5,LaneKeeping,0.1
+1.5,CruiseControl,0.1
+3.5,EmergencyBraking,BRAKE

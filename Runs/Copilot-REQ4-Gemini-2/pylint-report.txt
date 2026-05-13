@@ -1,0 +1,68 @@
+************* Module copilot
+copilot.py:108: [C0301] Line too long (104/100)
+copilot.py:128: [C0301] Line too long (125/100)
+copilot.py:142: [C0301] Line too long (119/100)
+copilot.py:145: [C0301] Line too long (127/100)
+copilot.py:192: [C0301] Line too long (105/100)
+copilot.py:233: [C0301] Line too long (123/100)
+copilot.py:241: [C0301] Line too long (102/100)
+copilot.py:254: [C0301] Line too long (140/100)
+copilot.py:269: [C0303] Trailing whitespace
+copilot.py:286: [C0301] Line too long (101/100)
+copilot.py:294: [C0301] Line too long (104/100)
+copilot.py:298: [C0303] Trailing whitespace
+copilot.py:303: [C0303] Trailing whitespace
+copilot.py:312: [C0303] Trailing whitespace
+copilot.py:324: [C0303] Trailing whitespace
+copilot.py:325: [C0303] Trailing whitespace
+copilot.py:335: [C0301] Line too long (113/100)
+copilot.py:348: [C0301] Line too long (120/100)
+copilot.py:349: [C0303] Trailing whitespace
+copilot.py:350: [C0301] Line too long (105/100)
+copilot.py:351: [C0325] Unnecessary parens after '=' keyword
+copilot.py:364: [C0301] Line too long (101/100)
+copilot.py:367: [C0301] Line too long (112/100)
+copilot.py:367: [W0311] Bad indentation. Found 25 spaces, expected 24
+copilot.py:376: [C0301] Line too long (133/100)
+copilot.py:377: [C0301] Line too long (149/100)
+copilot.py:410: [C0301] Line too long (102/100)
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:9: [C0115] Missing class docstring
+copilot.py:15: [C0115] Missing class docstring
+copilot.py:19: [C0115] Missing class docstring
+copilot.py:24: [C0115] Missing class docstring
+copilot.py:29: [C0115] Missing class docstring
+copilot.py:34: [C0115] Missing class docstring
+copilot.py:49: [C0115] Missing class docstring
+copilot.py:56: [C0115] Missing class docstring
+copilot.py:62: [C0115] Missing class docstring
+copilot.py:69: [C0115] Missing class docstring
+copilot.py:77: [C0115] Missing class docstring
+copilot.py:83: [C0115] Missing class docstring
+copilot.py:90: [C0115] Missing class docstring
+copilot.py:90: [R0902] Too many instance attributes (8/7)
+copilot.py:102: [C0116] Missing function or method docstring
+copilot.py:105: [C0116] Missing function or method docstring
+copilot.py:108: [C0116] Missing function or method docstring
+copilot.py:111: [C0116] Missing function or method docstring
+copilot.py:114: [C0116] Missing function or method docstring
+copilot.py:126: [E1121] Too many positional arguments for constructor call
+copilot.py:133: [C0116] Missing function or method docstring
+copilot.py:143: [E1121] Too many positional arguments for constructor call
+copilot.py:150: [C0116] Missing function or method docstring
+copilot.py:163: [C0116] Missing function or method docstring
+copilot.py:175: [C0116] Missing function or method docstring
+copilot.py:187: [C0115] Missing class docstring
+copilot.py:243: [W0613] Unused argument 'event'
+copilot.py:250: [C0116] Missing function or method docstring
+copilot.py:252: [R1731] Consider using 'self.system_state.current_time = max(self.system_state.current_time, event.time)' instead of unnecessary if block
+copilot.py:310: [C0116] Missing function or method docstring
+copilot.py:327: [C0103] Variable name "MAX_TICKS_AFTER_LAST_EVENT" doesn't conform to snake_case naming style
+copilot.py:354: [R1723] Unnecessary "elif" after "break", remove the leading "el" from "elif"
+copilot.py:362: [R1714] Consider merging these comparisons with 'in' by using 'self.system_state.current_state in (State.ENGAGED, State.AWAITING_RESPONSE)'. Use a set instead if elements are hashable.
+copilot.py:310: [R0912] Too many branches (13/12)
+copilot.py:374: [C0116] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 7.42/10 (previous run: 9.27/10, -1.85)
+

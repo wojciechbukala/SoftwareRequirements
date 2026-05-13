@@ -1,0 +1,61 @@
+************* Module models
+models.py:1: [C0114] Missing module docstring
+models.py:6: [C0115] Missing class docstring
+models.py:12: [C0115] Missing class docstring
+models.py:12: [R0902] Too many instance attributes (8/7)
+models.py:24: [C0115] Missing class docstring
+models.py:32: [C0115] Missing class docstring
+models.py:41: [C0115] Missing class docstring
+models.py:49: [C0115] Missing class docstring
+models.py:56: [C0116] Missing function or method docstring
+models.py:70: [C0116] Missing function or method docstring
+models.py:73: [C0116] Missing function or method docstring
+models.py:1: [W0611] Unused field imported from dataclasses
+models.py:2: [W0611] Unused Optional imported from typing
+************* Module main
+main.py:10: [C0116] Missing function or method docstring
+main.py:3: [W0611] Unused import sys
+************* Module feasibility
+feasibility.py:1: [C0114] Missing module docstring
+feasibility.py:8: [C0116] Missing function or method docstring
+feasibility.py:15: [C0116] Missing function or method docstring
+feasibility.py:33: [R0911] Too many return statements (7/6)
+feasibility.py:33: [R0912] Too many branches (13/12)
+************* Module io_handler
+io_handler.py:59: [C0301] Line too long (104/100)
+io_handler.py:88: [C0301] Line too long (109/100)
+io_handler.py:91: [C0301] Line too long (105/100)
+io_handler.py:94: [C0301] Line too long (103/100)
+io_handler.py:100: [C0301] Line too long (109/100)
+io_handler.py:103: [C0301] Line too long (109/100)
+io_handler.py:107: [C0301] Line too long (122/100)
+io_handler.py:181: [C0301] Line too long (104/100)
+io_handler.py:1: [C0114] Missing module docstring
+io_handler.py:18: [W0718] Catching too general exception Exception
+io_handler.py:29: [C0116] Missing function or method docstring
+io_handler.py:44: [C0116] Missing function or method docstring
+io_handler.py:71: [C0116] Missing function or method docstring
+io_handler.py:71: [R0914] Too many local variables (19/15)
+io_handler.py:146: [C0116] Missing function or method docstring
+io_handler.py:154: [C0116] Missing function or method docstring
+io_handler.py:173: [C0116] Missing function or method docstring
+io_handler.py:181: [C0116] Missing function or method docstring
+io_handler.py:192: [C0116] Missing function or method docstring
+io_handler.py:6: [W0611] Unused DeliveryStop imported from models
+io_handler.py:6: [W0611] Unused DepotStop imported from models
+************* Module planner
+planner.py:171: [C0301] Line too long (107/100)
+planner.py:82: [C0116] Missing function or method docstring
+planner.py:110: [C0116] Missing function or method docstring
+planner.py:117: [C0116] Missing function or method docstring
+planner.py:131: [C0116] Missing function or method docstring
+planner.py:193: [R0914] Too many local variables (18/15)
+planner.py:206: [C0200] Consider using enumerate instead of iterating with range and len
+planner.py:193: [R0912] Too many branches (14/12)
+planner.py:251: [R0914] Too many local variables (24/15)
+planner.py:256: [C0415] Import outside toplevel (feasibility.check_all_packages)
+planner.py:251: [W0613] Unused argument 'locations'
+
+------------------------------------------------------------------
+Your code has been rated at 8.93/10 (previous run: 9.32/10, -0.39)
+

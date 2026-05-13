@@ -1,0 +1,6 @@
+timestamp,actuator_id,values
+2.0,Engine,-15.0
+3.0,BrakingSystem,brake
+3.0,Engine,-15.001
+8.0,BrakingSystem,brake
+8.0,Engine,-17.0

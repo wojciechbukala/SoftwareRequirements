@@ -1,0 +1,6 @@
+timestamp,actuator_id,values
+2.0,SteeringMotor,0.2
+2.0,SpeedActuator,0.2
+122.0,SteeringWheel,small_movement
+247.0,SteeringWheel,small_movement
+255.0,Alarm,continuous_alarm

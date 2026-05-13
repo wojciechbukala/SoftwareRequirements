@@ -1,0 +1,10 @@
+Run,Tokens,,,,,Pylint score,SonarQube,,,,,,,,,,,
+,Input tokens,Output tokens,Cache read tokens,Cache create tokens,Tokens summary,,Security,,,,Reliability,,,,Maintainability,,,
+,,,,,,,Low,Medium,High,Summary,Low,Medium,High,Summary,Low,Medium,High,Summary
+FleetRouter-REQ1-Claude-1,13,20780,330672,22247,373712,9.17,0,0,0,0,0,0,0,0,0,0,0,0
+FleetRouter-REQ1-Claude-2,30,38380,1269888,40396,1348694,9.11,0,0,0,0,0,0,0,0,1,0,2,3
+FleetRouter-REQ1-Claude-3,27,24695,902708,27200,954630,9.59,0,0,0,0,0,0,0,0,0,0,4,4
+FleetRouter-REQ2-Claude-1,21,44166,990984,54791,1089962,9.12,0,0,0,0,0,0,0,0,0,1,6,7
+FleetRouter-REQ2-Claude-2,29,36373,1277781,38161,1352344,9.20,0,0,0,0,0,0,0,0,0,1,1,2
+FleetRouter-REQ2-Claude-3,27,41578,1275911,53665,1371181,9.16,0,0,0,0,0,0,0,0,0,0,2,2
+FleetRouter-REQ4-Claude-1,36,65980,1383664,43630,1493310,8.84,0,0,0,0,0,0,0,0,1,1,4,6

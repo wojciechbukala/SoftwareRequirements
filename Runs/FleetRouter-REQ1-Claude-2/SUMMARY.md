@@ -1,82 +1,53 @@
 ```
-fleetrouter --input <input_dir> --output <output_dir>
-```
-# FleetRouter — Implementation Summary
-
-## Overview
-
-FleetRouter is a command-line tool for daily route planning for a courier company. It reads input CSV files, assigns packages to vehicles, computes optimised routes, and writes the results to output CSV files.
-
-## Usage
-
-```
-fleetrouter --input <input_dir> --output <output_dir>
+PATH="/workspace/bin:$PATH" fleetrouter --input <input_dir> --output <output_dir>
 ```
 
-For environments where direct installation isn't available:
+## Implementation
 
-```
-PYTHONPATH=/workspace python3 -m fleetrouter.main --input <input_dir> --output <output_dir>
-```
+FleetRouter is a Python package (`fleetrouter/`) with a command-line entry point at `/workspace/bin/fleetrouter`.
 
-## Project Structure
+### Structure
 
-```
-fleetrouter/
-  __init__.py     — package marker
-  models.py       — data classes (Package, Vehicle, Location, Route, Stop) and time helpers
-  io.py           — flexible CSV readers (multi-alias column names) and output writers
-  main.py         — CLI entry point, input validation, orchestration
-  router.py       — routing engine: greedy insertion + 2-opt optimisation
-pyproject.toml    — pip-installable package definition (entry point: fleetrouter)
-setup.py          — legacy setup for broader pip compatibility
-bin/fleetrouter   — standalone executable wrapper
-```
+- `fleetrouter/__main__.py` — all logic: input parsing, validation, routing, output
+- `fleetrouter/__init__.py` — package marker
+- `pyproject.toml` — package metadata and script entry point
+- `bin/fleetrouter` — executable wrapper (adds `/workspace` to `sys.path`)
 
-## Algorithm
+### Algorithm
 
-### Input Validation
+**Input validation (pre-filter):**
+- Vehicles referencing unknown `depot_location_id` are silently excluded from processing
+- Packages referencing unknown `destination_id` → `undeliverable.csv` with `UNREACHABLE`
+- Packages with invalid time windows (`tw_open >= tw_close`) → `undeliverable.csv` with `TIME_WINDOW`
+- Packages whose destination has no bidirectional path from any valid depot → `undeliverable.csv` with `UNREACHABLE`
 
-1. **Location references** — packages or vehicles referencing unknown location IDs are excluded and warned.
-2. **Time windows** — packages where `time_open >= time_close` are recorded as `TIME_WINDOW` undeliverable.
-3. **Unreachability** — packages for which no vehicle's depot has both an outbound and inbound distance entry are recorded as `UNREACHABLE`.
+**Assignment (cheapest insertion heuristic):**
+1. Packages are sorted by descending priority (1 before 0), then by earliest `tw_close` (most urgent first)
+2. For each package, every vehicle is evaluated at every possible insertion position
+3. The vehicle+position minimizing total route distance (then duration as tiebreaker) is chosen
+4. Vehicles with insufficient remaining weight/volume capacity are skipped
+5. `simulate_route` checks time windows and the 8-hour driver limit for each candidate insertion
 
-### Route Planning
+**Rejection reason determination (in priority order):**
+1. `CAPACITY_WEIGHT` — no vehicle has sufficient remaining weight capacity
+2. `CAPACITY_VOLUME` — no vehicle (with sufficient weight) has sufficient volume capacity
+3. `UNREACHABLE` — routing simulation failed due to missing distance entry
+4. `TIME_WINDOW` — package cannot be delivered within its time window
+5. `MAX_DRIVER_TIME` — delivery would exceed the 8-hour driver limit
+6. `NO_VEHICLE` — catch-all
 
-1. **Sorting** — packages are sorted: priority=True first, then by `time_close` (urgency), then `time_open`.
-2. **Greedy cheapest insertion** — for each package, every vehicle and every insertion position is tried. The insertion that minimises additional distance (then additional duration) is chosen, subject to:
-   - Weight capacity constraint
-   - Volume capacity constraint
-   - Time window feasibility (arrival ≤ `time_close`)
-   - Maximum driver time (≤ 480 minutes total)
-   - Existence of all required distance entries
-3. **2-opt optimisation** — after all packages are assigned, each route is improved by iteratively swapping pairs of edges until no improvement remains (minimise distance first, then duration).
+**Route optimization:**
+- After all assignments, each vehicle's route is improved with 2-opt local search
+- 2-opt swaps are accepted only if they reduce total distance (or reduce duration at equal distance) without violating any constraints
 
-### Undeliverable Reason Codes
+**Route simulation:**
+- Vehicle departs depot at 08:00
+- Travel times from `distances.csv` are used; missing entries raise `UNREACHABLE`
+- If vehicle arrives before `tw_open`, it waits; if `service_start > tw_close`, route is infeasible
+- Total time includes return trip to depot; must not exceed 480 minutes
 
-When no insertion is feasible for a package, the reason is determined by precedence:
+### Output
 
-| Code | Condition |
-|------|-----------|
-| `CAPACITY_WEIGHT` | No vehicle has sufficient remaining weight capacity |
-| `CAPACITY_VOLUME` | No vehicle has sufficient remaining volume capacity |
-| `TIME_WINDOW` | Earliest direct arrival from any depot exceeds `time_close` |
-| `MAX_DRIVER_TIME` | All valid insertions would exceed 8-hour driver limit |
-| `UNREACHABLE` | No vehicle can reach the destination from its depot |
-| `NO_VEHICLE` | Fallback when none of the above applies |
-
-### Same-Location Optimisation
-
-When two packages share a delivery location, the travel distance between them is treated as zero, allowing them to be serviced consecutively without extra travel cost.
-
-## Output Files
-
-| File | Contents |
-|------|----------|
-| `stops_order.csv` | route_id, vehicle_id, stop_order, location_id, package_id, arrival_time, departure_time (HH:MM); includes depot start/end stops |
-| `undeliverable.csv` | package_id, reason |
-| `summary.csv` | vehicle_id, total_distance (km, 2 d.p.), total_duration (integer minutes), packages_delivered |
-
-## CSV Column Name Flexibility
-
-The reader accepts multiple common column name variants (e.g. `from_id`, `from`, `origin`, `from_location` are all accepted for the distances "from" column), making the system robust to different naming conventions.
+- `stops_order.csv` — one row per delivery stop (arrival/departure in HH:MM)
+- `undeliverable.csv` — one row per undeliverable package with exactly one reason code
+- `summary.csv` — per-vehicle totals (distance rounded to 2 decimal places, duration as integer minutes)

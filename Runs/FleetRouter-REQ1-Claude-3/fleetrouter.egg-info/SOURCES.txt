@@ -1,6 +1,5 @@
-pyproject.toml
-fleetrouter/__init__.py
-fleetrouter/main.py
+fleetrouter.py
+setup.py
 fleetrouter.egg-info/PKG-INFO
 fleetrouter.egg-info/SOURCES.txt
 fleetrouter.egg-info/dependency_links.txt

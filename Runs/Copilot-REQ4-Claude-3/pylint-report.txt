@@ -1,0 +1,8 @@
+************* Module copilot.decision
+copilot/decision.py:47: [C0115] Missing class docstring
+copilot/decision.py:56: [R0903] Too few public methods (1/2)
+copilot/decision.py:22: [W0611] Unused Union imported from typing
+
+------------------------------------------------------------------
+Your code has been rated at 9.87/10 (previous run: 9.81/10, +0.06)
+

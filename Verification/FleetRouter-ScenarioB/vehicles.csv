@@ -1,0 +1,2 @@
+vehicle_id,max_weight_kg,max_volume_m3,depot_location_id
+V1,50.0,5.0,L0

@@ -1,81 +1,53 @@
-# FleetRouter — Implementation Summary
-
-## What Was Built
-
-A command-line daily route-planning tool for courier companies, implemented in Python with no external dependencies.
-
-## File Structure
-
 ```
-fleetrouter       Shell script entry point (chmod +x)
-main.py           CLI argument parsing and orchestration
-models.py         Data classes: Package, Vehicle, Location, Stop, Route
-reader.py         CSV ingestion and validation (FR-01, FR-02)
-planner.py        Assignment, route construction, and optimisation (FR-03–FR-05)
-writer.py         Output file generation (FR-06)
+python3 fleetrouter.py --input <input_dir> --output <output_dir>
 ```
 
-## Invocation
+## FleetRouter — Implementation Summary
 
-```
-./fleetrouter --input <input_dir> --output <output_dir>
-```
+### Architecture
 
-Both arguments are mandatory. The program reads four CSV files from `<input_dir>` and writes three CSV files to `<output_dir>`.
+The system is a pure-Python package (`fleetrouter/`) with no external dependencies, organised into five modules:
 
-## Algorithm
+| Module | Responsibility |
+|---|---|
+| `models.py` | Shared data-classes (`Package`, `Vehicle`, `Location`, `StopResult`), constants (`START_MINUTES=480`, `MAX_DRIVER_MINUTES=480`), and `parse_time`/`format_time` helpers. |
+| `reader.py` | Reads and validates all four input CSV files; terminates on missing files; collects warnings for excluded rows. |
+| `route.py` | `Route` class: computes schedules (arrival/wait/departure per stop), total distance, total duration, and feasibility. |
+| `planner.py` | Assigns packages to vehicles using **cheapest-insertion**: packages sorted by descending priority then ascending `tw_close`; each package is inserted at the position and vehicle that minimises additional distance while satisfying all constraints. |
+| `optimizer.py` | **2-opt** (best-improvement, per route) followed by **relocate** (single-package cross-route moves); both phases are repeated until no improvement is found. |
+| `writer.py` | Writes the three output CSV files with correct column names, time formats, and rounding. |
+| `__main__.py` | CLI (`--input`, `--output`); orchestrates read → assign → optimise → write; prints the final summary line. |
 
-### Input Validation (`reader.py`)
-- Missing files trigger an immediate error and non-zero exit.
-- Packages referencing unknown locations or with invalid priority values (not 0 or 1) are excluded and reported to stderr.
-- Packages with `tw_close <= tw_open` are immediately written to `undeliverable.csv` with reason `TIME_WINDOW`.
+### Algorithm
 
-### Package Assignment (`planner.py` → `_assign_packages`)
-1. Packages are sorted: priority-1 packages first, then by `tw_open` ascending.
-2. For each package, every vehicle is tried using **cheapest insertion**: the position in the vehicle's current route that minimises the added distance is selected.
-3. Before trying positions, cumulative weight and volume are checked (returns `CAPACITY_WEIGHT` / `CAPACITY_VOLUME` early).
-4. For each candidate insertion, `simulate_route` is called to verify time windows and the 8-hour driver limit.
-5. The vehicle offering the lowest extra distance is chosen; on failure across all vehicles the most informative reason is reported (see Failure Level below).
+**Construction (FR-03 / FR-05)**
+Priority-1 packages are processed before priority-0 packages (tie-broken by `tw_close`). For each package, every vehicle and every insertion position is evaluated; the position yielding the smallest distance increase (duration as tie-breaker) is accepted only if it passes all four constraints: weight capacity, volume capacity, time-window feasibility, and 8-hour driver-day limit.
 
-### Route Simulation (`simulate_route`)
-For each stop in order, the function computes:
-- **arrival** = previous departure + travel time
-- **waiting** = max(0, tw_open − arrival)
-- **departure** = arrival + waiting + service_min
-- Fails with `TIME_WINDOW` if arrival > tw_close, `UNREACHABLE` if a required distance entry is absent, `MAX_DRIVER_TIME` if total duration exceeds 480 minutes.
+**Optimisation (FR-05)**
+After construction, 2-opt eliminates route crossings within each vehicle's route. A relocate phase then moves individual packages between routes whenever doing so reduces total fleet distance. The two phases alternate until stable.
 
-All vehicles depart their depot at **08:00** (DA-04).
+**Constraint checking**
+`Route.compute_schedule()` walks the stop sequence from the depot (departure 08:00) and returns `None` on the first violation (missing distance entry or late arrival beyond `tw_close`). The caller then inspects edge existence to distinguish `UNREACHABLE` from `TIME_WINDOW`.
 
-### Failure Reason Selection
-When a package cannot be assigned to any vehicle, the reason reported is the one from the vehicle that made it furthest through the constraint checks (most specific failure):
+### Reason-code precedence
 
-| Level | Reason          | Description                          |
-|-------|-----------------|--------------------------------------|
-| 5     | MAX_DRIVER_TIME | Route would exceed 8-hour limit      |
-| 4     | TIME_WINDOW     | Delivery window cannot be met        |
-| 3     | UNREACHABLE     | Required distance entry missing      |
-| 2     | CAPACITY_VOLUME | Volume capacity exceeded             |
-| 1     | CAPACITY_WEIGHT | Weight capacity exceeded             |
-| 0     | NO_VEHICLE      | Fallback (no vehicle available)      |
+When a package cannot be assigned, the most informative failure reason is reported, ranked by how far into the feasibility check the package progressed:
 
-### Route Optimisation (`_two_opt`)
-After assignment, each vehicle's route is improved with **2-opt**: all pairs of edges are tested; if reversing the segment between them yields a feasible route with lower total distance, the swap is accepted. The process repeats until no improving swap exists.
+`NO_VEHICLE` < `UNREACHABLE` < `CAPACITY_WEIGHT` < `CAPACITY_VOLUME` < `TIME_WINDOW` < `MAX_DRIVER_TIME`
 
-Primary objective: minimise total fleet distance. Secondary: minimise total fleet duration (the 2-opt objective is distance, which inherently serves the primary goal; duration differences are reflected in `simulate_route`).
+### Input / Output files
 
-## Output Files
+**Input** (`--input DIR`): `packages.csv`, `vehicles.csv`, `locations.csv`, `distances.csv`
 
-| File               | Contents                                                    |
-|--------------------|-------------------------------------------------------------|
-| `stops_order.csv`  | One row per stop: route_id, vehicle_id, position, location, package, arrival, departure |
-| `summary.csv`      | One row per vehicle (including idle ones): distance, time, packages delivered |
-| `undeliverable.csv`| One row per unassigned package with exactly one reason code |
+**Output** (`--output DIR`): `stops_order.csv`, `summary.csv`, `undeliverable.csv`
 
-Time values are formatted as `HH:MM`. Distances are rounded to two decimal places.
+### Requirements coverage
 
-## Design Decisions
-
-- **Pure Python, no third-party libraries** — satisfies the offline/single-machine constraint (L-01–L-03).
-- **Greedy cheapest insertion + 2-opt** — practical VRPTW heuristic; runs well within the stated performance envelope (500 packages, 50 vehicles, 200 locations).
-- **Same-location distance** — when `from_location_id == to_location_id`, distance and travel time are treated as 0 to handle packages at a depot without requiring a self-loop in `distances.csv`.
-- **Undeliverable reason priority** — selects the most informative failure so operators can act on the output.
+| Requirement | Coverage |
+|---|---|
+| FR-01 Read input | `reader.read_all` — all four files mandatory; exits on missing file |
+| FR-02 Validation | Unknown location IDs excluded; invalid `tw_close ≤ tw_open` → `TIME_WINDOW`; missing distance pairs reported; `UNREACHABLE` applied during assignment |
+| FR-03 Assignment | Cheapest-insertion with priority ordering; all four constraint checks; six reason codes |
+| FR-04 Routing | Depot-to-depot routes; stop numbering from 1; arrival/wait/departure times per stop |
+| FR-05 Optimisation | 2-opt + relocate minimising total distance, duration as tiebreaker |
+| FR-06 Output | Three CSV files with specified column names, HH:MM times, km rounded to 2 dp |

@@ -44,14 +44,29 @@ def find_scenarios(project_name: str) -> list[Path]:
 
 
 def resolve_command(command: str, run_dir: Path) -> str:
-    """Prefix bare executable names with ./ when the file exists in run_dir."""
-    first_token = command.split()[0]
-    # Already has a path component or is a known interpreter — leave as-is
-    if "/" in first_token or first_token in ("python", "python3", "python3.x"):
+    """Resolve paths in the command so that scripts in run_dir are found locally."""
+    tokens = command.split()
+    if not tokens:
         return command
-    candidate = run_dir / first_token
-    if candidate.exists():
-        return "./" + command
+
+    first = tokens[0]
+
+    # Bare executable (no path separator, not a Python interpreter)
+    if "/" not in first and not first.startswith("python"):
+        if (run_dir / first).exists():
+            return "./" + command
+        return command
+
+    # Python interpreter — check if the next argument is an absolute path
+    # whose basename exists in run_dir (e.g. python3 /workspace/fleetrouter)
+    if first.startswith("python") and len(tokens) >= 2:
+        second = tokens[1]
+        if second.startswith("/"):
+            candidate = run_dir / Path(second).name
+            if candidate.exists():
+                tokens[1] = "./" + Path(second).name
+                return " ".join(tokens)
+
     return command
 
 

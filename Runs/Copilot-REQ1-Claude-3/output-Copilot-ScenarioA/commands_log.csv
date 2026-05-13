@@ -1,0 +1,4 @@
+timestamp,actuator_id,values
+2.0,Steering Wheel,0.2
+121.0,Steering Wheel,ATTENTIVENESS_CHECK
+126.0,Alarm,ALARM_ON

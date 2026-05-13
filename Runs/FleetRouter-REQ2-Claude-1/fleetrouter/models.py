@@ -1,19 +1,17 @@
 from dataclasses import dataclass
-from typing import Dict, Tuple
+from typing import List
 
-START_TIME_MIN = 480       # Vehicles depart depot at 08:00 (DA-04)
-MAX_DRIVER_TIME_MIN = 480  # 8-hour driver limit (FR-03)
-
-
-def parse_time(s: str) -> int:
-    """Convert HH:MM string to minutes from midnight."""
-    h, m = s.strip().split(":")
-    return int(h) * 60 + int(m)
+START_TIME_MIN: int = 480       # 08:00 in minutes from midnight
+MAX_DRIVER_TIME_MIN: int = 480  # 8-hour daily driver limit
 
 
-def format_time(minutes: int) -> str:
-    """Convert minutes from midnight to HH:MM string."""
+def minutes_to_hhmm(minutes: int) -> str:
     return f"{minutes // 60:02d}:{minutes % 60:02d}"
+
+
+def hhmm_to_minutes(s: str) -> int:
+    parts = s.strip().split(":")
+    return int(parts[0]) * 60 + int(parts[1])
 
 
 @dataclass
@@ -22,10 +20,10 @@ class Package:
     destination_id: str
     weight_kg: float
     volume_m3: float
-    tw_open: int   # minutes from midnight
-    tw_close: int  # minutes from midnight
+    tw_open: int    # minutes from midnight
+    tw_close: int   # minutes from midnight
     service_min: int
-    priority: int
+    priority: int   # 0 or 1
 
 
 @dataclass
@@ -43,12 +41,20 @@ class Location:
 
 
 @dataclass
-class DistanceEntry:
-    from_location_id: str
-    to_location_id: str
-    distance_km: float
-    travel_time_min: int
+class RouteStop:
+    stop_position: int
+    location_id: str
+    package_id: str
+    arrival_time: int   # minutes from midnight
+    departure_time: int # minutes from midnight
 
 
-# Mapping (from_id, to_id) -> DistanceEntry
-DistanceMap = Dict[Tuple[str, str], DistanceEntry]
+@dataclass
+class VehicleRoute:
+    vehicle: Vehicle
+    package_sequence: List[str]
+    stops: List[RouteStop]
+    total_distance_km: float
+    total_time_min: int
+    total_weight_kg: float
+    total_volume_m3: float

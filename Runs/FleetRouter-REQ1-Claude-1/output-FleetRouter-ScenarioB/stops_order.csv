@@ -1,0 +1,3 @@
+route_id,vehicle_id,stop_position_in_order,location_id,delivered_id,arrival_time,departure_time
+route_V1,V1,1,L2,P_NOVEH,08:25,08:40
+route_V1,V1,2,L1,P_OK,09:05,09:20

@@ -1,0 +1,89 @@
+************* Module copilot_cli
+copilot_cli.py:7: [E0001] Parsing failed: 'trailing comma not allowed without surrounding parentheses (copilot_cli, line 7)'
+************* Module copilot_logic
+copilot_logic.py:9: [C0301] Line too long (121/100)
+copilot_logic.py:32: [C0301] Line too long (112/100)
+copilot_logic.py:34: [C0301] Line too long (101/100)
+copilot_logic.py:36: [C0301] Line too long (101/100)
+copilot_logic.py:40: [C0301] Line too long (110/100)
+copilot_logic.py:84: [C0301] Line too long (110/100)
+copilot_logic.py:89: [C0301] Line too long (103/100)
+copilot_logic.py:96: [C0301] Line too long (103/100)
+copilot_logic.py:102: [C0301] Line too long (118/100)
+copilot_logic.py:103: [C0301] Line too long (108/100)
+copilot_logic.py:110: [C0301] Line too long (116/100)
+copilot_logic.py:113: [C0301] Line too long (119/100)
+copilot_logic.py:119: [C0301] Line too long (112/100)
+copilot_logic.py:120: [C0301] Line too long (114/100)
+copilot_logic.py:152: [C0301] Line too long (111/100)
+copilot_logic.py:162: [C0301] Line too long (126/100)
+copilot_logic.py:178: [C0301] Line too long (111/100)
+copilot_logic.py:181: [C0301] Line too long (110/100)
+copilot_logic.py:182: [C0301] Line too long (116/100)
+copilot_logic.py:183: [C0301] Line too long (114/100)
+copilot_logic.py:188: [C0301] Line too long (102/100)
+copilot_logic.py:191: [C0301] Line too long (105/100)
+copilot_logic.py:206: [C0303] Trailing whitespace
+copilot_logic.py:215: [C0301] Line too long (107/100)
+copilot_logic.py:219: [C0301] Line too long (108/100)
+copilot_logic.py:225: [C0301] Line too long (108/100)
+copilot_logic.py:232: [C0301] Line too long (102/100)
+copilot_logic.py:233: [C0303] Trailing whitespace
+copilot_logic.py:241: [C0303] Trailing whitespace
+copilot_logic.py:247: [C0303] Trailing whitespace
+copilot_logic.py:250: [C0303] Trailing whitespace
+copilot_logic.py:251: [C0303] Trailing whitespace
+copilot_logic.py:254: [C0303] Trailing whitespace
+copilot_logic.py:271: [C0303] Trailing whitespace
+copilot_logic.py:287: [C0303] Trailing whitespace
+copilot_logic.py:289: [C0301] Line too long (147/100)
+copilot_logic.py:1: [C0114] Missing module docstring
+copilot_logic.py:12: [R0902] Too many instance attributes (8/7)
+copilot_logic.py:152: [W0612] Unused variable 'next_time'
+copilot_logic.py:155: [W0612] Unused variable 'trigger_event_str'
+copilot_logic.py:231: [W0612] Unused variable 'last_state'
+copilot_logic.py:232: [W0612] Unused variable 'last_log_count'
+copilot_logic.py:240: [W0612] Unused variable 'prev_state'
+copilot_logic.py:12: [R0903] Too few public methods (1/2)
+copilot_logic.py:1: [W0611] Unused import math
+copilot_logic.py:2: [W0611] Unused namedtuple imported from collections
+************* Module copilot_csv_handler
+copilot_csv_handler.py:6: [C0301] Line too long (110/100)
+copilot_csv_handler.py:9: [C0301] Line too long (112/100)
+copilot_csv_handler.py:11: [C0301] Line too long (110/100)
+copilot_csv_handler.py:13: [C0301] Line too long (101/100)
+copilot_csv_handler.py:33: [C0301] Line too long (124/100)
+copilot_csv_handler.py:37: [C0301] Line too long (103/100)
+copilot_csv_handler.py:60: [C0301] Line too long (129/100)
+copilot_csv_handler.py:79: [C0301] Line too long (126/100)
+copilot_csv_handler.py:92: [C0301] Line too long (101/100)
+copilot_csv_handler.py:106: [C0301] Line too long (107/100)
+copilot_csv_handler.py:1: [C0114] Missing module docstring
+copilot_csv_handler.py:40: [W0718] Catching too general exception Exception
+copilot_csv_handler.py:67: [W0718] Catching too general exception Exception
+copilot_csv_handler.py:80: [W0718] Catching too general exception Exception
+copilot_csv_handler.py:94: [W0718] Catching too general exception Exception
+copilot_csv_handler.py:92: [E0602] Undefined variable 'Enum'
+copilot_csv_handler.py:108: [W0718] Catching too general exception Exception
+copilot_csv_handler.py:106: [E0602] Undefined variable 'Enum'
+copilot_csv_handler.py:4: [W0611] Unused Dict imported from typing
+copilot_csv_handler.py:4: [W0611] Unused Union imported from typing
+copilot_csv_handler.py:6: [W0611] Unused State imported from copilot_constants
+copilot_csv_handler.py:6: [W0611] Unused Actuator imported from copilot_constants
+copilot_csv_handler.py:6: [W0611] Unused FeatureDecisionKind imported from copilot_constants
+copilot_csv_handler.py:6: [W0611] Unused DecisionValue imported from copilot_constants
+************* Module copilot
+copilot.py:1: [C0114] Missing module docstring
+copilot.py:1: [E0001] Cannot import 'copilot_cli' due to 'trailing comma not allowed without surrounding parentheses (copilot_cli, line 7)'
+************* Module copilot_constants
+copilot_constants.py:1: [C0114] Missing module docstring
+copilot_constants.py:4: [C0115] Missing class docstring
+copilot_constants.py:10: [C0115] Missing class docstring
+copilot_constants.py:14: [C0115] Missing class docstring
+copilot_constants.py:19: [C0115] Missing class docstring
+copilot_constants.py:24: [C0115] Missing class docstring
+copilot_constants.py:29: [C0115] Missing class docstring
+
+-----------------------------------
+Your code has been rated at 6.32/10
+

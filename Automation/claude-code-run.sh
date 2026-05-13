@@ -135,7 +135,7 @@ for ((i = START; i < START + RUNS; i++)); do
         "$INPUT" "$OUTPUT" "$CACHE_READ" "$CACHE_CREATE" "$COST"
 
     TOKENS_SUM=$(( INPUT + OUTPUT + CACHE_READ + CACHE_CREATE ))
-    CSV_FILE="${REPO_ROOT}/Results/${PROJECT}.csv"
+    CSV_FILE="${REPO_ROOT}/Results/${PROJECT}-static.csv"
 
     TOTAL_INPUT=$(( TOTAL_INPUT + INPUT ))
     TOTAL_OUTPUT=$(( TOTAL_OUTPUT + OUTPUT ))

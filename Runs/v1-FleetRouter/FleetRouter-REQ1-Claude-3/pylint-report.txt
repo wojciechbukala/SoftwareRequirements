@@ -1,0 +1,35 @@
+************* Module fleetrouter_bin
+fleetrouter_bin.py:6: [C0413] Import "from fleetrouter.main import main" should be placed at the top of the module
+************* Module fleetrouter
+fleetrouter.py:1: [C0114] Missing module docstring
+fleetrouter.py:2: [C0410] Multiple imports on one line (sys, os)
+fleetrouter.py:4: [C0413] Import "from fleetrouter.main import main" should be placed at the top of the module
+************* Module fleetrouter.main
+fleetrouter/main.py:32: [C0115] Missing class docstring
+fleetrouter/main.py:32: [R0902] Too many instance attributes (8/7)
+fleetrouter/main.py:36: [R0913] Too many arguments (9/5)
+fleetrouter/main.py:36: [R0917] Too many positional arguments (9/5)
+fleetrouter/main.py:32: [R0903] Too few public methods (0/2)
+fleetrouter/main.py:48: [C0115] Missing class docstring
+fleetrouter/main.py:48: [R0903] Too few public methods (0/2)
+fleetrouter/main.py:70: [R0914] Too many local variables (16/15)
+fleetrouter/main.py:130: [C0116] Missing function or method docstring
+fleetrouter/main.py:138: [C0116] Missing function or method docstring
+fleetrouter/main.py:147: [C0116] Missing function or method docstring
+fleetrouter/main.py:186: [C0116] Missing function or method docstring
+fleetrouter/main.py:206: [R0914] Too many local variables (18/15)
+fleetrouter/main.py:228: [R1702] Too many nested blocks (6/5)
+fleetrouter/main.py:206: [R0911] Too many return statements (7/6)
+fleetrouter/main.py:206: [R0912] Too many branches (13/12)
+fleetrouter/main.py:255: [R0914] Too many local variables (27/15)
+fleetrouter/main.py:323: [R0914] Too many local variables (17/15)
+fleetrouter/main.py:365: [C0116] Missing function or method docstring
+fleetrouter/main.py:365: [R0914] Too many local variables (20/15)
+fleetrouter/main.py:431: [C0116] Missing function or method docstring
+fleetrouter/main.py:454: [W0718] Catching too general exception Exception
+************* Module fleetrouter.__main__
+fleetrouter/__main__.py:1: [C0114] Missing module docstring
+
+-----------------------------------
+Your code has been rated at 9.05/10
+

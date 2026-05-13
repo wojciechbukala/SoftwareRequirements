@@ -528,6 +528,26 @@ def check_logic(output_dir: Path, golden: dict) -> int:
 
     return failures
 
+# ── CSV output ────────────────────────────────────────────────────────────────
+
+def write_csv(run_dir: Path, scenario_results: dict) -> None:
+    csv_path = REPO_ROOT / "Results" / "Copilot-functional.csv"
+    header = ["Run", "ScenarioA", "ScenarioB", "ScenarioC", "Total failures"]
+    total = sum(v for v in scenario_results.values() if isinstance(v, int))
+    row = [run_dir.name]
+    for s in SCENARIOS:
+        f = scenario_results.get(s)
+        row.append("" if f is None else f)
+    row.append(total)
+
+    write_header = not csv_path.exists()
+    with csv_path.open("a", newline="", encoding="utf-8") as fh:
+        writer = csv.writer(fh)
+        if write_header:
+            writer.writerow(header)
+        writer.writerow(row)
+    print(f"\nSaved results to {csv_path}")
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -545,6 +565,7 @@ def main():
 
     total_failures    = 0
     scenarios_checked = 0
+    scenario_results: dict = {}
 
     for scenario_name in SCENARIOS:
         output_dir   = run_dir / f"output-Copilot-{scenario_name}"
@@ -571,8 +592,9 @@ def main():
         failures = check_structure(output_dir) + check_logic(output_dir, golden)
 
         print(f"\n  Result: {'PASS' if failures == 0 else f'FAIL  ({failures} check(s) failed)'}")
-        total_failures    += failures
-        scenarios_checked += 1
+        total_failures            += failures
+        scenarios_checked         += 1
+        scenario_results[scenario_name] = failures
 
     print(f"\n{'=' * 60}")
     if scenarios_checked == 0:
@@ -582,6 +604,8 @@ def main():
     else:
         print(f"FAILED  ({total_failures} total failure(s) across {scenarios_checked} scenario(s))")
     print(f"{'=' * 60}")
+
+    write_csv(run_dir, scenario_results)
 
     sys.exit(0 if total_failures == 0 else 1)
 

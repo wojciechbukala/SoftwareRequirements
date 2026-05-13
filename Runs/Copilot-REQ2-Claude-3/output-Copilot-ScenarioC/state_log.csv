@@ -1,0 +1,4 @@
+timestamp,previous_state,current_state,trigger_event
+1.0,Disengaged,Engaged,ENGAGE
+2.0,Engaged,Disengaged,DISENGAGE
+3.0,Disengaged,Engaged,ENGAGE

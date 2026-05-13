@@ -1,0 +1,3 @@
+timestamp,actuator_id,values
+3.0,BrakingSystem,EMERGENCY_BRAKE
+8.0,BrakingSystem,EMERGENCY_BRAKE

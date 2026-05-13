@@ -1,0 +1,3 @@
+vehicle_id,max_weight_kg,max_volume_m3,depot_location_id
+V1,100,10,depot1
+V2,80,8,depot1

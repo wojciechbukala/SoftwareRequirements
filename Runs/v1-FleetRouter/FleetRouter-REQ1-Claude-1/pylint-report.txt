@@ -1,0 +1,22 @@
+************* Module setup
+setup.py:1: [C0114] Missing module docstring
+setup.py:1: [E0401] Unable to import 'setuptools'
+************* Module fleetrouter.main
+fleetrouter/main.py:17: [C0116] Missing function or method docstring
+fleetrouter/main.py:22: [C0116] Missing function or method docstring
+fleetrouter/main.py:155: [R0914] Too many local variables (20/15)
+fleetrouter/main.py:234: [C0116] Missing function or method docstring
+fleetrouter/main.py:234: [R0914] Too many local variables (52/15)
+fleetrouter/main.py:240: [W1514] Using open without explicitly specifying an encoding
+fleetrouter/main.py:245: [W1514] Using open without explicitly specifying an encoding
+fleetrouter/main.py:254: [W1514] Using open without explicitly specifying an encoding
+fleetrouter/main.py:258: [W1514] Using open without explicitly specifying an encoding
+fleetrouter/main.py:290: [W0718] Catching too general exception Exception
+fleetrouter/main.py:234: [R0912] Too many branches (27/12)
+fleetrouter/main.py:234: [R0915] Too many statements (111/50)
+fleetrouter/main.py:493: [W1514] Using open without explicitly specifying an encoding
+fleetrouter/main.py:503: [C0116] Missing function or method docstring
+
+-----------------------------------
+Your code has been rated at 9.22/10
+

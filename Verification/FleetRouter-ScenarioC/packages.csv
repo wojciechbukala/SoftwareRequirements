@@ -1,0 +1,4 @@
+package_id,destination_id,weight_kg,volume_m3,tw_open,tw_close,service_min,priority
+P_PRI,L1,20.0,2.5,08:00,12:00,15,1
+P_NOPRI,L2,20.0,2.5,08:00,12:00,15,0
+P_SMALL,L3,8.0,1.0,08:00,14:00,10,0

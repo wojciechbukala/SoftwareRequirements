@@ -1,99 +1,64 @@
-# FleetRouter — Implementation Summary
+```
+python3 -m fleetrouter --input <input_dir> --output <output_dir>
+```
 
 ## Overview
 
-FleetRouter is a command-line route-planning tool for courier companies. It reads four CSV
-input files, assigns packages to vehicles while respecting all constraints, constructs and
-optimises daily delivery routes, and writes three CSV output files.
+FleetRouter is a command-line daily route planning tool for courier companies. It reads four CSV input files, assigns packages to vehicles under multiple constraints, optimizes routes, and writes three CSV output files.
 
-## Invocation
+## Architecture
 
-```
-./fleetrouter --input <input-dir> --output <output-dir>
-```
+The implementation is a Python package under `fleetrouter/` with five modules:
 
-Both arguments are mandatory. The program terminates with a non-zero exit code and an
-error message if any required input file is missing.
-
-## File Structure
-
-```
-fleetrouter              — executable entry-point script
-fleet_router/
-    __init__.py
-    models.py            — data classes (Package, Vehicle, Location, DistanceEntry, Stop, Route)
-    reader.py            — CSV input parsing
-    validator.py         — input validation (location references, time windows)
-    planner.py           — package assignment, route construction, 2-opt/or-opt optimisation
-    writer.py            — CSV output generation
-    cli.py               — argument parsing and main control flow
-```
+| Module | Responsibility |
+|---|---|
+| `models.py` | Data classes (`Package`, `Vehicle`, `Location`, `StopInfo`, `RouteResult`) and time utilities |
+| `reader.py` | Reads and validates all four input CSV files; reports invalid rows and returns pre-classified undeliverables |
+| `solver.py` | Greedy best-insertion assignment + 2-opt route optimization |
+| `writer.py` | Writes `stops_order.csv`, `summary.csv`, and `undeliverable.csv` |
+| `cli.py` | Argument parsing, orchestration, and completion summary line |
 
 ## Algorithm
 
-### Assignment (`planner.py`)
+**Assignment (greedy best-insertion):**
+1. Packages are sorted by priority descending (priority=1 first), then by `tw_close` ascending (tighter windows first) to minimize infeasible assignments.
+2. For each package, every vehicle and every insertion position in that vehicle's current route is evaluated. The (vehicle, position) pair that minimizes marginal additional distance while satisfying all constraints is chosen.
+3. Constraints checked per insertion: cumulative weight ≤ `max_weight_kg`, cumulative volume ≤ `max_volume_m3`, arrival within time window at each stop, total route duration ≤ 480 minutes (8 hours). Missing distance entries return `UNREACHABLE`.
 
-Packages are sorted by **priority descending**, then by **time-window close ascending** so
-that high-priority and time-critical packages get first access to vehicle capacity.
+**Route optimization (2-opt):**
+After all packages are assigned, each vehicle's route is improved by iterative 2-opt: all segment reversals are evaluated, the best feasibility-preserving swap is applied, and the process repeats until no improving swap exists.
 
-For each package, every vehicle is tested. Capacity (weight, then volume) is checked first.
-For vehicles with sufficient capacity, a **best-insertion heuristic** tries every insertion
-position in the vehicle's current route and accepts the one with the minimum added distance
-that passes the full route simulation (travel times, time windows, 8-hour driver limit).
+**Undeliverable reason selection:**
+If a package cannot be assigned to any vehicle, the failure reason is derived from the constraint that blocked it: `UNREACHABLE` if no vehicle could establish a route to the destination, otherwise the highest-priority constraint from `CAPACITY_WEIGHT > CAPACITY_VOLUME > TIME_WINDOW > MAX_DRIVER_TIME > NO_VEHICLE`.
 
-The package is assigned to the vehicle whose best insertion adds the least total distance.
+## Input Validation
 
-### Route Simulation
-
-`simulate_route` replays the full route from depot (departure 08:00) through all stops and
-back, computing per-stop arrival, optional wait, and departure times, total driven distance,
-and total route duration. It returns a failure reason
-(`UNREACHABLE`, `TIME_WINDOW`, `MAX_DRIVER_TIME`) on the first constraint violation.
-
-### Optimisation (`planner.py`)
-
-After all packages are assigned, each vehicle's route undergoes iterative local search:
-
-1. **2-opt** — try all segment-reversal pairs; accept the first improving swap.
-2. **or-opt** (single-stop relocation) — try moving each stop to every other position;
-   accept the first improving move.
-
-Both passes are repeated until no further improvement is found. Every candidate is validated
-by `simulate_route` to ensure all time-window and driver-time constraints remain satisfied.
-The primary objective is minimum total distance; total duration breaks ties.
-
-### Undeliverable Reason Assignment
-
-| Condition | Reason |
+| Issue | Behaviour |
 |---|---|
-| `tw_close ≤ tw_open` (pre-validation) | `TIME_WINDOW` |
-| All vehicles fail weight capacity | `CAPACITY_WEIGHT` |
-| All vehicles fail volume capacity | `CAPACITY_VOLUME` |
-| All feasible insertions have missing distance entries | `UNREACHABLE` |
-| Time window cannot be met on any capable vehicle | `TIME_WINDOW` |
-| Route would exceed 8 hours on any capable vehicle | `MAX_DRIVER_TIME` |
-| No other specific constraint | `NO_VEHICLE` |
+| Missing input file | Prints error, exits with code 1 |
+| Unknown location ID in packages/vehicles | Reported to stderr, row excluded |
+| Invalid priority value (not 0 or 1) | Reported to stderr, row excluded |
+| `tw_close ≤ tw_open` | Written to `undeliverable.csv` as `TIME_WINDOW` |
+| Missing distance entry during routing | Package recorded as `UNREACHABLE` |
+
+## Key Constants
+
+- Depot departure time: **08:00** (480 minutes from midnight, per DA-04)
+- Maximum driver working time: **8 hours** (480 minutes, per FR-03)
 
 ## Output Files
 
-| File | Contents |
-|---|---|
-| `stops_order.csv` | Ordered stops per vehicle: route_id, vehicle_id, stop_position_in_order, location_id, delivery_package_id, arrival_time, departure_time |
-| `summary.csv` | Per-vehicle totals (all vehicles included): total_distance_km, total_time_min, packages_delivered |
-| `undeliverable.csv` | Packages that could not be assigned: package_id, reason |
+- **`stops_order.csv`** — one row per stop per route, sorted by vehicle and stop position; vehicles with no deliveries are omitted
+- **`summary.csv`** — one row per vehicle (including vehicles with zero deliveries); `total_distance_km` rounded to 2 decimal places, `total_time_min` is the full door-to-door route duration
+- **`undeliverable.csv`** — one row per undeliverable package with exactly one reason code
 
-Times are formatted `HH:MM`; distances are rounded to two decimal places; durations are
-integer minutes.
+## Running
 
-## Constants
+```bash
+# Direct module invocation (no installation required)
+python3 -m fleetrouter --input /path/to/input --output /path/to/output
 
-- Depot departure time: **08:00** (480 minutes from midnight)
-- Maximum driver time: **8 hours** (480 minutes)
-- Priority values: **0** (standard) or **1** (priority); other values are excluded with a warning
-
-## Design Notes
-
-- No external dependencies — standard library only (`csv`, `argparse`, `os`, `sys`)
-- Clean separation of concerns across modules
-- All time values are stored internally as integer minutes from midnight
-- The `simulate_route` function is the single source of truth for route feasibility
+# After installing via pip
+pip install -e /path/to/project
+fleetrouter --input /path/to/input --output /path/to/output
+```

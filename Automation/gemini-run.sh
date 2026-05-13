@@ -58,7 +58,7 @@ ensure_sonarqube || true
 
 _REQ_DIR="$(dirname "$REQ_PATH")"
 _REQ_BASENAME="$(basename "$REQ_PATH" .md)"
-PROJECT="${_REQ_DIR##* - }"
+PROJECT="${_REQ_DIR##*-}"
 REQ_ID="${_REQ_BASENAME%%-*}"
 REQ_LABEL="${PROJECT}-${REQ_ID}"
 

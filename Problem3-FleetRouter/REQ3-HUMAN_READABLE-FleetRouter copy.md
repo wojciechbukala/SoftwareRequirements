@@ -142,21 +142,20 @@ Upon completion, the system shall print a single summary line stating the number
 ## 3.5. Design constraints
 All input and output files shall use the CSV format with a comma as the field separator and UTF-8 encoding. The first row of every file should be a header row containing column names as specified. 
 **inputs**
-- *packages.csv*: package_id, destination_id, weight_kg, volume_m3, tw_open, tw_close, service_min, priority
+- *packages.csv*: package_id (string), destination_id (string), weight_kg (float), volume_m3 (float), tw_open (string HH:MM), tw_close (string HH:MM), service_min (int), priority (int)
 The priority column in packages.csv shall contain an integer value from the set {0, 1}, where 1 marks a priority package and 0 marks a non-priority package. No other values are permitted; any package with a value outside this set shall be reported and excluded from processing in the same way as other invalid input rows (see FR-02).
 
-- *vehicles.csv*: vehicle_id, max_weight_kg, max_volume_m3, depot_location_id
-- *locations.csv*: location_id, name
-- *distances.csv*: from_location_id, to_location_id, distance_km, travel_time_min
+- *vehicles.csv*: vehicle_id (string), max_weight_kg (float), max_volume_m3 (float), depot_location_id (string)
+- *locations.csv*: location_id (string), name (string)
+- *distances.csv*: from_location_id (stiring), to_location_id (string), distance_km (float), travel_time_min (int)
 **outputs**
-- *stops_order.csv* - route_id, vehicle_id, stop_position_in_order, location_id, delivered_id, arrival_time, departure_time
-- *undeliverable.csv* - package_id, reason
-- *summary.csv* - vehicle_id, total_distance_km, total_time_min, packages_delivered
+- *stops_order.csv* - route_id (string), vehicle_id (string), stop_position_in_order (int), location_id (string), delivered_id (string), arrival_time (string HH:MM), departure_time (string HH:MM)
+- *undeliverable.csv* - package_id (string), reason (string)
+- *summary.csv* - vehicle_id (string), total_distance_km (float), total_time_min (int), packages_delivered (int)
 
 Time values in all input and output files must follow the format HH:MM, distance values in kilometers rounded to two decimal places, and duration values as integer minutes.
 
 Additionally the source code must adhere to clean code principles.
-
 ## 3.6. Software system attributes
 
 ### Security

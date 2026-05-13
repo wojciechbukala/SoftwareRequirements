@@ -1,74 +1,47 @@
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional
 
 
 @dataclass
 class Location:
-    id: str
+    location_id: str
     name: str
 
 
 @dataclass
 class Package:
-    id: str
+    package_id: str
     destination_id: str
     weight_kg: float
     volume_m3: float
-    tw_open: int    # minutes since 08:00
-    tw_close: int   # minutes since 08:00
+    tw_open: int   # minutes since 8:00 AM
+    tw_close: int  # minutes since 8:00 AM
     service_min: int
-    priority: int   # 0 or 1
+    priority: int  # 0 or 1
 
 
 @dataclass
 class Vehicle:
-    id: str
+    vehicle_id: str
     max_weight_kg: float
     max_volume_m3: float
     depot_location_id: str
 
 
-@dataclass
-class DeliveryStop:
-    position: int
-    location_id: str
-    package_id: str
-    arrival: int    # minutes since 08:00
-    departure: int  # minutes since 08:00
+class DistanceMatrix:
+    def __init__(self):
+        self._km: dict[tuple[str, str], float] = {}
+        self._min: dict[tuple[str, str], int] = {}
 
+    def add(self, from_id: str, to_id: str, distance_km: float, travel_min: int):
+        self._km[(from_id, to_id)] = distance_km
+        self._min[(from_id, to_id)] = travel_min
 
-@dataclass
-class DepotStop:
-    position: int
-    location_id: str
-    arrival: int    # minutes since 08:00
-    departure: int  # minutes since 08:00
+    def get_km(self, from_id: str, to_id: str) -> Optional[float]:
+        return self._km.get((from_id, to_id))
 
+    def get_min(self, from_id: str, to_id: str) -> Optional[int]:
+        return self._min.get((from_id, to_id))
 
-@dataclass
-class Route:
-    id: str
-    vehicle: Vehicle
-    depot_start: DepotStop
-    delivery_stops: List[DeliveryStop]
-    depot_end: DepotStop
-
-    def total_distance_km(self, distances: dict) -> float:
-        if not self.delivery_stops:
-            km = distances.get(
-                (self.vehicle.depot_location_id, self.vehicle.depot_location_id), (0.0, 0)
-            )[0]
-            return km
-        total = 0.0
-        prev = self.vehicle.depot_location_id
-        for stop in self.delivery_stops:
-            total += distances.get((prev, stop.location_id), (0.0, 0))[0]
-            prev = stop.location_id
-        total += distances.get((prev, self.vehicle.depot_location_id), (0.0, 0))[0]
-        return total
-
-    def total_time_min(self) -> int:
-        return self.depot_end.arrival
-
-    def packages_delivered(self) -> int:
-        return len(self.delivery_stops)
+    def has_path(self, from_id: str, to_id: str) -> bool:
+        return (from_id, to_id) in self._min

@@ -1,0 +1,6 @@
+timestamp,actuator_id,values
+2.0,Throttle,0.05
+3.0,Braking System,BRAKE
+3.0,Throttle,0.05
+8.0,Braking System,BRAKE
+8.0,Throttle,0.03

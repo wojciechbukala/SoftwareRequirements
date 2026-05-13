@@ -1,0 +1,9 @@
+package_id,destination_id,weight_kg,volume_m3,tw_open,tw_close,service_min,priority
+P_OK,L1,10.0,1.0,08:00,12:00,15,0
+P_BADLOC,L5,5.0,0.5,08:00,12:00,10,0
+P_BADTW,L2,5.0,0.5,12:00,10:00,10,0
+P_UNREACH,L4,5.0,0.5,08:00,16:00,10,0
+P_WEIGHT,L2,55.0,1.0,08:00,16:00,10,0
+P_VOLUME,L3,5.0,6.0,08:00,16:00,10,0
+P_MAXTIME,L3,5.0,0.5,15:30,15:50,10,0
+P_NOVEH,L2,10.0,1.0,08:30,09:00,10,0

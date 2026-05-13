@@ -1,0 +1,4 @@
+timestamp,actuator_id,values
+1.5,SteeringMotor,0.1
+1.5,SpeedActuator,0.1
+3.5,BrakingSystem,BRAKE
