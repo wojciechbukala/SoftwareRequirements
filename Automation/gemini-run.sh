@@ -62,6 +62,10 @@ PROJECT="${_REQ_DIR##*-}"
 REQ_ID="${_REQ_BASENAME%%-*}"
 REQ_LABEL="${PROJECT}-${REQ_ID}"
 
+# Derive short model label: gemini-2.5-flash → Gemini-Flash
+_MODEL_TIER=$(echo "$MODEL" | sed 's/gemini-[0-9.]*-\([a-z]*\).*/\1/')
+MODEL_LABEL="Gemini-${_MODEL_TIER^}"
+
 mkdir -p "$RUNS_DIR"
 
 TOTAL_INPUT=0
@@ -70,16 +74,19 @@ TOTAL_CACHE_READ=0
 TOTAL_CACHE_CREATE=0
 
 START=1
-while [[ -d "${RUNS_DIR}/${REQ_LABEL}-Gemini-${START}" ]]; do
+while [[ -d "${RUNS_DIR}/${REQ_LABEL}-${MODEL_LABEL}-${START}" ]]; do
     (( START++ ))
 done
 
 for ((i = START; i < START + RUNS; i++)); do
-    RUN_ID="${REQ_LABEL}-Gemini-${i}"
+    RUN_ID="${REQ_LABEL}-${MODEL_LABEL}-${i}"
     RUN_DIR="${RUNS_DIR}/${RUN_ID}"
 
     mkdir -p "$RUN_DIR"
     cp "${REPO_ROOT}/${REQ_PATH}" "${RUN_DIR}/REQUIREMENTS.md"
+    if [[ "$PROJECT" == "SeatsReservation" ]]; then
+        cp -r "${REPO_ROOT}/Problem2-SeatsReservation/UI_Mockups" "${RUN_DIR}/UI_Mockups"
+    fi
 
     echo "=== Run ${i}/${RUNS}: ${RUN_ID} ==="
 
@@ -106,7 +113,7 @@ for ((i = START; i < START + RUNS; i++)); do
     printf "  Tokens — input: %s  output: %s  cache_read: %s  cache_create: %s\n" \
         "$INPUT" "$OUTPUT" "$CACHE_READ" "$CACHE_CREATE"
 
-    CSV_FILE="${REPO_ROOT}/Results/${PROJECT}.csv"
+    CSV_FILE="${REPO_ROOT}/Results/${PROJECT}-static.csv"
 
     echo "=== Pylint: ${RUN_ID} ==="
     (cd "$RUN_DIR" && "${REPO_ROOT}/.venv/bin/python3" "${REPO_ROOT}/Verification/pylint_verification.py")

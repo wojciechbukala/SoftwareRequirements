@@ -1,4 +1,0 @@
-timestamp,actuator_id,values
-1.5,SteeringMotor,-0.1000
-1.5,SpeedActuator,0.1000
-3.5,BrakingSystem,FULL_BRAKE

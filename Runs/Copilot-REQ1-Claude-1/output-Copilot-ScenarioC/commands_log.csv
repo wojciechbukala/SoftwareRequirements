@@ -1,4 +1,0 @@
-timestamp,actuator_id,values
-1.5,SteeringWheel,-0.1
-3.5,BrakingSystem,brake
-3.5,Engine,-18.0

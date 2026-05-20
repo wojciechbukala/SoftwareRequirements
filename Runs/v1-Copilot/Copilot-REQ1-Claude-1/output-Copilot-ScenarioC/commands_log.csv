@@ -1,4 +1,0 @@
-timestamp,actuator_id,values
-1.5,SteeringActuator,-0.05
-1.5,ThrottleActuator,0.1
-3.5,BrakingSystem,emergency_brake

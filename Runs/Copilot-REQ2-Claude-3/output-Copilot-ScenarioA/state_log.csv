@@ -1,7 +1,0 @@
-timestamp,previous_state,current_state,trigger_event
-1.0,Disengaged,Engaged,ENGAGE
-122.0,Engaged,AwaitingResponse,120s_prompt_interval
-122.0,AwaitingResponse,Engaged,STEERING_FORCE<=3N
-247.0,Engaged,AwaitingResponse,120s_prompt_interval
-255.0,AwaitingResponse,Alarming,5s_response_timeout
-255.0,Alarming,Engaged,STEERING_FORCE<=3N

@@ -1,5 +1,0 @@
-package_id,destination_id,weight_kg,volume_m3,tw_open,tw_close,service_min,priority
-P1,loc1,10,1,08:00,14:00,15,1
-P2,loc2,20,2,09:00,15:00,10,0
-P3,loc3,30,3,08:30,16:00,20,1
-P4,loc1,5,0.5,08:00,10:00,5,0

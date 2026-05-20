@@ -1,7 +1,0 @@
-timestamp,previous_state,current_state,trigger_event
-1.0,Disengaged,Engaged,ENGAGE
-122.0,Engaged,AwaitingResponse,ATTENTIVENESS_PROMPT
-122.0,AwaitingResponse,Engaged,VALID_RESPONSE
-247.0,Engaged,AwaitingResponse,ATTENTIVENESS_PROMPT
-255.0,AwaitingResponse,Alarming,RESPONSE_TIMEOUT
-255.0,Alarming,Engaged,VALID_RESPONSE

@@ -1,1 +1,0 @@
-"""Copilot ADAS simulation package."""

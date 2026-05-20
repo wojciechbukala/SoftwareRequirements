@@ -1,1 +1,0 @@
-"""Copilot driver-assistance system."""

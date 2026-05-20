@@ -1,7 +1,0 @@
-timestamp,previous_state,current_state,trigger_event
-1970-01-01T00:00:01.000000,Disengaged,Engaged,ENGAGE_EVENT
-1970-01-01T00:02:01.000000,Engaged,AwaitingResponse,ATTENTIVENESS_TIMER
-1970-01-01T00:02:02.000000,AwaitingResponse,Engaged,VALID_RESPONSE
-1970-01-01T00:04:02.000000,Engaged,AwaitingResponse,ATTENTIVENESS_TIMER
-1970-01-01T00:04:07.000000,AwaitingResponse,Alarming,RESPONSE_TIMEOUT
-1970-01-01T00:04:15.000000,Alarming,Engaged,ALARM_CLEARED

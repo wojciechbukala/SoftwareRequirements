@@ -1,7 +1,0 @@
-timestamp,feature,decision
-2.0,emergency braking,NO BRAKE
-2.0,cruise control,0.05
-3.0,emergency braking,BRAKE
-3.0,cruise control,0.05
-8.0,emergency braking,BRAKE
-8.0,cruise control,0.03

@@ -1,3 +1,0 @@
-timestamp,previous_state,current_state,trigger_event
-1.0,DISENGAGED,ENGAGED,engage
-126.0,ENGAGED,ALARM,attentiveness_timeout

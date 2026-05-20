@@ -1,5 +1,0 @@
-timestamp,previous_state,current_state,trigger_event
-1970-01-01T00:00:01.000000,Disengaged,Engaged,ENGAGE_EVENT
-1970-01-01T00:00:05.000000,Engaged,Disengaged,DRIVER_OVERRIDE
-1970-01-01T00:00:06.000000,Disengaged,Engaged,ENGAGE_EVENT
-1970-01-01T00:00:07.000000,Engaged,Disengaged,DRIVER_OVERRIDE

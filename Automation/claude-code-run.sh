@@ -51,7 +51,12 @@ ensure_sonarqube() {
     fi
     echo "SonarQube nie odpowiada na porcie ${port} — próba uruchomienia kontenera..."
     local container
-    container=$(docker ps -a --filter "publish=${port}" --format "{{.Names}}" | head -1)
+    container=$(docker ps -aq | while read -r id; do
+        if docker inspect "$id" --format '{{range $p, $b := .HostConfig.PortBindings}}{{range $b}}{{.HostPort}} {{end}}{{end}}' 2>/dev/null | grep -qw "$port"; then
+            docker inspect "$id" --format '{{.Name}}' | sed 's|^/||'
+            break
+        fi
+    done | head -1)
     [[ -n "$container" ]] || { echo "  WARN: nie znaleziono kontenera SonarQube na porcie ${port} — pomijam"; return 1; }
     docker start "$container"
     echo -n "  Oczekiwanie na SonarQube"
@@ -85,6 +90,10 @@ PROJECT="${_REQ_DIR##*-}"
 REQ_ID="${_REQ_BASENAME%%-*}"
 REQ_LABEL="${PROJECT}-${REQ_ID}"
 
+# Derive short model label: claude-sonnet-4-6 → Claude-Sonnet
+_MODEL_TIER=$(echo "$MODEL" | sed 's/claude-\([a-z]*\).*/\1/')
+MODEL_LABEL="Claude-${_MODEL_TIER^}"
+
 mkdir -p "$RUNS_DIR"
 
 TOTAL_INPUT=0
@@ -94,16 +103,19 @@ TOTAL_CACHE_CREATE=0
 TOTAL_COST="0"
 
 START=1
-while [[ -d "${RUNS_DIR}/${REQ_LABEL}-Claude-${START}" ]]; do
+while [[ -d "${RUNS_DIR}/${REQ_LABEL}-${MODEL_LABEL}-${START}" ]]; do
     (( START++ ))
 done
 
 for ((i = START; i < START + RUNS; i++)); do
-    RUN_ID="${REQ_LABEL}-Claude-${i}"
+    RUN_ID="${REQ_LABEL}-${MODEL_LABEL}-${i}"
     RUN_DIR="${RUNS_DIR}/${RUN_ID}"
 
     mkdir -p "$RUN_DIR"
     cp "${REPO_ROOT}/${REQ_PATH}" "${RUN_DIR}/REQUIREMENTS.md"
+    if [[ "$PROJECT" == "SeatsReservation" ]]; then
+        cp -r "${REPO_ROOT}/Problem2-SeatsReservation/UI_Mockups" "${RUN_DIR}/UI_Mockups"
+    fi
 
     echo "=== Run ${i}/${RUNS}: ${RUN_ID} ==="
 

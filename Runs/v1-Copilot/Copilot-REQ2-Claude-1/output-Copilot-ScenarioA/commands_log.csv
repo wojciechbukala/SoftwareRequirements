@@ -1,6 +1,0 @@
-timestamp,actuator_id,values
-2.0,SteeringMotor,-0.2000
-2.0,SpeedActuator,0.2000
-122.0,SteeringWheel,ATTENTIVENESS_PROMPT
-247.0,SteeringWheel,ATTENTIVENESS_PROMPT
-255.0,Alarm,CONTINUOUS_ALARM

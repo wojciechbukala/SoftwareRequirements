@@ -1,5 +1,0 @@
-timestamp,previous_state,current_state,trigger_event
-1.0,Disengaged,Engaged,ENGAGE
-5.0,Engaged,Disengaged,STEERING_OVERRIDE
-6.0,Disengaged,Engaged,ENGAGE
-7.0,Engaged,Disengaged,STEERING_OVERRIDE

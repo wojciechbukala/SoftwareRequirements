@@ -1,3 +1,0 @@
-route_id,vehicle_id,stop_position_in_order,location_id,delivered_id,arrival_time,departure_time
-route_V1,V1,1,L1,P_PRI,08:20,08:35
-route_V1,V1,2,L3,P_SMALL,08:50,09:00
