@@ -36,8 +36,12 @@ Product overview can be described using a domain class diagram as a conceptual m
 ```
 classDiagram
     class AnyUser {
-        +user_id
+        +UUID user_id
+        +UserRole role
+        +String password_hash
     }
+    note for AnyUser "user_id: {id}"
+
     class User {
     }
     class Administrator {
@@ -47,36 +51,57 @@ classDiagram
     AnyUser <|-- Administrator
 
     class Event {
-        +event_id
-        +event_date
-        +name
-        +location
-        +rows
-        +columns
-        +has_numbered_seats
+        +UUID event_id
+        +String name
+        +String location
+        +String description
+        +DateTime event_date
+        +Integer rows
+        +Integer columns
+        +Boolean has_numbered_seats
     }
+    note for Event "event_id: {id}"
 
     class EventPricing {
-        +event_id
-        +category
-        +base_price
+        +UUID eventpricing_id
+        +SeatCategory category
+        +Decimal base_price
     }
+    note for EventPricing "eventpricing_id: {id}"
 
     class Reservation {
-        +reservation_id
-        +user_id
-        +event_id
-        +status
-        +create_time
-        +expire_time
+        +UUID reservation_id
+        +ReservationStatus status
+        +DateTime create_time
+        +DateTime expire_time
     }
+    note for Reservation "reservation_id: {id}; create_time: {readOnly}"
 
     class Seat {
-        +seat_id
-        +event_id
-        +row_number
-        +column_number
-        +category
+        +UUID seat_id
+        +Integer row_number
+        +Integer column_number
+        +SeatCategory category
+    }
+    note for Seat "seat_id: {id}; row_number, column_number: {readOnly}"
+
+    class UserRole {
+        <<enumeration>>
+        Customer
+        Administrator
+    }
+    class SeatCategory {
+        <<enumeration>>
+        VIP
+        Premium
+        Economy
+    }
+    class ReservationStatus {
+        <<enumeration>>
+        Pending
+        Confirmed
+        Cancelled
+        Expired
     }
 
     Administrator "1" -- "0..*" Event : creates

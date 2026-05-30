@@ -37,42 +37,84 @@ The domain of the Copilot program with necessary dependencies and relations is p
 ```
 classDiagram
     class SensorEvent {
-        +timestamp
-        +sensor_id
-        +sensor_type
-        +data_value
-        +unit
+        +Float timestamp
+        +String sensor_id
+        +SensorType sensor_type
+        +Float data_value
+        +String unit
     }
+    note for SensorEvent "timestamp, sensor_id, sensor_type, data_value, unit: {readOnly} (input from sensor_log.csv); events {ordered} by ascending timestamp"
+
     class DriverEvent {
-        +timestamp
-        +event_type
-        +value
+        +Float timestamp
+        +DriverEventType event_type
+        +Float value
     }
+    note for DriverEvent "timestamp, event_type, value: {readOnly} (input from driver_events.csv); events {ordered} by ascending timestamp"
+
     class CopilotSystem {
-        +mode
-        +last_prompt_time
-        +awaiting_response
+        +SystemState mode
+        +Float last_prompt_time
+        +Boolean awaiting_response
     }
+
     class StateTransition {
-        +timestamp
-        +previous_state
-        +current_state
-        +trigger_event
+        +Float timestamp
+        +SystemState previous_state
+        +SystemState current_state
+        +String trigger_event
     }
+    note for StateTransition "all attributes {readOnly} (output to state_log.csv); records {ordered} by timestamp"
+
     class ActuatorCommand {
-        +timestamp
-        +actuator_id
-        +values
+        +Float timestamp
+        +String actuator_id
+        +String values
     }
+    note for ActuatorCommand "all attributes {readOnly} (output to commands_log.csv); commands {ordered} by timestamp; values is string-or-float"
+
     class FeatureDecision {
-        +timestamp
-        +feature
-        +decision
+        +Float timestamp
+        +Feature feature
+        +String decision
     }
+    note for FeatureDecision "all attributes {readOnly} (output to feature_decision.csv); decisions {ordered} by timestamp; decision is string-or-float"
+
     class AttentivenessCheck {
-        +prompt_time
-        +deadline
-        +status
+        +Float prompt_time
+        +Float deadline
+        +CheckStatus status
+    }
+
+    class SensorType {
+        <<enumeration>>
+        Camera
+        Lidar
+    }
+    class DriverEventType {
+        <<enumeration>>
+        ENGAGE
+        DISENGAGE
+        STEERING_FORCE
+    }
+    class SystemState {
+        <<enumeration>>
+        Disengaged
+        Engaged
+        AwaitingResponse
+        Alarming
+    }
+    class Feature {
+        <<enumeration>>
+        CruiseControl
+        EmergencyBraking
+        LaneKeeping
+    }
+    class CheckStatus {
+        <<enumeration>>
+        Pending
+        Passed
+        Failed
     }
 
     SensorEvent "1..*" --> "1" CopilotSystem : triggers processing cycle
@@ -177,48 +219,89 @@ Copilot shall read sensor events from *sensor_log.csv* and driver events from *d
 The processing logic applied to each sensor event depends on the sensor type and the current system state. The diagram below specifies th evaluation order of autonomous features and the resulting writes to output files for a single sensor processing cycle.
 
 ```
-flowchart TD
-    A([sensor event received]) --> B[log raw event]
-    B --> D{sensor_type == Lidar?}
+stateDiagram-v2
+    direction TB
+    [*] --> LogRawEvent : sensor event received
+    LogRawEvent : log raw event
 
-    D -- Yes --> E{data_value < 5 m?}
-    E -- Yes --> F[decide: emergency_braking = BRAKE]
-    F --> G[issue command to BrakingSystem actuator]
-    G --> H[write to feature_decision.csv\nwrite to commands_log.csv]
-    H --> Z([end cycle])
+    LogRawEvent --> ck_lidar
+    state ck_lidar <<choice>>
+    ck_lidar --> ck_distance : [sensor_type == Lidar]
+    ck_lidar --> ck_engaged : [sensor_type != Lidar]
 
-    E -- No --> I[decide: emergency_braking = NO_BRAKE]
-    I --> J[write to feature_decision.csv]
-    J --> Z
+    state ck_distance <<choice>>
+    ck_distance --> DecideBrake : [data_value < 5 m]
+    ck_distance --> DecideNoBrake : [data_value >= 5 m]
 
-    D -- No --> C{system state == Engaged?}
-    C -- No --> Z
-    C -- Yes --> K{sensor_type == Camera?}
-    K -- Yes --> L[compute lane keeping correction]
-    L --> M[compute cruise control adjustment]
-    M --> N[issue commands to SteeringMotor\nand SpeedActuator]
-    N --> O[write to feature_decision.csv x2\nwrite to commands_log.csv x2]
-    O --> Z
-    K -- No --> Z
+    DecideBrake : decide emergency_braking = BRAKE
+    DecideBrake --> IssueBrakeCmd
+    IssueBrakeCmd : issue command to BrakingSystem actuator
+    IssueBrakeCmd --> WriteBrake
+    WriteBrake : write feature_decision.csv
+    WriteBrake : write commands_log.csv
+    WriteBrake --> [*]
+
+    DecideNoBrake : decide emergency_braking = NO_BRAKE
+    DecideNoBrake --> WriteNoBrake
+    WriteNoBrake : write feature_decision.csv
+    WriteNoBrake --> [*]
+
+    state ck_engaged <<choice>>
+    ck_engaged --> ck_camera : [state == Engaged]
+    ck_engaged --> [*] : [state != Engaged]
+
+    state ck_camera <<choice>>
+    ck_camera --> ComputeLane : [sensor_type == Camera]
+    ck_camera --> [*] : [sensor_type != Camera]
+
+    ComputeLane : compute lane keeping correction
+    ComputeLane --> ComputeCruise
+    ComputeCruise : compute cruise control adjustment
+    ComputeCruise --> IssueCmds
+    IssueCmds : issue commands to SteeringMotor and SpeedActuator
+    IssueCmds --> WriteCamera
+    WriteCamera : write feature_decision.csv (x2)
+    WriteCamera : write commands_log.csv (x2)
+    WriteCamera --> [*]
 ```
 
 ### PF-02 - Loop execution flow
 Copilot reads events from two independent input files which are merged into a single chronological stream before processing begins. The diagram below shows the program execution flow startup to termination, including the merging of input surces and the sequential dispatching of events.
 
 ```
-flowchart TD
-A([program start]) --> B[read sensor_log.csv]
-A --> C[read driver_events.csv]
-B --> D[merge into single event stream\nsorted by timestamp ascending]
-C --> D
-D --> E{next event in stream?}
-E -- No --> F[flush all output buffers]
-F --> G([program end])
-E -- Yes --> H{event type?}
-H -- sensor event --> I[run sensor processing cycle]
-H -- driver event --> J[run driver event processing]
-I --> E
-J --> E
+stateDiagram-v2
+    direction TB
+    [*] --> fork_read : program start
+
+    state fork_read <<fork>>
+    fork_read --> ReadSensor
+    fork_read --> ReadDriver
+    ReadSensor : read sensor_log.csv
+    ReadDriver : read driver_events.csv
+
+    ReadSensor --> join_read
+    ReadDriver --> join_read
+    state join_read <<join>>
+
+    join_read --> MergeStream
+    MergeStream : merge into single event stream ordered by ascending timestamp
+    MergeStream --> ck_next
+
+    state ck_next <<choice>>
+    ck_next --> ck_type : [next event in stream]
+    ck_next --> Flush : [stream exhausted]
+
+    state ck_type <<choice>>
+    ck_type --> RunSensorCycle : [event type == sensor]
+    ck_type --> RunDriverProc : [event type == driver]
+
+    RunSensorCycle : run sensor processing cycle (PF-01)
+    RunDriverProc : run driver event processing (FR-01, FR-03, FR-04)
+    RunSensorCycle --> ck_next
+    RunDriverProc --> ck_next
+
+    Flush : flush all output buffers
+    Flush --> [*] : program end
 ```
 
 ## 3.3. Performance requirements
