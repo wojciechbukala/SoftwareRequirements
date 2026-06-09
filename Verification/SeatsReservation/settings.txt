@@ -1,0 +1,27 @@
+User:
+Jan Kowalski
+jan.kowalski@email.com
+jan.kowalski.123!
+
+Admin:
+Piotr Nowak
+piotr.nowak
+piotr.nowak@email.com
+piotr.nowak.123!
+
+Event:
+Name:
+Justin Biber concert 1
+Justin Biber concert 2
+Justin Biber concert 3
+
+Place:
+o2 arena
+
+Description:
+Super cool consert
+
+Price:
+20
+30
+50

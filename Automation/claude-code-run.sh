@@ -116,6 +116,9 @@ for ((i = START; i < START + RUNS; i++)); do
     if [[ "$PROJECT" == "SeatsReservation" ]]; then
         cp -r "${REPO_ROOT}/Problem2-SeatsReservation/UI_Mockups" "${RUN_DIR}/UI_Mockups"
     fi
+    if [[ "$REQ_ID" == "REQ3" ]]; then
+        cp -r "${REPO_ROOT}/${_REQ_DIR}/Diagrams" "${RUN_DIR}/Diagrams"
+    fi
 
     echo "=== Run ${i}/${RUNS}: ${RUN_ID} ==="
 

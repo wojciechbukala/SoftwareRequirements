@@ -1,2 +1,0 @@
-************* Module copilot
-copilot.py:216: [E0001] Parsing failed: 'invalid syntax (copilot, line 216)'

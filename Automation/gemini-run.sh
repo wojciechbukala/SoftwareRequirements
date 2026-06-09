@@ -38,7 +38,12 @@ ensure_sonarqube() {
     fi
     echo "SonarQube nie odpowiada na porcie ${port} — próba uruchomienia kontenera..."
     local container
-    container=$(docker ps -a --filter "publish=${port}" --format "{{.Names}}" | head -1)
+    container=$(docker ps -aq | while read -r id; do
+        if docker inspect "$id" --format '{{range $p, $b := .HostConfig.PortBindings}}{{range $b}}{{.HostPort}} {{end}}{{end}}' 2>/dev/null | grep -qw "$port"; then
+            docker inspect "$id" --format '{{.Name}}' | sed 's|^/||'
+            break
+        fi
+    done | head -1)
     [[ -n "$container" ]] || { echo "  WARN: nie znaleziono kontenera SonarQube na porcie ${port} — pomijam"; return 1; }
     docker start "$container"
     echo -n "  Oczekiwanie na SonarQube"
@@ -86,6 +91,9 @@ for ((i = START; i < START + RUNS; i++)); do
     cp "${REPO_ROOT}/${REQ_PATH}" "${RUN_DIR}/REQUIREMENTS.md"
     if [[ "$PROJECT" == "SeatsReservation" ]]; then
         cp -r "${REPO_ROOT}/Problem2-SeatsReservation/UI_Mockups" "${RUN_DIR}/UI_Mockups"
+    fi
+    if [[ "$REQ_ID" == "REQ3" ]]; then
+        cp -r "${REPO_ROOT}/${_REQ_DIR}/Diagrams" "${RUN_DIR}/Diagrams"
     fi
 
     echo "=== Run ${i}/${RUNS}: ${RUN_ID} ==="

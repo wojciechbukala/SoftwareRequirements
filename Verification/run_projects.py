@@ -43,29 +43,63 @@ def find_scenarios(project_name: str) -> list[Path]:
     ]
 
 
+_ENV_VAR_RE = re.compile(r'^[A-Za-z_]\w*=')
+
+
+def _skip_env_assignments(tokens: list[str]) -> int:
+    """Return the index of the first token that is not a VAR=value assignment."""
+    for i, tok in enumerate(tokens):
+        if not _ENV_VAR_RE.match(tok):
+            return i
+    return len(tokens)
+
+
+def _find_local(exe: str, run_dir: Path) -> str | None:
+    """Return a run_dir-relative path for exe (bin/ or ./), or None."""
+    if (run_dir / "bin" / exe).exists():
+        return f"bin/{exe}"
+    if (run_dir / exe).exists():
+        return f"./{exe}"
+    return None
+
+
+def _find_runnable(exe: str, run_dir: Path) -> str | None:
+    """Return the best local invocation for exe.
+    Prefers 'python3 -m exe' when the package ships __main__.py."""
+    if (run_dir / exe / "__main__.py").exists():
+        return f"python3 -m {exe}"
+    return _find_local(exe, run_dir)
+
+
 def resolve_command(command: str, run_dir: Path) -> str:
     """Resolve paths in the command so that scripts in run_dir are found locally."""
     tokens = command.split()
     if not tokens:
         return command
 
+    cmd_start = _skip_env_assignments(tokens)
+    if cmd_start >= len(tokens):
+        return command
+
+    # Env-var prefix (e.g. PATH="/workspace/bin:$PATH") — resolve exe locally
+    if cmd_start > 0:
+        exe = tokens[cmd_start]
+        return " ".join([_find_runnable(exe, run_dir) or exe] + tokens[cmd_start + 1:])
+
     first = tokens[0]
 
     # Bare executable (no path separator, not a Python interpreter)
     if "/" not in first and not first.startswith("python"):
-        if (run_dir / first).exists():
-            return "./" + command
-        return command
+        return f"./{command}" if (run_dir / first).exists() else command
 
-    # Python interpreter — check if the next argument is an absolute path
-    # whose basename exists in run_dir (e.g. python3 /workspace/fleetrouter)
-    if first.startswith("python") and len(tokens) >= 2:
-        second = tokens[1]
-        if second.startswith("/"):
-            candidate = run_dir / Path(second).name
-            if candidate.exists():
-                tokens[1] = "./" + Path(second).name
-                return " ".join(tokens)
+    # Python interpreter with absolute script path (e.g. python3 /workspace/fleetrouter)
+    if first.startswith("python") and len(tokens) >= 2 and tokens[1].startswith("/"):
+        basename = Path(tokens[1]).name
+        if (run_dir / basename / "__main__.py").exists():
+            return " ".join([first, "-m", basename] + tokens[2:])
+        local = _find_local(basename, run_dir)
+        if local:
+            return " ".join([first, local] + tokens[2:])
 
     return command
 

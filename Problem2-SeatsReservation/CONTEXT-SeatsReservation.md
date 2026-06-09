@@ -8,8 +8,8 @@ An event management company operates a system for managing seat reservations for
 For numbered events, if a user reserves N seats within a single reservation, all seats must be adjacent, meaning they are located in the same row and in consecutive columns. If this condition is not satisfied, the reservation request must be rejected. When a user selects seats, they enter a Pending state for exactly 15 minutes. If payment is not confirmed within this time, the seats are automatically released. A user may have at most two active Pending reservations at any given time. Each seat may belong to at most one active reservation (Pending or Confirmed). A reservation request is atomic: either all requested seats are successfully reserved, or none are. Users may create reservations for multiple events. Reservations may be cancelled prior to the event date (up until 2 hours before), in which case the associated seats become available again.
 
 ## Input data
-- desktop app for admin
-- desktop app for user
+- web app for admin
+- web app for user
 
 ## Output data
 - summary view for admin

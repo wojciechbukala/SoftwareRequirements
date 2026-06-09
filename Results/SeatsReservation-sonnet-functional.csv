@@ -1,0 +1,13 @@
+Wykonanie, MozliwoscRejsetracji, MozliwoscZalogowania, ZgodnosczMakieta1, WalidacjaDanych, Wylogowywanie, MoznaStworzyc1, EdycjaSiatki, EdycjaCen1, Formularz1, MoznaStworzyc2, BrakSiatki, PodzialnaPule, EdycjaCen2, Formularz2, ZgodnoscWidokow, ZgodnosczMakieta2, PodsumowanieLiczbowe, AktualizacjaUtworzonych, MoznaZarezerwowac1, WyborzSiatki, BlokadaNieprzyleglych, MoznaZarezerwowac2, WyborKatgorii, ZgodnosczMakietami, Znizki, Max2oczekujace, Zegar15minut, AnulowanieRezerwacji, OcenaIntuicyjnosci, OcenaBledow, Suma
+REQ1-1, 1, 1, 1, 0, 1, 1, 2, 2, 1, 1, 0, 0, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 31
+REQ1-2, 1, 1, 0, 0, 1, 0, 2, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 2, 20
+REQ1-3, 1, 1, 1, 0, 1, 1, 1, 2, 1, 1, 0, 0, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 3, 3, 32
+REQ2-1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 0, 1, 1, 0, 1, 2, 0, 0, 0, 0, 3, 3, 36
+REQ2-2, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 40
+REQ2-3, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 4, 4, 42
+REQ3-1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 3, 3, 43
+REQ3-2, 1, 1, 2, 1, 1, 1, 0, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 0, 0, 1, 2, 3, 2, 38
+REQ3-3, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 4, 3, 42
+REQ4-1, 1, 1, 1, 0, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 3, 1, 28
+REQ4-2, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 0, 0, 4, 3, 43
+REQ4-3, 1, 1, 1, 1, 1, 1, 2, 2, 1, 0, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 4, 3, 38

@@ -9,4 +9,4 @@ Copilot is a driver-assistance system that helps car drivers with some autonomou
 ## Output data
 - *state_log.csv* - [timestamp, previous_state, current_state, trigger_event]
 - *commands_log.csv* - [timestamp, actuator_id, values]
-- *feature_decision.csv* - [timestamp, feature, decision
+- *feature_decision.csv* - [timestamp, feature, decision]
