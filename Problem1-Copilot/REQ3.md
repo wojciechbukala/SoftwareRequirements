@@ -108,12 +108,12 @@ Copilot shall read sensor events from *sensor_log.csv* and driver events from *d
 ### PF-01 - Sensor event
 The processing logic applied to each sensor event depends on the sensor type and the current system state. The diagram below specifies th evaluation order of autonomous features and the resulting writes to output files for a single sensor processing cycle.
 
-![Flow chart - processing sensor event](./Diagrams/FlowChart1.png)
+![Activity diagram - processing sensor event](./Diagrams/ActivityDiagram1.png)
 
 ### PF-02 - Loop execution flow
 Copilot reads events from two independent input files which are merged into a single chronological stream before processing begins. The diagram below shows the program execution flow startup to termination, including the merging of input surces and the sequential dispatching of events.
 
-![Flow chart - program execution flow](./Diagrams/FlowChart2.png)
+![Activity diagram - program execution flow](./Diagrams/ActivityDiagram2.png)
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:

@@ -40,65 +40,83 @@ Domain class diagram transformed to Mermaid.js form:
 ```
 classDiagram
     class Location {
-        +location_id
-        +name
+        +String location_id
+        +String name
     }
+    note for Location "location_id: {id}; name: {readOnly}"
 
     class Distance {
-        +origin_id
-        +destination_id
-        +distance
-        +travel_time
+        +String origin_id
+        +String destination_id
+        +Float distance_km
+        +Integer travel_time_min
     }
+    note for Distance "origin_id, destination_id: {id} (composite key); distance_km, travel_time_min: {readOnly}"
 
     class Vehicle {
-        +vehicle_id
-        +weight_capacity
-        +volume_capacity
-        +depot_location_id
+        +String vehicle_id
+        +Float max_weight_kg
+        +Float max_volume_m3
+        +String depot_location_id
     }
+    note for Vehicle "vehicle_id: {id}; max_weight_kg, max_volume_m3, depot_location_id: {readOnly}"
 
     class Package {
-        +package_id
-        +destination_id
-        +weight
-        +volume
-        +tw_open
-        +tw_close
-        +priority
+        +String package_id
+        +String destination_id
+        +Float weight_kg
+        +Float volume_m3
+        +String tw_open
+        +String tw_close
+        +Integer service_min
+        +Integer priority
     }
+    note for Package "package_id: {id}; all other attributes {readOnly} (input from packages.csv); priority in {0,1}; tw_open, tw_close as HH:MM"
 
-    class Stops {
-        +route_id
-        +vehicle_id
-        +location_id
-        +delivered_id
-        +position_in_order
-        +arrival_time
-        +departure_time
+    class Stop {
+        +String route_id
+        +String vehicle_id
+        +String location_id
+        +String delivered_id
+        +Integer stop_position_in_order
+        +String arrival_time
+        +String departure_time
     }
+    note for Stop "arrival_time, departure_time as HH:MM"
 
     class RouteSummary {
-        +route_id
-        +total_distance
-        +total_time
-        +packages_delivered
+        +String vehicle_id
+        +Float total_distance_km
+        +Integer total_time_min
+        +Integer packages_delivered
     }
+    note for RouteSummary "vehicle_id: {id}; all other attributes {readOnly} (output to summary.csv)"
 
     class Undeliverable {
-        +package_id
-        +reason
+        +String package_id
+        +UndeliverableReason reason
+    }
+    note for Undeliverable "package_id: {id}; reason: {readOnly}"
+
+    class UndeliverableReason {
+        <<enumeration>>
+        CAPACITY_WEIGHT
+        CAPACITY_VOLUME
+        TIME_WINDOW
+        MAX_DRIVER_TIME
+        NO_VEHICLE
+        UNREACHABLE
     }
 
-    Location "0..*" -- "1..*" Distance : origin of
-    Location "0..*" -- "1..*" Distance : destination of
-    Location "1" -- "1..*" Vehicle : has depot
+    Location "1" -- "0..*" Distance : origin of
+    Location "1" -- "0..*" Distance : destination of
+    Location "1" -- "0..*" Vehicle : has depot
     Location "1" -- "0..*" Package : desired destination
-    Location "1" -- "0..*" Stops : takes place at
-    Vehicle "1" -- "0..*" Stops : delivered by
-    Package "1" -- "0..1" Stops : delivered package
-    Package "1" -- "0..1" Undeliverable : can be
-    RouteSummary "1" -- "0..*" Stops : is element of
+    Location "1" -- "1" Stop : takes place at
+    Vehicle "1" -- "0..*" Stop : visited by
+    Package "1" -- "0..1" Stop : delivered at
+    Package "1" -- "0..1" Undeliverable : may be reported as
+    RouteSummary "1" -- "0..*" Stop : aggregates
 ```
 
 ### 1.3.2. Product functions
