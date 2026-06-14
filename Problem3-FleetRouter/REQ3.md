@@ -35,139 +35,14 @@ The principal function of the FleetRouter program is to produce the best possibl
 ### 1.3.1. Product perspective
 Product overview can be described using a domain class diagram as a conceptual model of entities and relations between them in the FleetRoute. The diagram does not determine the classes for implementation.
 
-Domain class diagram transformed to Mermaid.js form:
-
-```
-classDiagram
-    class Location {
-        +String location_id
-        +String name
-    }
-    note for Location "location_id: {id}; name: {readOnly}"
-
-    class Distance {
-        +String origin_id
-        +String destination_id
-        +Float distance_km
-        +Integer travel_time_min
-    }
-    note for Distance "origin_id, destination_id: {id} (composite key); distance_km, travel_time_min: {readOnly}"
-
-    class Vehicle {
-        +String vehicle_id
-        +Float max_weight_kg
-        +Float max_volume_m3
-        +String depot_location_id
-    }
-    note for Vehicle "vehicle_id: {id}; max_weight_kg, max_volume_m3, depot_location_id: {readOnly}"
-
-    class Package {
-        +String package_id
-        +String destination_id
-        +Float weight_kg
-        +Float volume_m3
-        +String tw_open
-        +String tw_close
-        +Integer service_min
-        +Integer priority
-    }
-    note for Package "package_id: {id}; all other attributes {readOnly} (input from packages.csv); priority in {0,1}; tw_open, tw_close as HH:MM"
-
-    class Stop {
-        +String route_id
-        +String vehicle_id
-        +String location_id
-        +String delivered_id
-        +Integer stop_position_in_order
-        +String arrival_time
-        +String departure_time
-    }
-    note for Stop "arrival_time, departure_time as HH:MM"
-
-    class RouteSummary {
-        +String vehicle_id
-        +Float total_distance_km
-        +Integer total_time_min
-        +Integer packages_delivered
-    }
-    note for RouteSummary "vehicle_id: {id}; all other attributes {readOnly} (output to summary.csv)"
-
-    class Undeliverable {
-        +String package_id
-        +UndeliverableReason reason
-    }
-    note for Undeliverable "package_id: {id}; reason: {readOnly}"
-
-    class UndeliverableReason {
-        <<enumeration>>
-        CAPACITY_WEIGHT
-        CAPACITY_VOLUME
-        TIME_WINDOW
-        MAX_DRIVER_TIME
-        NO_VEHICLE
-        UNREACHABLE
-    }
-
-    Location "1" -- "0..*" Distance : origin of
-    Location "1" -- "0..*" Distance : destination of
-    Location "1" -- "0..*" Vehicle : has depot
-    Location "1" -- "0..*" Package : desired destination
-    Location "1" -- "1" Stop : takes place at
-    Vehicle "1" -- "0..*" Stop : visited by
-    Package "1" -- "0..1" Stop : delivered at
-    Package "1" -- "0..1" Undeliverable : may be reported as
-    RouteSummary "1" -- "0..*" Stop : aggregates
-```
+![Class diagram](./Diagrams/ClassDiagram.png)
+All referenced UML diagrams are available in ./Diagrams/ folder
 
 ### 1.3.2. Product functions
-The core processing logic of FleetRouter is captured by two state machines. The firs one models the lifecycle of a single package. The second one models the lifecycle of a route being constructed for a given vehicle.
+The core processing logic of FleetRouter is captured by an activity diagram presented below.
 
 Package state machine:
-
-```
-stateDiagram-v2
-    [*] --> Unassigned
-
-    Unassigned --> Assigned : Fits constraints
-    Unassigned --> Undeliverable : No vehicle fits
-
-    Assigned --> Delivered : Route executed
-    Delivered --> [*]
-
-    state Undeliverable {
-        direction LR
-        state pick <<choice>>
-        [*] --> pick
-        pick --> CAPACITY_WEIGHT   : weight limit exceeded
-        pick --> CAPACITY_VOLUME   : volume limit exceeded
-        pick --> TIME_WINDOW       : window infeasible / invalid
-        pick --> MAX_DRIVER_TIME   : 8h driver limit exceeded
-        pick --> NO_VEHICLE        : no vehicle fits after all checks
-        CAPACITY_WEIGHT --> [*]
-        CAPACITY_VOLUME --> [*]
-        TIME_WINDOW     --> [*]
-        MAX_DRIVER_TIME --> [*]
-        NO_VEHICLE      --> [*]
-        UNREACHABLE     --> [*]
-    }
-
-    Undeliverable --> [*]
-```
-
-Route state diagram:
-
-```
-stateDiagram-v2
-    [*] --> Empty
-    
-    Empty --> BuildingRoute : Add stop
-    
-    state "Building route" as BuildingRoute
-    BuildingRoute --> BuildingRoute : Add stop
-    BuildingRoute --> Validated : Validate constraints
-    
-    Validated --> [*]
-```
+![Activity diagram - assign packages and plan routes](./Diagrams/ActivityDiagram.png)
 
 
 ### 1.3.3. User characteristics
@@ -238,36 +113,7 @@ The system shall:
 ## 3.2. Function - Use Cases
 
 ### UC-01 - Run daily route planning
-UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence diagram below illustrates the complete message flow between the operator, the system, and the file system.
-
-```
-sequenceDiagram
-actor Operator as FleetOperator
-participant FR as FleetRouter
-participant FS as File System
-
-Operator->+FR: fleetrouter --input <dir> --output <dir>
-FR->+FS: read packages.csv, vehicles.csv, locations.csv, distances.csv
-
-alt any file missing or unreadable
-    FS-->>FR: file not found error
-    FR-->>Operator: terminate: report missing files
-else all files good
-    FS-->>-FR: raw data
-    
-    FR->>FR: validate input data
-    
-    FR->>FR: assign packages to vehicles
-    
-    FR->>FR: build and optimize routes
-    
-    FR->FS: write stops_order.csv
-    FR->FS: write summary.csv
-    FR->FS: write undeliverable.csv
-    
-    FR-->>-Operator: print summary (processed / delivered / undeliverable)
-end
-```
+UC-01 represents the sole interaction between the Fleet Operator and the system. As the operator starts planing, the system operates autonomously without further user input — reading, planning, and writing results as a single uninterrupted batch process. The sequence is presented on the activity diagram presented in the section 1.3.2. Product functions.
 
 ## 3.3. Performance requirements
 The program shall be able to run on the reference machine with at least specification of:
@@ -290,10 +136,10 @@ All input and output files shall use the CSV format with a comma as the field se
 **inputs**
 - *packages.csv*: package_id (string), destination_id (string), weight_kg (float), volume_m3 (float), tw_open (string HH:MM), tw_close (string HH:MM), service_min (int), priority (int)
 The priority column in packages.csv shall contain an integer value from the set {0, 1}, where 1 marks a priority package and 0 marks a non-priority package. No other values are permitted; any package with a value outside this set shall be reported and excluded from processing in the same way as other invalid input rows (see FR-02).
-
 - *vehicles.csv*: vehicle_id (string), max_weight_kg (float), max_volume_m3 (float), depot_location_id (string)
 - *locations.csv*: location_id (string), name (string)
 - *distances.csv*: from_location_id (stiring), to_location_id (string), distance_km (float), travel_time_min (int)
+
 **outputs**
 - *stops_order.csv* - route_id (string), vehicle_id (string), stop_position_in_order (int), location_id (string), delivered_id (string), arrival_time (string HH:MM), departure_time (string HH:MM)
 - *undeliverable.csv* - package_id (string), reason (string)

@@ -115,7 +115,7 @@ In case of optimisation, the system shall:
 
 ### FR-06 Output generation
 The system shall:
-- Write one row to *stops_order.csv* for each stop in each route. Columns should consist of (*names in file*): route ID (*route_id*), vehicle ID (*vehicle_id*), position of the stop in sequence for a given route (*stop_position_in_order*), ID of the location of the stop (*location_id*), ID of delivered package (*delivery_package_id*), arrival time  (*arrival_time*), departure time (*departure_time*). Group and sort stops for each vehicle
+- Write one row to *stops_order.csv* for each stop in each route. Columns should consist of (*names in file*): route ID (*route_id*), vehicle ID (*vehicle_id*), position of the stop in sequence for a given route (*stop_position_in_order*), ID of the location of the stop (*location_id*), ID of delivered package (*delivered_id*), arrival time  (*arrival_time*), departure time (*departure_time*). Group and sort stops for each vehicle
 - Write one row to *summary.csv* for each vehicle. Columns should consist of (*names in file*): vehicle ID (*vehicle_id*), total driven distance in kilometers (*total_distance_km*), total driven time in minutes (*total_time_min*), number of delivered packages (*packages_delivered*). Every vehicle defined in *vehicles.csv* should be included.
 - Write one row to *undeliverable.csv* for each package that cannot be assigned to any route. Columns should consist of (*names in file*): package ID (*package_id*), code of the reason (*reason*). Available reason codes consists of: CAPACITY_WEIGHT, CAPACITY_VOLUME, TIME_WINDOW, MAX_DRIVER_TIME, NO_VEHICLE, UNREACHABLE. Exactly one reason code for each undeliverable package.
 
@@ -157,6 +157,7 @@ The priority column in packages.csv shall contain an integer value from the set 
 - *vehicles.csv*: vehicle_id (string), max_weight_kg (float), max_volume_m3 (float), depot_location_id (string)
 - *locations.csv*: location_id (string), name (string)
 - *distances.csv*: from_location_id (stiring), to_location_id (string), distance_km (float), travel_time_min (int)
+
 **outputs**
 - *stops_order.csv* - route_id (string), vehicle_id (string), stop_position_in_order (int), location_id (string), delivered_id (string), arrival_time (string HH:MM), departure_time (string HH:MM)
 - *undeliverable.csv* - package_id (string), reason (string)
